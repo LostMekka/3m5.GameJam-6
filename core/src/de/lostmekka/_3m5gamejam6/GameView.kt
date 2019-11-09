@@ -14,6 +14,7 @@ class GameView : BaseView() {
             GameConfig.worldSize,
             GameConfig.worldSize
         )
+        world.generateRooms()
 
         val sidebar = Components.panel()
             .withSize(GameConfig.sidebarWidth, GameConfig.windowHeight)
