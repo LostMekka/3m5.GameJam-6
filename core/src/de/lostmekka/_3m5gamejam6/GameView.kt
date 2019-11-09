@@ -19,6 +19,8 @@ import org.hexworks.zircon.internal.application.SwingApplication
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.onMouseEvent
 import org.hexworks.zircon.api.UIEventResponses
+import org.hexworks.zircon.api.component.ComponentAlignment.BOTTOM_LEFT
+import org.hexworks.zircon.api.data.impl.Position3D
 import org.hexworks.zircon.api.uievent.*
 
 
@@ -47,11 +49,11 @@ class GameView : BaseView() {
 
 
         val txtPosition = Components.label()
-            .withSize(GameConfig.sidebarWidth,1)
+            .withSize(GameConfig.sidebarWidth, 1)
             .build()
 
         val txtPointingItem = Components.label()
-            .withSize(GameConfig.sidebarWidth,1)
+            .withSize(GameConfig.sidebarWidth, 1)
             .withPosition(0, 2)
             .build()
 
