@@ -28,7 +28,7 @@ class World(
     fun generateRooms() {
         val (w, h) = gameArea.actualSize().to2DSize()
         val rects = mutableListOf(Rect(0, 0, w-1, h-1))
-        repeat(5) {
+        repeat(40) {
             val i = rects.indices.random()
             val rect = rects.removeAt(i)
             rects += if (Random.nextBoolean()) {
@@ -37,7 +37,6 @@ class World(
                 rect.splitVertical()
             }
         }
-        println(rects)
 
         for (x in 0 until w) {
             for (y in 0 until h) {
@@ -52,10 +51,10 @@ class World(
 private data class Rect(val x: Int, val y: Int, val w: Int, val h: Int)
 
 private fun Rect.contains(x: Int, y: Int) =
-    x in ((this.x + 1) until (this.x + w)) || y in ((this.y + 1) until (this.y + h))
+    x in ((this.x + 1) until (this.x + w)) && y in ((this.y + 1) until (this.y + h))
 
 private fun Rect.touches(x: Int, y: Int) =
-    x in (this.x .. (this.x + w)) || y in (this.y .. (this.y + h))
+    x in (this.x .. (this.x + w)) && y in (this.y .. (this.y + h))
 
 private fun Rect.touchesBorder(x: Int, y: Int) = touches(x, y) && !contains(x, y)
 
@@ -63,12 +62,12 @@ private val Rect.area get() = w * h
 
 private fun Rect.splitHorizontal(): List<Rect> {
     if (h <= 6) return listOf(this)
-    val pos = 3 + Random.nextInt(h - 3)
+    val pos = 3 + Random.nextInt(h - 6)
     return listOf(Rect(x, y, w, pos), Rect(x, y + pos, w, h - pos))
 }
 
 private fun Rect.splitVertical(): List<Rect> {
     if (w <= 6) return listOf(this)
-    val pos = 3 + Random.nextInt(w - 3)
+    val pos = 3 + Random.nextInt(w - 6)
     return listOf(Rect(x, y, pos, h), Rect(x + pos, y, w - pos, h))
 }
