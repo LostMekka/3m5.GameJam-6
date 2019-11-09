@@ -11,14 +11,10 @@ import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.data.Tile
+import org.hexworks.zircon.api.extensions.onKeyboardEvent
 import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.Positions
 import org.hexworks.zircon.api.mvc.base.BaseView
-import org.hexworks.zircon.internal.application.SwingApplication
-import org.hexworks.zircon.api.SwingApplications
-import org.hexworks.zircon.api.extensions.onMouseEvent
-import org.hexworks.zircon.api.UIEventResponses
-import org.hexworks.zircon.api.uievent.*
 
 
 class GameView : BaseView() {
@@ -60,5 +56,10 @@ class GameView : BaseView() {
         }
 
 
+
+        screen.onKeyboardEvent(KeyboardEventType.KEY_PRESSED) { event, _ ->
+            world.update(screen, event)
+            Processed
+        }
     }
 }

@@ -22,8 +22,8 @@ object EntityFactory {
 
     fun newPlayer() = newGameEntityOfType(Player) {
         attributes(EntityPosition(), EntityTile(GameTileRepository.PLAYER))
-        behaviors()
-        facets()
+        behaviors(InputReceiver)
+        facets(Movable)
     }
 }
 
