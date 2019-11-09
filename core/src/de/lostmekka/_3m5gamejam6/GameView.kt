@@ -24,7 +24,7 @@ class GameView : BaseView() {
             .withGameArea(world.gameArea)
             .withVisibleSize(world.gameArea.visibleSize())
             .withProjectionMode(ProjectionMode.TOP_DOWN)
-            .withAlignmentWithin(screen, ComponentAlignment.TOP_RIGHT)
+            .withAlignmentWithin(screen, ComponentAlignment.TOP_LEFT)
             .build()
 
         screen.addComponent(sidebar)
