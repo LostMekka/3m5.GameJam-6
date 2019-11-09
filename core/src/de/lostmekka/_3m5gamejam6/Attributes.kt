@@ -36,11 +36,11 @@ object EntityFactory {
     fun newPlayer() = newGameEntityOfType(Player) {
         attributes(EntityPosition(), EntityTile(GameTileRepository.PLAYER), EntityHealth(), EntityInventory())
         behaviors(InputReceiver)
-        facets(Movable)
+        facets(Movable, UtilizeTorch)
     }
 
     fun newTorchItem() = newGameEntityOfType(TorchItem) {
-        attributes(EntityPosition(), EntityTile(GameTileRepository.TORCH))
+        attributes(EntityPosition(), EntityTile(GameTileRepository.TORCH_ITEM))
     }
 
     fun newTorch() = newGameEntityOfType(Torch) {

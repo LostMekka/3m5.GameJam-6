@@ -20,9 +20,6 @@ import kotlin.random.Random
 import org.hexworks.zircon.api.data.CharacterTile
 import org.hexworks.zircon.api.graphics.Symbols
 
-val madnessPropability = 0.05
-val torchspawnPropability = 0.10
-
 class World(
     visibleSize: Size3D,
     actualSize: Size3D
@@ -36,7 +33,7 @@ class World(
 
     val player = EntityFactory.newPlayer()
 
-    private val engine: Engine<GameContext> = Engines.newEngine()
+    val engine: Engine<GameContext> = Engines.newEngine()
 
     operator fun get(pos: Position) = this[pos.to3DPosition()]
 
@@ -52,16 +49,6 @@ class World(
         gameArea.setBlockAt(pos, block)
     }
 
-    private fun checkTorch(pos: Position3D) {
-        this.gameArea.fetchBlockOrDefault(pos).currentEntities.filter { it.type is TorchItem }.forEach {
-            gameArea.fetchBlockOrDefault(pos).currentEntities -= it
-            engine.removeEntity(it)
-            //Increase Player Torches
-            player.inventory.Torches += 1
-        }
-
-    }
-
     fun moveEntity(entity: GameEntity<EntityType>, position: Position3D): Boolean {
         var success = false
         val oldBlock = gameArea.fetchBlockAt(entity.position)
@@ -74,7 +61,6 @@ class World(
             entity.position = position
             newBlock.get().currentEntities += entity
             checkMadness(newBlock.get())
-            checkTorch(position)
         }
 
 
@@ -204,7 +190,7 @@ class World(
 
     fun torchGenerator() {
         if (Random.nextFloat() <= GameConfig.torchProbability) {
-            placeTorch(GetRandomPos())
+            placeTorchItem(GetRandomPos())
         }
     }
 
@@ -242,7 +228,6 @@ class World(
         val torches = mutableListOf<AnyGameEntity>()
         for ((_, block) in gameArea.fetchBlocks()) {
             block.isLit = false
-            // TODO
             torches += block.currentEntities.filter { it.type is Torch }
         }
         floodLight(player.position.to2DPosition(), GameConfig.playerLightRadius)
