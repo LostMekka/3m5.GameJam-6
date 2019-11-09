@@ -13,6 +13,7 @@ import org.hexworks.zircon.api.uievent.UIEvent
 import kotlin.random.Random
 
 val madnessPropability = 0.05
+val torchspawnPropability = 0.01
 
 class World(
     visibleSize: Size3D,
@@ -39,10 +40,10 @@ class World(
 
     }
 
-        fun moveEntity(entity: GameEntity<EntityType>, position: Position3D): Boolean {
-            var success = false
-            val oldBlock = gameArea.fetchBlockAt(entity.position)
-            val newBlock = gameArea.fetchBlockAt(position)
+    fun moveEntity(entity: GameEntity<EntityType>, position: Position3D): Boolean {
+        var success = false
+        val oldBlock = gameArea.fetchBlockAt(entity.position)
+        val newBlock = gameArea.fetchBlockAt(position)
 
         if (bothBlocksPresentAndWalkable(oldBlock, newBlock)) {
             // walk
@@ -53,7 +54,6 @@ class World(
             checkMadness(newBlock.get())
             checkTorch(position)
         }
-
 
 
         // spread madness
@@ -91,6 +91,7 @@ class World(
     }
 
     fun update(screen: Screen, uiEvent: UIEvent) {
+        torchGenerator()
         engine.update(
             GameContext(
                 world = this,
@@ -134,20 +135,17 @@ class World(
         }
     }
 
-    private fun GetRandomPos() : Position3D
-    {
+    private fun GetRandomPos(): Position3D {
         val x = Random.nextInt(0, GameConfig.windowWidth - GameConfig.sidebarWidth)
         val y = Random.nextInt(0, GameConfig.windowHeight)
-        var pos : Position3D = Position3D.create(x,y,0)
+        var pos: Position3D = Position3D.create(x, y, 0)
         return pos
     }
 
 
-    fun torchGenerator()
-    {
-        val prob =  0.01
-        if (Random.nextFloat() <= prob)
-        {
+    fun torchGenerator() {
+       
+        if (Random.nextFloat() <= torchspawnPropability) {
             placeTorch(GetRandomPos())
         }
     }
@@ -160,12 +158,6 @@ class World(
         engine.addEntity(newTorch)
     }
 
-    fun placePlayer() {
-        val positionPlayerStart = Position3D.create(10, 10, 0)
-        gameArea.fetchBlockOrDefault(positionPlayerStart).currentEntities += player
-        player.position = positionPlayerStart
-        engine.addEntity(player)
-    }
 
     fun placePlayer() {
         val positionPlayerStart = Position3D.create(10, 10, 0)
@@ -189,7 +181,7 @@ private fun Rect.contains(x: Int, y: Int) =
     x in ((this.x + 1) until (this.x + w)) && y in ((this.y + 1) until (this.y + h))
 
 private fun Rect.touches(x: Int, y: Int) =
-    x in (this.x .. (this.x + w)) && y in (this.y .. (this.y + h))
+    x in (this.x..(this.x + w)) && y in (this.y..(this.y + h))
 
 private fun Rect.touchesBorder(x: Int, y: Int) = touches(x, y) && !contains(x, y)
 
@@ -209,4 +201,3 @@ private fun Rect.splitVertical(): List<Rect> {
 
 
 
-}
