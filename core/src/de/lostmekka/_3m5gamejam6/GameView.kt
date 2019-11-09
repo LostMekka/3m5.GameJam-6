@@ -1,12 +1,6 @@
 package de.lostmekka._3m5gamejam6
 
-import org.hexworks.zircon.api.*;
-import org.hexworks.zircon.api.component.Button;
-import org.hexworks.zircon.api.component.Panel;
-import org.hexworks.zircon.api.grid.TileGrid;
-import org.hexworks.zircon.api.screen.Screen;
-import org.hexworks.zircon.api.component.ComponentAlignment.CENTER
-import org.hexworks.zircon.api.uievent.ComponentEventType.ACTIVATED
+import org.hexworks.zircon.api.*
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.component.ComponentAlignment
@@ -14,7 +8,9 @@ import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.extensions.onKeyboardEvent
 import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.Positions
+import org.hexworks.zircon.api.extensions.onMouseEvent
 import org.hexworks.zircon.api.mvc.base.BaseView
+import org.hexworks.zircon.api.uievent.*
 
 
 class GameView : BaseView() {
@@ -54,8 +50,6 @@ class GameView : BaseView() {
             header.text = event.position.toString()
             UIEventResponses.processed()
         }
-
-
 
         screen.onKeyboardEvent(KeyboardEventType.KEY_PRESSED) { event, _ ->
             world.update(screen, event)

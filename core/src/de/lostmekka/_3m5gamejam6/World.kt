@@ -41,11 +41,36 @@ class World(
             }
         }
         val positionPlayerStart = Position3D.create(10, 10, 0)
-        gameArea.setBlockAt(positionPlayerStart, GameBlock.floor())
         gameArea.fetchBlockOrDefault(positionPlayerStart).currentEntities += player
         player.position = positionPlayerStart
         engine.addEntity(player)
+    }fun moveEntity(entity: GameEntity<EntityType>, position: Position3D): Boolean {
+        var success = false
+        val oldBlock = gameArea.fetchBlockAt(entity.position)
+        val newBlock = gameArea.fetchBlockAt(position)
+
+        if (bothBlocksPresent(oldBlock, newBlock)) {
+            success = true
+            oldBlock.get().currentEntities -= entity
+            entity.position = position
+            newBlock.get().currentEntities += entity
+        }
+        return success
     }
+
+    fun update(screen: Screen, uiEvent: UIEvent) {
+        engine.update(
+            GameContext(
+                world = this,
+                screen = screen,
+                uiEvent = uiEvent,
+                player = player
+            )
+        )
+    }
+
+    private fun bothBlocksPresent(oldBlock: Maybe<GameBlock>, newBlock: Maybe<GameBlock>) =  // 7
+        oldBlock.isPresent && newBlock.isPresent
 
     fun generateRooms() {
         val (w, h) = gameArea.actualSize().to2DSize()
@@ -92,32 +117,4 @@ private fun Rect.splitVertical(): List<Rect> {
     if (w <= 6) return listOf(this)
     val pos = 3 + Random.nextInt(w - 6)
     return listOf(Rect(x, y, pos, h), Rect(x + pos, y, w - pos, h))
-
-    fun moveEntity(entity: GameEntity<EntityType>, position: Position3D): Boolean {
-        var success = false
-        val oldBlock = gameArea.fetchBlockAt(entity.position)
-        val newBlock = gameArea.fetchBlockAt(position)
-
-        if (bothBlocksPresent(oldBlock, newBlock)) {
-            success = true
-            oldBlock.get().currentEntities -= entity
-            entity.position = position
-            newBlock.get().currentEntities += entity
-        }
-        return success
-    }
-
-    fun update(screen: Screen, uiEvent: UIEvent) {
-        engine.update(
-            GameContext(
-                world = this,
-                screen = screen,
-                uiEvent = uiEvent,
-                player = player
-            )
-        )
-    }
-
-    private fun bothBlocksPresent(oldBlock: Maybe<GameBlock>, newBlock: Maybe<GameBlock>) =  // 7
-        oldBlock.isPresent && newBlock.isPresent
 }
