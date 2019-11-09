@@ -31,25 +31,12 @@ class World(
 
     private val engine: Engine<GameContext> = Engines.newEngine()
 
-    init {
-        for (position in visibleSize.fetchPositions()) {
-            val block = GameBlock.floor()
-            gameArea.setBlockAt(position,block)
-            block.currentEntities.forEach { entity ->
-                engine.addEntity(entity)
-                entity.position = position
-            }
-        }
-        val positionPlayerStart = Position3D.create(10, 10, 0)
-        gameArea.fetchBlockOrDefault(positionPlayerStart).currentEntities += player
-        player.position = positionPlayerStart
-        engine.addEntity(player)
-    }fun moveEntity(entity: GameEntity<EntityType>, position: Position3D): Boolean {
+    fun moveEntity(entity: GameEntity<EntityType>, position: Position3D): Boolean {
         var success = false
         val oldBlock = gameArea.fetchBlockAt(entity.position)
         val newBlock = gameArea.fetchBlockAt(position)
 
-        if (bothBlocksPresent(oldBlock, newBlock)) {
+        if (bothBlocksPresentAndWalkable(oldBlock, newBlock)) {
             success = true
             oldBlock.get().currentEntities -= entity
             entity.position = position
@@ -69,8 +56,8 @@ class World(
         )
     }
 
-    private fun bothBlocksPresent(oldBlock: Maybe<GameBlock>, newBlock: Maybe<GameBlock>) =  // 7
-        oldBlock.isPresent && newBlock.isPresent
+    private fun bothBlocksPresentAndWalkable(oldBlock: Maybe<GameBlock>, newBlock: Maybe<GameBlock>) =
+        oldBlock.isPresent && newBlock.isPresent && oldBlock.get().isWalkable && newBlock.get().isWalkable
 
     fun generateRooms() {
         val (w, h) = gameArea.actualSize().to2DSize()
@@ -92,6 +79,13 @@ class World(
                 gameArea.setBlockAt(Position3D.create(x, y, 0), block)
             }
         }
+    }
+
+    fun placePlayer() {
+        val positionPlayerStart = Position3D.create(10, 10, 0)
+        gameArea.fetchBlockOrDefault(positionPlayerStart).currentEntities += player
+        player.position = positionPlayerStart
+        engine.addEntity(player)
     }
 }
 
