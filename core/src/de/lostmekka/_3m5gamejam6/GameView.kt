@@ -99,7 +99,7 @@ class GameView : BaseView() {
         }
 
         screen.onKeyboardEvent(KeyboardEventType.KEY_PRESSED) { event, _ ->
-            world.update(screen, event)
+            world.onKeyInput(screen, event)
             txtHealth.text = "HP: " + world.player.health
             txtTorches.text = "Torches: " + world.player.inventory.Torches
             Processed

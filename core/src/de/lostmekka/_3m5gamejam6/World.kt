@@ -4,10 +4,10 @@ import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.Engines
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.zircon.api.TileColors
 import org.hexworks.zircon.api.Tiles
 import org.hexworks.zircon.api.builder.game.GameAreaBuilder
 import org.hexworks.zircon.api.color.TileColor
+import org.hexworks.zircon.api.data.CharacterTile
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.impl.Position3D
@@ -17,8 +17,6 @@ import org.hexworks.zircon.api.shape.EllipseFactory
 import org.hexworks.zircon.api.shape.LineFactory
 import org.hexworks.zircon.api.uievent.UIEvent
 import kotlin.random.Random
-import org.hexworks.zircon.api.data.CharacterTile
-import org.hexworks.zircon.api.graphics.Symbols
 
 class World(
     visibleSize: Size3D,
@@ -63,18 +61,6 @@ class World(
             checkMadness(newBlock.get())
         }
 
-
-        // spread madness
-        for (block in gameArea.fetchBlocks()) {
-            if (block.block.hasMadness) {
-                if (Random.nextDouble() < GameConfig.madnessProbability) {
-                    val availablePositions = getGoodNeighbors(block.position)
-                    if (availablePositions.isEmpty()) continue
-                    gameArea.fetchBlockAt(availablePositions.shuffled()[0]).get().hasMadness = true
-                }
-            }
-        }
-
         return success
     }
 
@@ -101,41 +87,39 @@ class World(
         }
     }
 
-
-    fun GenTorchColor(color : TileColor) : CharacterTile
-    {
-        val res = Tiles.newBuilder()
+    fun GenTorchColor(color: TileColor): CharacterTile {
+        return Tiles.newBuilder()
             .withCharacter('T')
             .withBackgroundColor(GameColors.FLOOR_BACKGROUND)
             .withForegroundColor(color)
             .buildCharacterTile()
-        return res
     }
 
-    fun UpdateTorches()
-    {
-
-        gameArea.fetchBlocks().forEach{ cell ->
-            run {
-                cell.block.currentEntities.filter { it.type is TorchItem }.forEach {
-
-                    when (it.tile.foregroundColor)
-                    {
-                        GameColors.TORCH_COLOR_0 -> it.tile = GenTorchColor(GameColors.TORCH_COLOR_1)
-                        GameColors.TORCH_COLOR_1 -> it.tile = GenTorchColor(GameColors.TORCH_COLOR_2)
-                        GameColors.TORCH_COLOR_2 -> it.tile = GenTorchColor(GameColors.TORCH_COLOR_0)
-                    }
-
+    fun updateTorches() {
+        gameArea.fetchBlocks().forEach { (_, block) ->
+            block.currentEntities.filter { it.type is TorchItem }.forEach {
+                when (it.tile.foregroundColor) {
+                    GameColors.TORCH_COLOR_0 -> it.tile = GenTorchColor(GameColors.TORCH_COLOR_1)
+                    GameColors.TORCH_COLOR_1 -> it.tile = GenTorchColor(GameColors.TORCH_COLOR_2)
+                    GameColors.TORCH_COLOR_2 -> it.tile = GenTorchColor(GameColors.TORCH_COLOR_0)
                 }
             }
         }
-
-
     }
 
-    fun update(screen: Screen, uiEvent: UIEvent) {
-        torchGenerator()
-        UpdateTorches()
+    fun updateMadness() {
+        for (block in gameArea.fetchBlocks()) {
+            if (block.block.hasMadness) {
+                if (Random.nextDouble() < GameConfig.madnessProbability) {
+                    val availablePositions = getGoodNeighbors(block.position)
+                    if (availablePositions.isEmpty()) continue
+                    gameArea.fetchBlockAt(availablePositions.shuffled()[0]).get().hasMadness = true
+                }
+            }
+        }
+    }
+
+    fun onKeyInput(screen: Screen, uiEvent: UIEvent) {
         engine.update(
             GameContext(
                 world = this,
@@ -144,8 +128,14 @@ class World(
                 player = player
             )
         )
+        // TODO: only update on successful command
+        updateWorld()
+    }
 
+    fun updateWorld() {
+        updateTorches()
         updateLighting()
+        updateMadness()
     }
 
     private fun bothBlocksPresentAndWalkable(oldBlock: Maybe<GameBlock>, newBlock: Maybe<GameBlock>) =
@@ -178,19 +168,6 @@ class World(
             val y = rect.y + Random.nextInt(1, rect.h - 1)
             if (rect.x > 0) gameArea.setBlockAt(Position3D.create(rect.x, y, 0), GameBlock.door())
             if (rect.y > 0) gameArea.setBlockAt(Position3D.create(x, rect.y, 0), GameBlock.door())
-        }
-    }
-
-    private fun GetRandomPos(): Position3D {
-        val x = Random.nextInt(0, GameConfig.windowWidth - GameConfig.sidebarWidth)
-        val y = Random.nextInt(0, GameConfig.windowHeight)
-        var pos: Position3D = Position3D.create(x, y, 0)
-        return pos
-    }
-
-    fun torchGenerator() {
-        if (Random.nextFloat() <= GameConfig.torchProbability) {
-            placeTorchItem(GetRandomPos())
         }
     }
 
