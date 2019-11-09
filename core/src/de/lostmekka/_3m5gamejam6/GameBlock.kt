@@ -6,6 +6,7 @@ import org.hexworks.zircon.api.data.base.BlockBase
 
 class GameBlock(
     private val tile: Tile,
+    val name: String,
     val isWalkable: Boolean
 ) : BlockBase<Tile>() {
     override val layers get() = mutableListOf(tile)
@@ -15,7 +16,7 @@ class GameBlock(
     }
 
     companion object {
-        fun floor() = GameBlock(GameTileRepository.FLOOR, true)
-        fun wall() = GameBlock(GameTileRepository.WALL, true)
+        fun floor() = GameBlock(GameTileRepository.FLOOR, "Floor",true)
+        fun wall() = GameBlock(GameTileRepository.WALL, "Wall",true)
     }
 }
