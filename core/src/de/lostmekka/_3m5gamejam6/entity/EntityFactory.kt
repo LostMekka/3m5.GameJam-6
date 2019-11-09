@@ -2,13 +2,13 @@ package de.lostmekka._3m5gamejam6.entity
 
 import de.lostmekka._3m5gamejam6.GameContext
 import de.lostmekka._3m5gamejam6.GameTileRepository
-import de.lostmekka._3m5gamejam6.entity.behavior.InputReceiver
-import de.lostmekka._3m5gamejam6.entity.system.Movable
-import de.lostmekka._3m5gamejam6.entity.facet.TorchHandling
 import de.lostmekka._3m5gamejam6.entity.attribute.EntityHealth
 import de.lostmekka._3m5gamejam6.entity.attribute.EntityInventory
 import de.lostmekka._3m5gamejam6.entity.attribute.EntityPosition
 import de.lostmekka._3m5gamejam6.entity.attribute.EntityTileAnimation
+import de.lostmekka._3m5gamejam6.entity.behavior.InputReceiver
+import de.lostmekka._3m5gamejam6.entity.facet.TorchHandling
+import de.lostmekka._3m5gamejam6.entity.system.Movable
 import org.hexworks.amethyst.api.Entities
 import org.hexworks.amethyst.api.builder.EntityBuilder
 import org.hexworks.amethyst.api.entity.EntityType

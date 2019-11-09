@@ -3,7 +3,6 @@ package de.lostmekka._3m5gamejam6
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import de.lostmekka._3m5gamejam6.config.GameConfig
 import ktx.app.KtxGame
@@ -23,7 +22,7 @@ class JamGame : KtxGame<Screen>() {
 
 class FakeScreen : KtxScreen {
     private var batch = SpriteBatch()
-//    private var img = Texture("badlogic.jpg")
+    //    private var img = Texture("badlogic.jpg")
     private val application: Application
 
     init {

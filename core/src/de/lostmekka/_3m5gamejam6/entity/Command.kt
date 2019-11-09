@@ -1,7 +1,6 @@
 package de.lostmekka._3m5gamejam6.entity
 
 import de.lostmekka._3m5gamejam6.GameContext
-import org.hexworks.amethyst.api.Command
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.zircon.api.data.impl.Position3D
 

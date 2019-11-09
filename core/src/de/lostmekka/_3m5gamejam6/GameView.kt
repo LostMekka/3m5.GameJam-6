@@ -1,10 +1,16 @@
 package de.lostmekka._3m5gamejam6
 
+import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
-import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.world.GameBlock
 import de.lostmekka._3m5gamejam6.world.World
+import de.lostmekka._3m5gamejam6.world.generateMadness
+import de.lostmekka._3m5gamejam6.world.generateRooms
+import de.lostmekka._3m5gamejam6.world.placePlayer
+import de.lostmekka._3m5gamejam6.world.placeTorch
+import de.lostmekka._3m5gamejam6.world.placeTorchItem
+import de.lostmekka._3m5gamejam6.world.updateLighting
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.UIEventResponses
@@ -16,7 +22,11 @@ import org.hexworks.zircon.api.extensions.onKeyboardEvent
 import org.hexworks.zircon.api.extensions.onMouseEvent
 import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.mvc.base.BaseView
-import org.hexworks.zircon.api.uievent.*
+import org.hexworks.zircon.api.uievent.KeyboardEventType
+import org.hexworks.zircon.api.uievent.MouseEvent
+import org.hexworks.zircon.api.uievent.MouseEventType
+import org.hexworks.zircon.api.uievent.Processed
+import org.hexworks.zircon.api.uievent.UIEventPhase
 
 
 class GameView : BaseView() {
@@ -51,12 +61,12 @@ class GameView : BaseView() {
 
         val txtHealth = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
-            .withPosition(0,5)
+            .withPosition(0, 5)
             .build()
 
         val txtTorches = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
-            .withPosition(0,7)
+            .withPosition(0, 7)
             .build()
 
         val txtPointingItem = Components.label()
@@ -92,7 +102,7 @@ class GameView : BaseView() {
             UIEventResponses.processed()
         }
 
-        mainArea.onMouseEvent(MouseEventType.MOUSE_CLICKED){ event: MouseEvent, _: UIEventPhase ->
+        mainArea.onMouseEvent(MouseEventType.MOUSE_CLICKED) { event: MouseEvent, _: UIEventPhase ->
             if (GameConfig.enableDebugTorchPlacement) {
                 if (event.button == 1) {
                     world.placeTorchItem(event.position.to3DPosition())

@@ -8,7 +8,7 @@ data class EntityTileAnimation(
     val frames: List<Tile>,
     var currentIndex: Int = 0
 ) : Attribute {
-    constructor(tile: Tile): this(listOf(tile))
+    constructor(tile: Tile) : this(listOf(tile))
 
     init {
         currentIndex %= frames.size

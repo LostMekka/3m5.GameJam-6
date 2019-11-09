@@ -2,11 +2,11 @@ package de.lostmekka._3m5gamejam6.entity.facet
 
 import de.lostmekka._3m5gamejam6.GameContext
 import de.lostmekka._3m5gamejam6.entity.BuildTorch
-import de.lostmekka._3m5gamejam6.entity.EntityFactory
 import de.lostmekka._3m5gamejam6.entity.GameCommand
 import de.lostmekka._3m5gamejam6.entity.GrabTorchItem
 import de.lostmekka._3m5gamejam6.entity.TorchItem
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
+import de.lostmekka._3m5gamejam6.world.placeTorch
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
@@ -23,8 +23,7 @@ object TorchHandling : BaseFacet<GameContext>() {
                 block.get().currentEntities.filter { it.type is TorchItem }.forEach {
                     context.world.gameArea.fetchBlockOrDefault(position).currentEntities -= it
                     context.world.engine.removeEntity(it)
-                    //Increase Player Torches
-                    context.world.player.inventory.torches += 1
+                    context.world.player.inventory.torches++
                 }
             }
             response = Consumed
