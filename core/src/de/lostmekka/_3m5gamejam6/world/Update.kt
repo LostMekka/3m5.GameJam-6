@@ -5,6 +5,7 @@ import de.lostmekka._3m5gamejam6.entity.AnyGameEntity
 import de.lostmekka._3m5gamejam6.entity.Torch
 import de.lostmekka._3m5gamejam6.entity.attribute.position
 import de.lostmekka._3m5gamejam6.entity.attribute.tileAnimation
+import de.lostmekka._3m5gamejam6.nextBoolean
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.impl.Position3D
 import kotlin.random.Random
@@ -18,12 +19,20 @@ fun World.updateTorches() {
 }
 
 fun World.updateMadness() {
-    for (block in gameArea.fetchBlocks()) {
-        if (block.block.hasMadness) {
-            if (Random.nextDouble() < GameConfig.madnessProbability) {
-                val availablePositions = getGoodNeighbors(block.position)
-                if (availablePositions.isEmpty()) continue
-                gameArea.fetchBlockAt(availablePositions.shuffled()[0]).get().hasMadness = true
+    for ((pos, block) in gameArea.fetchBlocks()) {
+        if (block.hasMadness) {
+            when {
+                block.isLit -> {
+                    if (Random.nextBoolean(GameConfig.madnessRetreatProbability)) {
+                        block.hasMadness = false
+                    }
+                }
+                Random.nextBoolean(GameConfig.madnessGrowthProbability) -> {
+                    getGoodNeighbors(pos)
+                        .let { if (it.isEmpty()) null else it }
+                        ?.random()
+                        ?.also { this[it]?.hasMadness = true }
+                }
             }
         }
     }
