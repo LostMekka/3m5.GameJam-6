@@ -20,12 +20,12 @@ class GameBlock(
 ) : BlockBase<Tile>() {
     override val layers: MutableList<Tile>
         get() {
-            if (!isLit && GameConfig.fogOfWarEnabled) return mutableListOf(GameTileRepository.SHADOW)
+            if (!isLit && GameConfig.fogOfWarEnabled) return mutableListOf(GameTileRepository.shadow)
 
             val entityTiles = currentEntities.map { it.tile }
             val tile = when {
-                hasMadness && entityTiles.contains(GameTileRepository.PLAYER) -> GameTileRepository.PLAYER_MADNESS
-                entityTiles.contains(GameTileRepository.PLAYER) -> GameTileRepository.PLAYER
+                hasMadness && entityTiles.contains(GameTileRepository.player) -> GameTileRepository.playerMadness
+                entityTiles.contains(GameTileRepository.player) -> GameTileRepository.player
                 entityTiles.isNotEmpty() -> entityTiles.first()
                 hasMadness -> madnessTile
                 else -> tile
@@ -38,27 +38,27 @@ class GameBlock(
     var isLit = false
 
     override fun fetchSide(side: BlockSide): Tile {
-        return GameTileRepository.EMPTY
+        return GameTileRepository.empty
     }
 
     companion object {
         fun floor() = GameBlock(
-            GameTileRepository.FLOOR,
-            GameTileRepository.FLOOR_MADNESS,
+            GameTileRepository.floor,
+            GameTileRepository.floorMadness,
             "Floor",
             true,
             true
         )
         fun wall() = GameBlock(
-            GameTileRepository.WALL,
-            GameTileRepository.WALL_MADNESS,
+            GameTileRepository.wall,
+            GameTileRepository.wallMadness,
             "Wall",
             false,
             false
         )
         fun door() = GameBlock(
-            GameTileRepository.DOOR,
-            GameTileRepository.DOOR_MADNESS,
+            GameTileRepository.door,
+            GameTileRepository.doorMadness,
             "Door",
             true,
             false

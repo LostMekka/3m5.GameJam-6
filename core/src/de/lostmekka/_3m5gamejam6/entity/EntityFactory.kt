@@ -8,10 +8,11 @@ import de.lostmekka._3m5gamejam6.entity.facet.TorchHandling
 import de.lostmekka._3m5gamejam6.entity.attribute.EntityHealth
 import de.lostmekka._3m5gamejam6.entity.attribute.EntityInventory
 import de.lostmekka._3m5gamejam6.entity.attribute.EntityPosition
-import de.lostmekka._3m5gamejam6.entity.attribute.EntityTile
+import de.lostmekka._3m5gamejam6.entity.attribute.EntityTileAnimation
 import org.hexworks.amethyst.api.Entities
 import org.hexworks.amethyst.api.builder.EntityBuilder
 import org.hexworks.amethyst.api.entity.EntityType
+import kotlin.random.Random
 
 private fun <T : EntityType> newGameEntityOfType(
     type: T,
@@ -22,7 +23,7 @@ object EntityFactory {
     fun newPlayer() = newGameEntityOfType(Player) {
         attributes(
             EntityPosition(),
-            EntityTile(GameTileRepository.PLAYER),
+            EntityTileAnimation(GameTileRepository.player),
             EntityHealth(),
             EntityInventory()
         )
@@ -33,14 +34,14 @@ object EntityFactory {
     fun newTorchItem() = newGameEntityOfType(TorchItem) {
         attributes(
             EntityPosition(),
-            EntityTile(GameTileRepository.TORCH_ITEM)
+            EntityTileAnimation(GameTileRepository.torchItem)
         )
     }
 
-    fun newTorch() = newGameEntityOfType(Torch) {
+    fun newTorch(frame: Int = Random.nextInt()) = newGameEntityOfType(Torch) {
         attributes(
             EntityPosition(),
-            EntityTile(GameTileRepository.TORCH)
+            EntityTileAnimation(GameTileRepository.torch, frame)
         )
     }
 }

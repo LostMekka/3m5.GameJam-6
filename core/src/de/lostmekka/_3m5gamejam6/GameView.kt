@@ -67,7 +67,7 @@ class GameView : BaseView() {
         val logArea = Components.logArea()
             .withTitle("Log")
             .wrapWithBox()
-            .withSize(GameConfig.windowWidth - GameConfig.sidebarWidth, GameConfig.logareaHeight)
+            .withSize(GameConfig.windowWidth - GameConfig.sidebarWidth, GameConfig.logAreaHeight)
             .withAlignmentWithin(screen, BOTTOM_LEFT)
             .build()
 

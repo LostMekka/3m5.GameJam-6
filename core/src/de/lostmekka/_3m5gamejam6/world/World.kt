@@ -4,13 +4,12 @@ import de.lostmekka._3m5gamejam6.config.GameColors
 import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.GameContext
 import de.lostmekka._3m5gamejam6.entity.Torch
-import de.lostmekka._3m5gamejam6.entity.TorchItem
 import de.lostmekka._3m5gamejam6.entity.AnyGameEntity
 import de.lostmekka._3m5gamejam6.entity.EntityFactory
 import de.lostmekka._3m5gamejam6.entity.GameEntity
+import de.lostmekka._3m5gamejam6.entity.attribute.tileAnimation
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.position
-import de.lostmekka._3m5gamejam6.entity.attribute.tile
 import de.lostmekka._3m5gamejam6.to3DPosition
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.Engines
@@ -99,23 +98,11 @@ class World(
         }
     }
 
-    fun GenTorchColor(color: TileColor): CharacterTile {
-        return Tiles.newBuilder()
-            .withCharacter('T')
-            .withBackgroundColor(GameColors.FLOOR_BACKGROUND)
-            .withForegroundColor(color)
-            .buildCharacterTile()
-    }
-
     fun updateTorches() {
         gameArea.fetchBlocks().forEach { (_, block) ->
-            block.currentEntities.filter { it.type is TorchItem }.forEach {
-                when (it.tile.foregroundColor) {
-                    GameColors.TORCH_COLOR_0 -> it.tile = GenTorchColor(GameColors.TORCH_COLOR_1)
-                    GameColors.TORCH_COLOR_1 -> it.tile = GenTorchColor(GameColors.TORCH_COLOR_2)
-                    GameColors.TORCH_COLOR_2 -> it.tile = GenTorchColor(GameColors.TORCH_COLOR_0)
-                }
-            }
+            block.currentEntities
+                .filter { it.type is Torch }
+                .forEach { it.tileAnimation.tick() }
         }
     }
 
@@ -261,8 +248,6 @@ private fun Rect.touches(x: Int, y: Int) =
     x in (this.x..(this.x + w)) && y in (this.y..(this.y + h))
 
 private fun Rect.touchesBorder(x: Int, y: Int) = touches(x, y) && !contains(x, y)
-
-private val Rect.area get() = w * h
 
 private fun Rect.splitHorizontal(): List<Rect> {
     if (h <= 6) return listOf(this)
