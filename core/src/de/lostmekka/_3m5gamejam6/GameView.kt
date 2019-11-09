@@ -50,11 +50,12 @@ class GameView : BaseView() {
 
         val txtPosition = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
+            .withPosition(0,1)
             .build()
 
         val txtPointingItem = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
-            .withPosition(0, 2)
+            .withPosition(0, 3)
             .build()
 
         val logArea = Components.logArea()
