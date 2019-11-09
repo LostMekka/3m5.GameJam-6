@@ -15,4 +15,7 @@ object GameConfig {
 
     val isDebug = false
 
+    val fogOfWarEnabled = true
+    val playerLightRadius = 2
+    val torchLightRadius = 5
 }

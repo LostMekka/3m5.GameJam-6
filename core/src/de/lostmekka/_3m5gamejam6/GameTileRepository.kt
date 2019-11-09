@@ -8,6 +8,12 @@ object GameTileRepository {
 
     val EMPTY: CharacterTile = Tiles.empty()
 
+    val SHADOW: CharacterTile = Tiles.newBuilder()
+        .withCharacter(' ')
+        .withForegroundColor(GameColors.shadowFG)
+        .withBackgroundColor(GameColors.shadowBG)
+        .buildCharacterTile()
+
     val FLOOR: CharacterTile = Tiles.newBuilder()
         .withCharacter(Symbols.INTERPUNCT)
         .withForegroundColor(GameColors.FLOOR_FOREGROUND)

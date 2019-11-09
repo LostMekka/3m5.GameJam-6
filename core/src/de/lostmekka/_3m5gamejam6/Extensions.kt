@@ -12,18 +12,24 @@ typealias AnyGameEntity = Entity<EntityType, GameContext>
 
 typealias GameEntity<T> = Entity<T, GameContext>
 
-var AnyGameEntity.position // 1
-    get() = tryToFindAttribute(EntityPosition::class).position // 2
-    set(value) { // 3
+var AnyGameEntity.position
+    get() = tryToFindAttribute(EntityPosition::class).position
+    set(value) {
         findAttribute(EntityPosition::class).map {
             it.position = value
         }
     }
 
+var AnyGameEntity.position2D
+    get() = position.to2DPosition()
+    set(value) {
+        position = value.to3DPosition()
+    }
+
 val AnyGameEntity.tile: Tile
     get() = this.tryToFindAttribute(EntityTile::class).tile
 
-// 4
+
 fun <T : Attribute> AnyGameEntity.tryToFindAttribute(klass: KClass<T>): T = findAttribute(klass).orElseThrow {
     NoSuchElementException("Entity '$this' has no property with type '${klass.simpleName}'.")
 }

@@ -1,18 +1,17 @@
 package de.lostmekka._3m5gamejam6
 
-import com.badlogic.gdx.Game
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.Engines
-import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.datatypes.extensions.map
-import org.hexworks.zircon.api.Positions
 import org.hexworks.zircon.api.builder.game.GameAreaBuilder
+import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.impl.Position3D
 import org.hexworks.zircon.api.data.impl.Size3D
 import org.hexworks.zircon.api.screen.Screen
+import org.hexworks.zircon.api.shape.EllipseFactory
+import org.hexworks.zircon.api.shape.LineFactory
 import org.hexworks.zircon.api.uievent.UIEvent
 import kotlin.random.Random
 
@@ -30,6 +29,20 @@ class World(
     val player = EntityFactory.newPlayer()
 
     private val engine: Engine<GameContext> = Engines.newEngine()
+
+    operator fun get(pos: Position) = this[pos.to3DPosition()]
+
+    operator fun get(pos: Position3D) = gameArea
+        .fetchBlockAt(pos)
+        .let { if (it.isPresent) it.get() else null }
+
+    operator fun set(pos: Position, block: GameBlock) {
+        this[pos.to3DPosition()] = block
+    }
+
+    operator fun set(pos: Position3D, block: GameBlock) {
+        gameArea.setBlockAt(pos, block)
+    }
 
     fun moveEntity(entity: GameEntity<EntityType>, position: Position3D): Boolean {
         var success = false
@@ -54,6 +67,8 @@ class World(
                 player = player
             )
         )
+
+        updateLighting()
     }
 
     private fun bothBlocksPresentAndWalkable(oldBlock: Maybe<GameBlock>, newBlock: Maybe<GameBlock>) =
@@ -61,7 +76,7 @@ class World(
 
     fun generateRooms() {
         val (w, h) = gameArea.actualSize().to2DSize()
-        val rects = mutableListOf(Rect(0, 0, w-1, h-1))
+        val rects = mutableListOf(Rect(0, 0, w - 1, h - 1))
         repeat(40) {
             val i = rects.indices.random()
             val rect = rects.removeAt(i)
@@ -82,8 +97,8 @@ class World(
 
         // create doors
         for (rect in rects) {
-            val x = rect.x + Random.nextInt(1,rect.w - 1)
-            val y = rect.y + Random.nextInt(1,rect.h - 1)
+            val x = rect.x + Random.nextInt(1, rect.w - 1)
+            val y = rect.y + Random.nextInt(1, rect.h - 1)
             if (rect.x > 0) gameArea.setBlockAt(Position3D.create(rect.x, y, 0), GameBlock.door())
             if (rect.y > 0) gameArea.setBlockAt(Position3D.create(x, rect.y, 0), GameBlock.door())
         }
@@ -95,6 +110,41 @@ class World(
         player.position = positionPlayerStart
         engine.addEntity(player)
     }
+
+    fun updateLighting() {
+        val torches = mutableListOf<AnyGameEntity>()
+        for ((_, block) in gameArea.fetchBlocks()) {
+            block.isLit = false
+            // TODO
+//            torches += block.currentEntities.filter { it.type is Torch }
+        }
+        floodLight(player.position.to2DPosition(), GameConfig.playerLightRadius)
+        torches.forEach { floodLight(it.position.to2DPosition(), GameConfig.torchLightRadius) }
+    }
+
+    fun floodLight(pos: Position, radius: Int) {
+        findVisiblePositionsFor(pos, radius).forEach { this[it]?.isLit = true }
+    }
+
+    fun findVisiblePositionsFor(pos: Position, radius: Int): Iterable<Position> {
+        val boundary = EllipseFactory.buildEllipse(
+            fromPosition = pos,
+            toPosition = pos.withRelativeX(radius).withRelativeY(radius)
+        )
+        return boundary
+            .positions()
+            .flatMap { ringPos ->
+                val result = mutableSetOf<Position>()
+                val line1 = LineFactory.buildLine(pos, ringPos).toList()
+                // line2 is necessary since there are direction dependent rounding errors that produce unwanted blind spots
+                val line2 = line1.map { Position.create(it.x, 2 * pos.y - it.y) }
+                val n1 = line1.takeWhile { it == pos || this[it]?.isTransparent == true }.size
+                val n2 = line2.takeWhile { it == pos || this[it]?.isTransparent == true }.size
+                result += line1.take(n1+1)
+                result += line2.take(n2+1)
+                result
+            }
+    }
 }
 
 private data class Rect(val x: Int, val y: Int, val w: Int, val h: Int)
@@ -103,7 +153,7 @@ private fun Rect.contains(x: Int, y: Int) =
     x in ((this.x + 1) until (this.x + w)) && y in ((this.y + 1) until (this.y + h))
 
 private fun Rect.touches(x: Int, y: Int) =
-    x in (this.x .. (this.x + w)) && y in (this.y .. (this.y + h))
+    x in (this.x..(this.x + w)) && y in (this.y..(this.y + h))
 
 private fun Rect.touchesBorder(x: Int, y: Int) = touches(x, y) && !contains(x, y)
 
