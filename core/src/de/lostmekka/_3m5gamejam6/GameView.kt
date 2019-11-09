@@ -39,7 +39,6 @@ class GameView : BaseView() {
             .withAlignmentWithin(screen, ComponentAlignment.TOP_LEFT)
             .build()
 
-
         val txtPosition = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
             .withPosition(0, 1)
@@ -67,7 +66,6 @@ class GameView : BaseView() {
             .withAlignmentWithin(screen, BOTTOM_LEFT)
             .build()
 
-
         sidebar.addComponent(txtPosition)
         sidebar.addComponent(txtPointingItem)
         sidebar.addComponent(txtHealth)
@@ -92,7 +90,11 @@ class GameView : BaseView() {
         }
 
         mainArea.onMouseEvent(MouseEventType.MOUSE_CLICKED){event: MouseEvent, phase: UIEventPhase ->
-            world.placeTorch(event.position.toPosition3D(0))
+            if (event.button == 0) {
+                world.placeTorchItem(event.position.to3DPosition())
+            } else {
+                world.placeTorch(event.position.to3DPosition())
+            }
             UIEventResponses.processed()
         }
 

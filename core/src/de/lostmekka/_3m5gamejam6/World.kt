@@ -202,21 +202,26 @@ class World(
         return pos
     }
 
-
     fun torchGenerator() {
         if (Random.nextFloat() <= GameConfig.torchProbability) {
             placeTorch(GetRandomPos())
         }
     }
 
-
     fun placeTorch(pos: Position3D) {
         val newTorch = EntityFactory.newTorch()
         gameArea.fetchBlockOrDefault(pos).currentEntities += newTorch
         newTorch.position = pos
         engine.addEntity(newTorch)
+        updateLighting()
     }
 
+    fun placeTorchItem(pos: Position3D) {
+        val newTorch = EntityFactory.newTorchItem()
+        gameArea.fetchBlockOrDefault(pos).currentEntities += newTorch
+        newTorch.position = pos
+        engine.addEntity(newTorch)
+    }
 
     fun placePlayer() {
         val positionPlayerStart = Position3D.create(10, 10, 0)
@@ -238,7 +243,7 @@ class World(
         for ((_, block) in gameArea.fetchBlocks()) {
             block.isLit = false
             // TODO
-//            torches += block.currentEntities.filter { it.type is Torch }
+            torches += block.currentEntities.filter { it.type is Torch }
         }
         floodLight(player.position.to2DPosition(), GameConfig.playerLightRadius)
         torches.forEach { floodLight(it.position.to2DPosition(), GameConfig.torchLightRadius) }
@@ -262,8 +267,8 @@ class World(
                 val line2 = line1.map { Position.create(it.x, 2 * pos.y - it.y) }
                 val n1 = line1.takeWhile { it == pos || this[it]?.isTransparent == true }.size
                 val n2 = line2.takeWhile { it == pos || this[it]?.isTransparent == true }.size
-                result += line1.take(n1+1)
-                result += line2.take(n2+1)
+                result += line1.take(n1 + 1)
+                result += line2.take(n2 + 1)
                 result
             }
     }

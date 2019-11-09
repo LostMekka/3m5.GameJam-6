@@ -1,6 +1,5 @@
 package de.lostmekka._3m5gamejam6
 
-import com.badlogic.gdx.utils.compression.lzma.Base
 import org.hexworks.amethyst.api.Context
 import org.hexworks.amethyst.api.base.BaseEntityType
 import org.hexworks.zircon.api.screen.Screen
@@ -11,17 +10,8 @@ data class GameContext(
     val screen: Screen,
     val uiEvent: UIEvent,
     val player: GameEntity<Player>
-) : Context {
+) : Context
 
-    fun doSomething() {
-        // do something
-    }
-}
-
-object Player : BaseEntityType(
-    name = "Player"
-)
-
-object  TorchItem : BaseEntityType(
-    name = "Torch Item"
-)
+object Player : BaseEntityType("Player")
+object TorchItem : BaseEntityType("Torch Item")
+object Torch : BaseEntityType("Torch")

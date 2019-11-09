@@ -39,9 +39,12 @@ object EntityFactory {
         facets(Movable)
     }
 
-    fun newTorch() = newGameEntityOfType(TorchItem) {
+    fun newTorchItem() = newGameEntityOfType(TorchItem) {
         attributes(EntityPosition(), EntityTile(GameTileRepository.TORCH))
-        /*attributes(isTorch())*/
+    }
+
+    fun newTorch() = newGameEntityOfType(Torch) {
+        attributes(EntityPosition(), EntityTile(GameTileRepository.TORCH))
     }
 
 }
