@@ -15,4 +15,7 @@ object GameConfig {
 
     val isDebug = false
 
+    val madnessProbability = 0.05
+    val torchProbability = 0.1
+    val madnessHealthDecrease = 10
 }
