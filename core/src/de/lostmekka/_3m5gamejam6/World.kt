@@ -15,9 +15,6 @@ import org.hexworks.zircon.api.shape.LineFactory
 import org.hexworks.zircon.api.uievent.UIEvent
 import kotlin.random.Random
 
-val madnessPropability = 0.05
-val torchspawnPropability = 0.01
-
 class World(
     visibleSize: Size3D,
     actualSize: Size3D
@@ -76,7 +73,7 @@ class World(
         // spread madness
         for (block in gameArea.fetchBlocks()) {
             if (block.block.hasMadness) {
-                if (Random.nextDouble() < madnessPropability) {
+                if (Random.nextDouble() < GameConfig.madnessProbability) {
                     val availablePositions = getGoodNeighbors(block.position)
                     if (availablePositions.isEmpty()) continue
                     gameArea.fetchBlockAt(availablePositions.shuffled()[0]).get().hasMadness = true
@@ -103,7 +100,10 @@ class World(
 
     private fun checkMadness(block: GameBlock) {
         if (block.hasMadness) {
-            // TODO: decrease health of player
+            player.health -= GameConfig.madnessHealthDecrease
+            if (player.health <= 0) {
+                // TODO: quit
+            }
         }
     }
 
@@ -163,7 +163,7 @@ class World(
 
 
     fun torchGenerator() {
-        if (Random.nextFloat() <= torchspawnPropability) {
+        if (Random.nextFloat() <= GameConfig.torchProbability) {
             placeTorch(GetRandomPos())
         }
     }
