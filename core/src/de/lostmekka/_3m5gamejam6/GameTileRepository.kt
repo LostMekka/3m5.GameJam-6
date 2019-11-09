@@ -20,6 +20,12 @@ object GameTileRepository {
         .withBackgroundColor(GameColors.WALL_BACKGROUND)
         .buildCharacterTile()
 
+    val DOOR: CharacterTile = Tiles.newBuilder()
+        .withCharacter('H')
+        .withForegroundColor(GameColors.ACCENT_COLOR_2)
+        .withBackgroundColor(GameColors.WALL_BACKGROUND)
+        .buildCharacterTile()
+
     val PLAYER = Tiles.newBuilder()
         .withCharacter('@')
         .withBackgroundColor(GameColors.FLOOR_BACKGROUND)

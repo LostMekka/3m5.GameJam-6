@@ -29,5 +29,6 @@ class GameBlock(
     companion object {
         fun floor() = GameBlock(GameTileRepository.FLOOR, "Floor",true)
         fun wall() = GameBlock(GameTileRepository.WALL, "Wall",false)
+        fun door() = GameBlock(GameTileRepository.DOOR, "Door", true)
     }
 }

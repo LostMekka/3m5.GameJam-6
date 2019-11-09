@@ -79,6 +79,14 @@ class World(
                 gameArea.setBlockAt(Position3D.create(x, y, 0), block)
             }
         }
+
+        // create doors
+        for (rect in rects) {
+            val x = rect.x + Random.nextInt(1,rect.w - 1)
+            val y = rect.y + Random.nextInt(1,rect.h - 1)
+            if (rect.x > 0) gameArea.setBlockAt(Position3D.create(rect.x, y, 0), GameBlock.door())
+            if (rect.y > 0) gameArea.setBlockAt(Position3D.create(x, rect.y, 0), GameBlock.door())
+        }
     }
 
     fun placePlayer() {
