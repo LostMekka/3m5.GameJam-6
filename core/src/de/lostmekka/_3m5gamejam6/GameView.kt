@@ -18,6 +18,7 @@ import org.hexworks.zircon.internal.application.SwingApplication
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.onMouseEvent
 import org.hexworks.zircon.api.UIEventResponses
+import org.hexworks.zircon.api.component.ComponentAlignment.BOTTOM_RIGHT
 import org.hexworks.zircon.api.uievent.*
 
 
@@ -29,11 +30,11 @@ class GameView : BaseView() {
         )
 
         val sidebar = Components.panel()
-            .withSize(GameConfig.sidebarWidth, GameConfig.windowHeight - 2)
+            .withSize(GameConfig.sidebarWidth, GameConfig.windowHeight)
             .withAlignmentWithin(screen, ComponentAlignment.RIGHT_CENTER)
+            .withPosition(position = positions)
             .wrapWithBox()
             .withTitle("Game Info")
-            .withPosition(Positions.offset1x1())
             .build()
 
         val gameComponent = GameComponents.newGameComponentBuilder<Tile, GameBlock>()
@@ -45,16 +46,30 @@ class GameView : BaseView() {
 
 
         val header = Components.header()
-            .withPosition(Positions.offset1x1())
             .withText("Header")
             .build()
+
+        val logArea = Components.logArea()
+            .withTitle("Log")
+            .wrapWithBox()
+            .withSize(GameConfig.windowWidth - GameConfig.sidebarWidth, GameConfig.logareaHeight)
+            .withAlignmentWithin(screen, BOTTOM_RIGHT)
+            .build()
+
 
         sidebar.addComponent(header)
         screen.addComponent(sidebar)
         screen.addComponent(gameComponent)
 
+        if (GameConfig.isDebug) {
+            screen.addComponent(logArea)
+
+        }
+
+
         screen.onMouseEvent(MouseEventType.MOUSE_MOVED) { event: MouseEvent, phase: UIEventPhase ->
             header.text = event.position.toString()
+            println("YESSSS SIRRRRRR")
             UIEventResponses.processed()
         }
 
