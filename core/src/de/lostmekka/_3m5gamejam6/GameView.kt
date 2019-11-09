@@ -27,7 +27,7 @@ class GameView : BaseView() {
             .withTitle("Game Info")
             .build()
 
-        val gameComponent = GameComponents.newGameComponentBuilder<Tile, GameBlock>()
+        val mainArea = GameComponents.newGameComponentBuilder<Tile, GameBlock>()
             .withGameArea(world.gameArea)
             .withVisibleSize(world.gameArea.visibleSize())
             .withProjectionMode(ProjectionMode.TOP_DOWN)
@@ -35,12 +35,12 @@ class GameView : BaseView() {
             .build()
 
 
-        val txtPosition = Components.header()
-            .withText("Header                ")
+        val txtPosition = Components.label()
+            .withSize(GameConfig.sidebarWidth,1)
             .build()
 
-        val txtPointingItem = Components.header()
-            .withText("Header                ")
+        val txtPointingItem = Components.label()
+            .withSize(GameConfig.sidebarWidth,1)
             .withPosition(0, 2)
             .build()
 
@@ -55,13 +55,13 @@ class GameView : BaseView() {
         sidebar.addComponent(txtPosition)
         sidebar.addComponent(txtPointingItem)
         screen.addComponent(sidebar)
-        screen.addComponent(gameComponent)
+        screen.addComponent(mainArea)
 
         if (GameConfig.isDebug) {
             screen.addComponent(logArea)
         }
 
-        screen.onMouseEvent(MouseEventType.MOUSE_MOVED) { event: MouseEvent, phase: UIEventPhase ->
+        mainArea.onMouseEvent(MouseEventType.MOUSE_MOVED) { event: MouseEvent, phase: UIEventPhase ->
             txtPosition.text = "Mouse: " + event.position.x.toString() + " | " + event.position.y.toString()
 
             val temp =
