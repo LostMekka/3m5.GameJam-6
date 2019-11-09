@@ -13,26 +13,32 @@ typealias AnyGameEntity = Entity<EntityType, GameContext>
 
 typealias GameEntity<T> = Entity<T, GameContext>
 
-var AnyGameEntity.position // 1
-    get() = tryToFindAttribute(EntityPosition::class).position // 2
-    set(value) { // 3
+var AnyGameEntity.position
+    get() = tryToFindAttribute(EntityPosition::class).position
+    set(value) {
         findAttribute(EntityPosition::class).map {
             it.position = value
         }
     }
 
-var AnyGameEntity.health // 1
-    get() = tryToFindAttribute(EntityHealth::class).health // 2
-    set(value) { // 3
+var AnyGameEntity.position2D
+    get() = position.to2DPosition()
+    set(value) {
+        position = value.to3DPosition()
+    }
+
+var AnyGameEntity.health
+    get() = tryToFindAttribute(EntityHealth::class).health
+    set(value) {
         findAttribute(EntityHealth::class).map {
             it.health = value
         }
     }
 
 
-var AnyGameEntity.inventory // 1
-    get() = tryToFindAttribute(EntityInventory::class).inventory // 2
-    set(value) { // 3
+var AnyGameEntity.inventory
+    get() = tryToFindAttribute(EntityInventory::class).inventory
+    set(value) {
         findAttribute(EntityInventory::class).map {
             it.inventory = value
         }

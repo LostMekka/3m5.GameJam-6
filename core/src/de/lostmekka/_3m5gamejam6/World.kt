@@ -8,10 +8,13 @@ import org.hexworks.zircon.api.TileColors
 import org.hexworks.zircon.api.Tiles
 import org.hexworks.zircon.api.builder.game.GameAreaBuilder
 import org.hexworks.zircon.api.color.TileColor
+import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.impl.Position3D
 import org.hexworks.zircon.api.data.impl.Size3D
 import org.hexworks.zircon.api.screen.Screen
+import org.hexworks.zircon.api.shape.EllipseFactory
+import org.hexworks.zircon.api.shape.LineFactory
 import org.hexworks.zircon.api.uievent.UIEvent
 import kotlin.random.Random
 import org.hexworks.zircon.api.data.CharacterTile
@@ -34,6 +37,20 @@ class World(
     val player = EntityFactory.newPlayer()
 
     private val engine: Engine<GameContext> = Engines.newEngine()
+
+    operator fun get(pos: Position) = this[pos.to3DPosition()]
+
+    operator fun get(pos: Position3D) = gameArea
+        .fetchBlockAt(pos)
+        .let { if (it.isPresent) it.get() else null }
+
+    operator fun set(pos: Position, block: GameBlock) {
+        this[pos.to3DPosition()] = block
+    }
+
+    operator fun set(pos: Position3D, block: GameBlock) {
+        gameArea.setBlockAt(pos, block)
+    }
 
     private fun checkTorch(pos: Position3D) {
         this.gameArea.fetchBlockOrDefault(pos).currentEntities.filter { it.type is TorchItem }.forEach {
@@ -64,7 +81,7 @@ class World(
         // spread madness
         for (block in gameArea.fetchBlocks()) {
             if (block.block.hasMadness) {
-                if (Random.nextDouble() < madnessPropability) {
+                if (Random.nextDouble() < GameConfig.madnessProbability) {
                     val availablePositions = getGoodNeighbors(block.position)
                     if (availablePositions.isEmpty()) continue
                     gameArea.fetchBlockAt(availablePositions.shuffled()[0]).get().hasMadness = true
@@ -91,7 +108,10 @@ class World(
 
     private fun checkMadness(block: GameBlock) {
         if (block.hasMadness) {
-            // TODO: decrease health of player
+            player.health -= GameConfig.madnessHealthDecrease
+            if (player.health <= 0) {
+                // TODO: quit
+            }
         }
     }
 
@@ -138,6 +158,8 @@ class World(
                 player = player
             )
         )
+
+        updateLighting()
     }
 
     private fun bothBlocksPresentAndWalkable(oldBlock: Maybe<GameBlock>, newBlock: Maybe<GameBlock>) =
@@ -182,8 +204,7 @@ class World(
 
 
     fun torchGenerator() {
-       
-        if (Random.nextFloat() <= torchspawnPropability) {
+        if (Random.nextFloat() <= GameConfig.torchProbability) {
             placeTorch(GetRandomPos())
         }
     }
@@ -211,6 +232,41 @@ class World(
             gameArea.fetchBlockAt(Position3D.create(x, y, 0)).get().hasMadness = true
         }
     }
+
+    fun updateLighting() {
+        val torches = mutableListOf<AnyGameEntity>()
+        for ((_, block) in gameArea.fetchBlocks()) {
+            block.isLit = false
+            // TODO
+//            torches += block.currentEntities.filter { it.type is Torch }
+        }
+        floodLight(player.position.to2DPosition(), GameConfig.playerLightRadius)
+        torches.forEach { floodLight(it.position.to2DPosition(), GameConfig.torchLightRadius) }
+    }
+
+    fun floodLight(pos: Position, radius: Int) {
+        findVisiblePositionsFor(pos, radius).forEach { this[it]?.isLit = true }
+    }
+
+    fun findVisiblePositionsFor(pos: Position, radius: Int): Iterable<Position> {
+        val boundary = EllipseFactory.buildEllipse(
+            fromPosition = pos,
+            toPosition = pos.withRelativeX(radius).withRelativeY(radius)
+        )
+        return boundary
+            .positions()
+            .flatMap { ringPos ->
+                val result = mutableSetOf<Position>()
+                val line1 = LineFactory.buildLine(pos, ringPos).toList()
+                // line2 is necessary since there are direction dependent rounding errors that produce unwanted blind spots
+                val line2 = line1.map { Position.create(it.x, 2 * pos.y - it.y) }
+                val n1 = line1.takeWhile { it == pos || this[it]?.isTransparent == true }.size
+                val n2 = line2.takeWhile { it == pos || this[it]?.isTransparent == true }.size
+                result += line1.take(n1+1)
+                result += line2.take(n2+1)
+                result
+            }
+    }
 }
 
 private data class Rect(val x: Int, val y: Int, val w: Int, val h: Int)
@@ -236,6 +292,3 @@ private fun Rect.splitVertical(): List<Rect> {
     val pos = 3 + Random.nextInt(w - 6)
     return listOf(Rect(x, y, pos, h), Rect(x + pos, y, w - pos, h))
 }
-
-
-
