@@ -19,37 +19,56 @@ fun World.updateTorches() {
 }
 
 fun World.updateMadness() {
-    for ((pos, block) in gameArea.fetchBlocks()) {
-        if (block.hasMadness) {
-            when {
-                block.isLit -> {
-                    if (Random.nextBoolean(GameConfig.madnessRetreatProbability)) {
-                        block.hasMadness = false
-                    }
+    val blocks = gameArea.fetchBlocks()
+
+    // http://dev.theomader.com/gaussian-kernel-calculator/
+    val kernel = listOf(0.06136, 0.24477, 0.38774, 0.24477, 0.06136)
+    val kernelOffset = kernel.size / 2
+    val averageBuffer = mutableMapOf<Position3D, Double>()
+    for ((pos, _) in blocks) {
+        var average = 0.0
+        kernel.forEachIndexed { i, kernelValue ->
+            val localValue = if (hasMadnessAt(pos.withRelativeX(i - kernelOffset))) 1.0 else 0.0
+            average += localValue * kernelValue
+        }
+        averageBuffer[pos] = average
+    }
+    for ((pos, block) in blocks) {
+        var average = averageBuffer[pos] ?: 0.0
+        kernel.forEachIndexed { i, kernelValue ->
+            val localValue = if (hasMadnessAt(pos.withRelativeY(i - kernelOffset))) 1.0 else 0.0
+            average += localValue * kernelValue
+        }
+        block.averageSurroundingMadness = average
+    }
+
+    for ((pos, block) in blocks) {
+        when {
+            block.hasMadness && block.isLit -> {
+                val baseProbability = GameConfig.madnessRetreatProbability
+                val probability = baseProbability * (1.0 - 0.5 * block.averageSurroundingMadness)
+                if (Random.nextBoolean(probability)) {
+                    block.hasMadness = false
                 }
-                Random.nextBoolean(GameConfig.madnessGrowthProbability) -> {
-                    getGoodNeighbors(pos)
-                        .let { if (it.isEmpty()) null else it }
-                        ?.random()
-                        ?.also { this[it]?.hasMadness = true }
+            }
+            !block.hasMadness -> {
+                val baseProbability = GameConfig.madnessGrowthProbability
+                val probability = baseProbability * (1.0 - 0.5 * block.averageSurroundingMadness)
+                if (Random.nextBoolean(probability) && hasMadnessNeighbor(pos)) {
+                    block.hasMadness = true
                 }
             }
         }
     }
 }
 
-private fun World.getGoodNeighbors(position: Position3D): List<Position3D> {
-    val goodNeighbors = mutableListOf<Position3D>()
+private fun World.hasMadnessNeighbor(position: Position3D): Boolean {
     for (x in position.x - 1..position.x + 1) {
         for (y in position.y - 1..position.y + 1) {
-            val neighbor = Position3D.create(x, y, 0)
-            if (gameArea.fetchBlockAt(neighbor).isPresent) {
-                if (!gameArea.fetchBlockAt(neighbor).get().hasMadness) goodNeighbors += neighbor
-            }
+            if (hasMadnessAt(Position.create(x, y))) return true
         }
     }
-
-    return goodNeighbors
+    return false
 }
 
 fun World.updateLighting() {

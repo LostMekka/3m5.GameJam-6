@@ -45,6 +45,7 @@ class GameBlock(
         }
 
     var isLit = false
+    var averageSurroundingMadness = 0.0
 
     override fun fetchSide(side: BlockSide): Tile {
         return GameTileRepository.empty

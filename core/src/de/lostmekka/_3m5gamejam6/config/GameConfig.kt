@@ -17,8 +17,8 @@ object GameConfig {
     const val enableDebugLogArea = false
     const val enableDebugTorchPlacement = false
 
-    const val madnessGrowthProbability = 0.05
-    const val madnessRetreatProbability = 0.05
+    const val madnessGrowthProbability = 0.03
+    const val madnessRetreatProbability = 0.5
     const val madnessHealthDecrease = 10
 
     const val fogOfWarEnabled = true

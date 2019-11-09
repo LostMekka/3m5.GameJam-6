@@ -50,6 +50,9 @@ class World(
         gameArea.setBlockAt(pos, block)
     }
 
+    fun hasMadnessAt(pos: Position) = this[pos]?.hasMadness ?: false
+    fun hasMadnessAt(pos: Position3D) = this[pos]?.hasMadness ?: false
+
     private fun bothBlocksPresentAndWalkable(oldBlock: Maybe<GameBlock>, newBlock: Maybe<GameBlock>) =
         oldBlock.isPresent && newBlock.isPresent && newBlock.get().isWalkable
 
