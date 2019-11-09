@@ -29,10 +29,20 @@ class World(
 
     private val engine: Engine<GameContext> = Engines.newEngine()
 
-    fun moveEntity(entity: GameEntity<EntityType>, position: Position3D): Boolean {
-        var success = false
-        val oldBlock = gameArea.fetchBlockAt(entity.position)
-        val newBlock = gameArea.fetchBlockAt(position)
+    private fun checkTorch(pos: Position3D) {
+        this.gameArea.fetchBlockOrDefault(pos).currentEntities.filter { it.type is TorchItem }.forEach {
+            gameArea.fetchBlockOrDefault(pos).currentEntities -= it
+            engine.removeEntity(it)
+            //Increase Player Torches
+            player.inventory.Torches += 1
+        }
+
+    }
+
+        fun moveEntity(entity: GameEntity<EntityType>, position: Position3D): Boolean {
+            var success = false
+            val oldBlock = gameArea.fetchBlockAt(entity.position)
+            val newBlock = gameArea.fetchBlockAt(position)
 
         if (bothBlocksPresentAndWalkable(oldBlock, newBlock)) {
             // walk
@@ -41,7 +51,10 @@ class World(
             entity.position = position
             newBlock.get().currentEntities += entity
             checkMadness(newBlock.get())
+            checkTorch(position)
         }
+
+
 
         // spread madness
         for (block in gameArea.fetchBlocks()) {
@@ -121,6 +134,39 @@ class World(
         }
     }
 
+    private fun GetRandomPos() : Position3D
+    {
+        val x = Random.nextInt(0, GameConfig.windowWidth - GameConfig.sidebarWidth)
+        val y = Random.nextInt(0, GameConfig.windowHeight)
+        var pos : Position3D = Position3D.create(x,y,0)
+        return pos
+    }
+
+
+    fun torchGenerator()
+    {
+        val prob =  0.01
+        if (Random.nextFloat() <= prob)
+        {
+            placeTorch(GetRandomPos())
+        }
+    }
+
+
+    fun placeTorch(pos: Position3D) {
+        val newTorch = EntityFactory.newTorch()
+        gameArea.fetchBlockOrDefault(pos).currentEntities += newTorch
+        newTorch.position = pos
+        engine.addEntity(newTorch)
+    }
+
+    fun placePlayer() {
+        val positionPlayerStart = Position3D.create(10, 10, 0)
+        gameArea.fetchBlockOrDefault(positionPlayerStart).currentEntities += player
+        player.position = positionPlayerStart
+        engine.addEntity(player)
+    }
+
     fun placePlayer() {
         val positionPlayerStart = Position3D.create(10, 10, 0)
         gameArea.fetchBlockOrDefault(positionPlayerStart).currentEntities += player
@@ -143,7 +189,7 @@ private fun Rect.contains(x: Int, y: Int) =
     x in ((this.x + 1) until (this.x + w)) && y in ((this.y + 1) until (this.y + h))
 
 private fun Rect.touches(x: Int, y: Int) =
-    x in (this.x..(this.x + w)) && y in (this.y..(this.y + h))
+    x in (this.x .. (this.x + w)) && y in (this.y .. (this.y + h))
 
 private fun Rect.touchesBorder(x: Int, y: Int) = touches(x, y) && !contains(x, y)
 
@@ -159,4 +205,8 @@ private fun Rect.splitVertical(): List<Rect> {
     if (w <= 6) return listOf(this)
     val pos = 3 + Random.nextInt(w - 6)
     return listOf(Rect(x, y, pos, h), Rect(x + pos, y, w - pos, h))
+}
+
+
+
 }

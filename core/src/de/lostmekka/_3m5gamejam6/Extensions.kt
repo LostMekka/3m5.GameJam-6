@@ -20,6 +20,25 @@ var AnyGameEntity.position // 1
         }
     }
 
+var AnyGameEntity.health // 1
+    get() = tryToFindAttribute(EntityHealth::class).health // 2
+    set(value) { // 3
+        findAttribute(EntityHealth::class).map {
+            it.health = value
+        }
+    }
+
+
+var AnyGameEntity.inventory // 1
+    get() = tryToFindAttribute(EntityInventory::class).inventory // 2
+    set(value) { // 3
+        findAttribute(EntityInventory::class).map {
+            it.inventory = value
+        }
+    }
+
+
+
 val AnyGameEntity.tile: Tile
     get() = this.tryToFindAttribute(EntityTile::class).tile
 

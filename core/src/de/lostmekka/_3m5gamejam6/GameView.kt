@@ -44,6 +44,16 @@ class GameView : BaseView() {
             .withPosition(0, 1)
             .build()
 
+        val txtHealth = Components.label()
+            .withSize(GameConfig.sidebarWidth, 1)
+            .withPosition(0,5)
+            .build()
+
+        val txtTorches = Components.label()
+            .withSize(GameConfig.sidebarWidth, 1)
+            .withPosition(0,7)
+            .build()
+
         val txtPointingItem = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
             .withPosition(0, 3)
@@ -59,6 +69,9 @@ class GameView : BaseView() {
 
         sidebar.addComponent(txtPosition)
         sidebar.addComponent(txtPointingItem)
+        sidebar.addComponent(txtHealth)
+        sidebar.addComponent(txtTorches)
+
         screen.addComponent(sidebar)
         screen.addComponent(mainArea)
 
@@ -77,8 +90,15 @@ class GameView : BaseView() {
             UIEventResponses.processed()
         }
 
+        mainArea.onMouseEvent(MouseEventType.MOUSE_CLICKED){event: MouseEvent, phase: UIEventPhase ->
+            world.placeTorch(event.position.toPosition3D(0))
+            UIEventResponses.processed()
+        }
+
         screen.onKeyboardEvent(KeyboardEventType.KEY_PRESSED) { event, _ ->
             world.update(screen, event)
+            txtHealth.text = "HP: " + world.player.health
+            txtTorches.text = "Torches: " + world.player.inventory.Torches
             Processed
         }
     }

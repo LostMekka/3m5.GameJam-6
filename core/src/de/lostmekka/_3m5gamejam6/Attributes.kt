@@ -15,16 +15,35 @@ class EntityPosition(initialPosition: Position3D = Position3D.unknown()) : Attri
     var position: Position3D by positionProperty.asDelegate()
 }
 
+class EntityHealth(initialHealth: Int = 100) : Attribute {
+    private val healthProperty = createPropertyFrom(initialHealth)
+
+    var health: Int by healthProperty.asDelegate()
+}
+
+class EntityInventory(initialInventory: Inventory = Inventory()) : Attribute {
+    private val inventoryProperty = createPropertyFrom(initialInventory)
+    var inventory: Inventory by inventoryProperty.asDelegate()
+}
+
+
+
 fun <T : EntityType> newGameEntityOfType(type: T, init: EntityBuilder<T, GameContext>.() -> Unit) =
     Entities.newEntityOfType(type, init)
 
 object EntityFactory {
 
     fun newPlayer() = newGameEntityOfType(Player) {
-        attributes(EntityPosition(), EntityTile(GameTileRepository.PLAYER))
+        attributes(EntityPosition(), EntityTile(GameTileRepository.PLAYER), EntityHealth(), EntityInventory())
         behaviors(InputReceiver)
         facets(Movable)
     }
+
+    fun newTorch() = newGameEntityOfType(TorchItem) {
+        attributes(EntityPosition(), EntityTile(GameTileRepository.TORCH))
+        /*attributes(isTorch())*/
+    }
+
 }
 
 data class EntityTile(val tile: Tile = Tiles.empty()) : Attribute
