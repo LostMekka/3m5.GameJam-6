@@ -31,4 +31,10 @@ object GameTileRepository {
         .withBackgroundColor(GameColors.FLOOR_BACKGROUND)
         .withForegroundColor(GameColors.ACCENT_COLOR)
         .buildCharacterTile()
+
+    val MADNESS = Tiles.newBuilder()
+        .withCharacter('M')
+        .withBackgroundColor(GameColors.MADNESS)
+        .withForegroundColor(GameColors.MADNESS)
+        .buildCharacterTile()
 }

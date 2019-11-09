@@ -1,13 +1,9 @@
 package de.lostmekka._3m5gamejam6
 
-import com.badlogic.gdx.Game
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.Engines
-import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.datatypes.Maybe
-import org.hexworks.cobalt.datatypes.extensions.map
-import org.hexworks.zircon.api.Positions
 import org.hexworks.zircon.api.builder.game.GameAreaBuilder
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.impl.Position3D
@@ -15,6 +11,8 @@ import org.hexworks.zircon.api.data.impl.Size3D
 import org.hexworks.zircon.api.screen.Screen
 import org.hexworks.zircon.api.uievent.UIEvent
 import kotlin.random.Random
+
+val madnessPropability = 0.05
 
 class World(
     visibleSize: Size3D,
@@ -37,13 +35,40 @@ class World(
         val newBlock = gameArea.fetchBlockAt(position)
 
         if (bothBlocksPresentAndWalkable(oldBlock, newBlock)) {
+            // walk
             success = true
             oldBlock.get().currentEntities -= entity
             entity.position = position
             newBlock.get().currentEntities += entity
             checkMadness(newBlock.get())
         }
+
+        // spread madness
+        for (block in gameArea.fetchBlocks()) {
+            if (block.block.hasMadness) {
+                if (Random.nextDouble() < madnessPropability) {
+                    val availablePositions = getGoodNeighbors(block.position)
+                    if (availablePositions.isEmpty()) continue
+                    gameArea.fetchBlockAt(availablePositions.shuffled()[0]).get().hasMadness = true
+                }
+            }
+        }
+
         return success
+    }
+
+    private fun getGoodNeighbors(position: Position3D): List<Position3D> {
+        val goodNeighbors = mutableListOf<Position3D>()
+        for (x in position.x - 1..position.x + 1) {
+            for (y in position.y - 1..position.y + 1) {
+                val neighbor = Position3D.create(x, y, 0)
+                if (gameArea.fetchBlockAt(neighbor).isPresent) {
+                    if (!gameArea.fetchBlockAt(neighbor).get().hasMadness) goodNeighbors += neighbor
+                }
+            }
+        }
+
+        return goodNeighbors
     }
 
     private fun checkMadness(block: GameBlock) {
@@ -68,7 +93,7 @@ class World(
 
     fun generateRooms() {
         val (w, h) = gameArea.actualSize().to2DSize()
-        val rects = mutableListOf(Rect(0, 0, w-1, h-1))
+        val rects = mutableListOf(Rect(0, 0, w - 1, h - 1))
         repeat(40) {
             val i = rects.indices.random()
             val rect = rects.removeAt(i)
@@ -89,8 +114,8 @@ class World(
 
         // create doors
         for (rect in rects) {
-            val x = rect.x + Random.nextInt(1,rect.w - 1)
-            val y = rect.y + Random.nextInt(1,rect.h - 1)
+            val x = rect.x + Random.nextInt(1, rect.w - 1)
+            val y = rect.y + Random.nextInt(1, rect.h - 1)
             if (rect.x > 0) gameArea.setBlockAt(Position3D.create(rect.x, y, 0), GameBlock.door())
             if (rect.y > 0) gameArea.setBlockAt(Position3D.create(x, rect.y, 0), GameBlock.door())
         }
@@ -102,6 +127,14 @@ class World(
         player.position = positionPlayerStart
         engine.addEntity(player)
     }
+
+    fun generateMadness() {
+        repeat(5) {
+            val x = Random.nextInt(gameArea.actualSize().xLength - 1)
+            val y = Random.nextInt(gameArea.actualSize().yLength - 1)
+            gameArea.fetchBlockAt(Position3D.create(x, y, 0)).get().hasMadness = true
+        }
+    }
 }
 
 private data class Rect(val x: Int, val y: Int, val w: Int, val h: Int)
@@ -110,7 +143,7 @@ private fun Rect.contains(x: Int, y: Int) =
     x in ((this.x + 1) until (this.x + w)) && y in ((this.y + 1) until (this.y + h))
 
 private fun Rect.touches(x: Int, y: Int) =
-    x in (this.x .. (this.x + w)) && y in (this.y .. (this.y + h))
+    x in (this.x..(this.x + w)) && y in (this.y..(this.y + h))
 
 private fun Rect.touchesBorder(x: Int, y: Int) = touches(x, y) && !contains(x, y)
 

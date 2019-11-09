@@ -11,4 +11,6 @@ object GameColors {
 
     val ACCENT_COLOR = TileColors.fromString("#FFCD22")
     val ACCENT_COLOR_2 = TileColors.fromString("#00FF00")
+
+    val MADNESS = TileColors.fromString("#000000")
 }
