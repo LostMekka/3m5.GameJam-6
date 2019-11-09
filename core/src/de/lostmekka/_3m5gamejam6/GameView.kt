@@ -7,6 +7,7 @@ import de.lostmekka._3m5gamejam6.world.GameBlock
 import de.lostmekka._3m5gamejam6.world.World
 import de.lostmekka._3m5gamejam6.world.generateMadness
 import de.lostmekka._3m5gamejam6.world.generateRooms
+import de.lostmekka._3m5gamejam6.world.generateTorchItems
 import de.lostmekka._3m5gamejam6.world.placePlayer
 import de.lostmekka._3m5gamejam6.world.placeTorch
 import de.lostmekka._3m5gamejam6.world.placeTorchItem
@@ -37,6 +38,7 @@ class GameView : BaseView() {
         )
         world.generateRooms()
         world.placePlayer()
+        world.generateTorchItems()
         world.generateMadness()
         world.updateLighting()
 

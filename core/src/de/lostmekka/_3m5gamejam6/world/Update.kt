@@ -3,6 +3,7 @@ package de.lostmekka._3m5gamejam6.world
 import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.AnyGameEntity
 import de.lostmekka._3m5gamejam6.entity.Torch
+import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.entity.attribute.position
 import de.lostmekka._3m5gamejam6.entity.attribute.tileAnimation
 import de.lostmekka._3m5gamejam6.nextBoolean
@@ -77,7 +78,8 @@ fun World.updateLighting() {
         block.isLit = false
         torches += block.currentEntities.filter { it.type is Torch }
     }
-    floodLight(player.position.to2DPosition(), GameConfig.playerLightRadius)
+    val playerLight = if (player.inventory.torches > 0) GameConfig.torchLightRadius else GameConfig.playerLightRadius
+    floodLight(player.position.to2DPosition(), playerLight)
     torches.forEach { floodLight(it.position.to2DPosition(), GameConfig.torchLightRadius) }
 }
 

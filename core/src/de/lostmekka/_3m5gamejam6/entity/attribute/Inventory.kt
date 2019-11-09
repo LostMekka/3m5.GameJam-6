@@ -1,12 +1,13 @@
 package de.lostmekka._3m5gamejam6.entity.attribute
 
+import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.AnyGameEntity
 import org.hexworks.amethyst.api.Attribute
 import org.hexworks.cobalt.databinding.api.createPropertyFrom
 import org.hexworks.cobalt.datatypes.extensions.map
 
 class Inventory(
-    var torches: Int = 0
+    var torches: Int = GameConfig.playerInitialTorchCount
 )
 
 class EntityInventory(initialInventory: Inventory = Inventory()) : Attribute {

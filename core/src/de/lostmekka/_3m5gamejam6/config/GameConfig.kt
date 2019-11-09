@@ -17,11 +17,13 @@ object GameConfig {
     const val enableDebugLogArea = false
     const val enableDebugTorchPlacement = false
 
-    const val madnessGrowthProbability = 0.03
-    const val madnessRetreatProbability = 0.5
+    const val madnessGrowthProbability = 0.02
+    const val madnessRetreatProbability = 0.6
     const val madnessHealthDecrease = 10
 
     const val fogOfWarEnabled = true
     const val playerLightRadius = 2
-    const val torchLightRadius = 5
+    const val torchLightRadius = 6
+    const val playerInitialTorchCount = 10
+    const val areaInitialTorchCount = 75
 }
