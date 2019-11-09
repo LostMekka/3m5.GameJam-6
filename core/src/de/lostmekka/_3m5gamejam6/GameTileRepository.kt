@@ -14,10 +14,22 @@ object GameTileRepository {
         .withBackgroundColor(GameColors.FLOOR_BACKGROUND)
         .buildCharacterTile()
 
+    val FLOOR_MADNESS: CharacterTile = Tiles.newBuilder()
+        .withCharacter(Symbols.INTERPUNCT)
+        .withForegroundColor(GameColors.FLOOR_FOREGROUND_MADNESS)
+        .withBackgroundColor(GameColors.FLOOR_BACKGROUND_MADNESS)
+        .buildCharacterTile()
+
     val WALL: CharacterTile = Tiles.newBuilder()
         .withCharacter('#')
         .withForegroundColor(GameColors.WALL_FOREGROUND)
         .withBackgroundColor(GameColors.WALL_BACKGROUND)
+        .buildCharacterTile()
+
+    val WALL_MADNESS: CharacterTile = Tiles.newBuilder()
+        .withCharacter('#')
+        .withForegroundColor(GameColors.WALL_FOREGROUND_MADNESS)
+        .withBackgroundColor(GameColors.WALL_BACKGROUND_MADNESS)
         .buildCharacterTile()
 
     val DOOR: CharacterTile = Tiles.newBuilder()
@@ -26,16 +38,22 @@ object GameTileRepository {
         .withBackgroundColor(GameColors.WALL_BACKGROUND)
         .buildCharacterTile()
 
+    val DOOR_MADNESS: CharacterTile = Tiles.newBuilder()
+        .withCharacter('H')
+        .withForegroundColor(GameColors.ACCENT_COLOR_2_MADNESS)
+        .withBackgroundColor(GameColors.WALL_BACKGROUND_MADNESS)
+        .buildCharacterTile()
+
     val PLAYER = Tiles.newBuilder()
         .withCharacter('@')
         .withBackgroundColor(GameColors.FLOOR_BACKGROUND)
         .withForegroundColor(GameColors.ACCENT_COLOR)
         .buildCharacterTile()
 
-    val MADNESS = Tiles.newBuilder()
-        .withCharacter('M')
-        .withBackgroundColor(GameColors.MADNESS)
-        .withForegroundColor(GameColors.MADNESS)
+    val PLAYER_MADNESS = Tiles.newBuilder()
+        .withCharacter('@')
+        .withBackgroundColor(GameColors.FLOOR_BACKGROUND_MADNESS)
+        .withForegroundColor(GameColors.ACCENT_COLOR_MADNESS)
         .buildCharacterTile()
 
     val TORCH = Tiles.newBuilder()

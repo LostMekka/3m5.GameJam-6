@@ -7,6 +7,7 @@ import org.hexworks.zircon.api.data.base.BlockBase
 
 class GameBlock(
     private val tile: Tile,
+    private val madnessTile: Tile,
     val tileName: String,
     val isWalkable: Boolean,
     var hasMadness: Boolean = false,
@@ -16,9 +17,10 @@ class GameBlock(
         get() {
             val entityTiles = currentEntities.map { it.tile }
             val tile = when {
-                hasMadness -> GameTileRepository.MADNESS
+                hasMadness && entityTiles.contains(GameTileRepository.PLAYER) -> GameTileRepository.PLAYER_MADNESS
                 entityTiles.contains(GameTileRepository.PLAYER) -> GameTileRepository.PLAYER
                 entityTiles.isNotEmpty() -> entityTiles.first()
+                hasMadness -> madnessTile
                 else -> tile
             }
             return mutableListOf(tile)
@@ -31,9 +33,8 @@ class GameBlock(
     }
 
     companion object {
-        fun floor() = GameBlock(GameTileRepository.FLOOR, "Floor",true)
-        fun wall() = GameBlock(GameTileRepository.WALL, "Wall",false)
-        fun door() = GameBlock(GameTileRepository.DOOR, "Door", true)
-        //fun torch() = GameBlock(GameTileRepository.Torch, "Torch", true)
+        fun floor() = GameBlock(GameTileRepository.FLOOR, GameTileRepository.FLOOR_MADNESS,"Floor",true)
+        fun wall() = GameBlock(GameTileRepository.WALL, GameTileRepository.WALL_MADNESS, "Wall",false)
+        fun door() = GameBlock(GameTileRepository.DOOR, GameTileRepository.DOOR_MADNESS, "Door", true)
     }
 }
