@@ -4,16 +4,21 @@ import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.Engines
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.datatypes.Maybe
+import org.hexworks.zircon.api.TileColors
+import org.hexworks.zircon.api.Tiles
 import org.hexworks.zircon.api.builder.game.GameAreaBuilder
+import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.impl.Position3D
 import org.hexworks.zircon.api.data.impl.Size3D
 import org.hexworks.zircon.api.screen.Screen
 import org.hexworks.zircon.api.uievent.UIEvent
 import kotlin.random.Random
+import org.hexworks.zircon.api.data.CharacterTile
+import org.hexworks.zircon.api.graphics.Symbols
 
 val madnessPropability = 0.05
-val torchspawnPropability = 0.01
+val torchspawnPropability = 0.10
 
 class World(
     visibleSize: Size3D,
@@ -90,8 +95,41 @@ class World(
         }
     }
 
+
+    fun GenTorchColor(color : TileColor) : CharacterTile
+    {
+        val res = Tiles.newBuilder()
+            .withCharacter('T')
+            .withBackgroundColor(GameColors.FLOOR_BACKGROUND)
+            .withForegroundColor(color)
+            .buildCharacterTile()
+        return res
+    }
+
+    fun UpdateTorches()
+    {
+
+        gameArea.fetchBlocks().forEach{ cell ->
+            run {
+                cell.block.currentEntities.filter { it.type is TorchItem }.forEach {
+
+                    when (it.tile.foregroundColor)
+                    {
+                        GameColors.TORCH_COLOR_0 -> it.tile = GenTorchColor(GameColors.TORCH_COLOR_1)
+                        GameColors.TORCH_COLOR_1 -> it.tile = GenTorchColor(GameColors.TORCH_COLOR_2)
+                        GameColors.TORCH_COLOR_2 -> it.tile = GenTorchColor(GameColors.TORCH_COLOR_0)
+                    }
+
+                }
+            }
+        }
+
+
+    }
+
     fun update(screen: Screen, uiEvent: UIEvent) {
         torchGenerator()
+        UpdateTorches()
         engine.update(
             GameContext(
                 world = this,

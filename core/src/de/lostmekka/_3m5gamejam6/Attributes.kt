@@ -46,4 +46,4 @@ object EntityFactory {
 
 }
 
-data class EntityTile(val tile: Tile = Tiles.empty()) : Attribute
+data class EntityTile(var tile: Tile = Tiles.empty()) : Attribute

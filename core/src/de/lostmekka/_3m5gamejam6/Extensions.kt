@@ -5,6 +5,7 @@ import org.hexworks.amethyst.api.entity.Entity
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.cobalt.datatypes.extensions.map
 import org.hexworks.cobalt.datatypes.extensions.orElseThrow
+import org.hexworks.zircon.api.Tiles
 import org.hexworks.zircon.api.data.Tile
 import kotlin.reflect.KClass
 
@@ -39,9 +40,12 @@ var AnyGameEntity.inventory // 1
 
 
 
-val AnyGameEntity.tile: Tile
-    get() = this.tryToFindAttribute(EntityTile::class).tile
 
+var AnyGameEntity.tile: Tile
+    get() = tryToFindAttribute(EntityTile::class).tile
+    set(value) {
+        tryToFindAttribute(EntityTile::class).tile = value
+    }
 // 4
 fun <T : Attribute> AnyGameEntity.tryToFindAttribute(klass: KClass<T>): T = findAttribute(klass).orElseThrow {
     NoSuchElementException("Entity '$this' has no property with type '${klass.simpleName}'.")
