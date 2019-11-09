@@ -79,26 +79,26 @@ class GameView : BaseView() {
         screen.addComponent(sidebar)
         screen.addComponent(mainArea)
 
-        if (GameConfig.isDebug) {
+        if (GameConfig.enableDebugLogArea) {
             screen.addComponent(logArea)
         }
 
-        mainArea.onMouseEvent(MouseEventType.MOUSE_MOVED) { event: MouseEvent, phase: UIEventPhase ->
-            txtPosition.text = "Mouse: " + event.position.x.toString() + " | " + event.position.y.toString()
+        mainArea.onMouseEvent(MouseEventType.MOUSE_MOVED) { event: MouseEvent, _: UIEventPhase ->
+            txtPosition.text = "Mouse: ${event.position.x} | ${event.position.y}"
 
-            val temp =
-                world.gameArea.fetchBlockOrDefault(Position3D.create(event.position.x, event.position.y, 0))
+            val temp = world.gameArea.fetchBlockOrDefault(Position3D.create(event.position.x, event.position.y, 0))
             txtPointingItem.text = "Pointing at: " + temp.name
-
 
             UIEventResponses.processed()
         }
 
-        mainArea.onMouseEvent(MouseEventType.MOUSE_CLICKED){event: MouseEvent, phase: UIEventPhase ->
-            if (event.button == 0) {
-                world.placeTorchItem(event.position.to3DPosition())
-            } else {
-                world.placeTorch(event.position.to3DPosition())
+        mainArea.onMouseEvent(MouseEventType.MOUSE_CLICKED){ event: MouseEvent, _: UIEventPhase ->
+            if (GameConfig.enableDebugTorchPlacement) {
+                if (event.button == 1) {
+                    world.placeTorchItem(event.position.to3DPosition())
+                } else {
+                    world.placeTorch(event.position.to3DPosition())
+                }
             }
             UIEventResponses.processed()
         }

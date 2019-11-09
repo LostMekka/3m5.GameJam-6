@@ -14,12 +14,13 @@ object GameConfig {
     val tileSet = CP437TilesetResources.rogueYun16x16()
     val theme = ColorThemes.zenburnVanilla()
 
-    const val isDebug = false
+    const val enableDebugLogArea = false
+    const val enableDebugTorchPlacement = false
 
     const val madnessProbability = 0.05
     const val madnessHealthDecrease = 10
 
-    const val fogOfWarEnabled = false
+    const val fogOfWarEnabled = true
     const val playerLightRadius = 2
     const val torchLightRadius = 5
 }

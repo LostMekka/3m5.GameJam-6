@@ -33,7 +33,16 @@ class GameBlock(
             return mutableListOf(tile)
         }
 
-    val name get() = currentEntities.firstOrNull()?.name ?: tileName
+    val name: String
+        get() {
+            if (!isLit && GameConfig.fogOfWarEnabled) return "Unknown"
+            val name = currentEntities.firstOrNull()?.name ?: tileName
+            val modifier = when {
+                hasMadness -> " (Madness)"
+                else -> ""
+            }
+            return name + modifier
+        }
 
     var isLit = false
 
