@@ -7,7 +7,7 @@ import org.hexworks.zircon.api.data.base.BlockBase
 
 class GameBlock(
     private val tile: Tile,
-    val name: String,
+    val tileName: String,
     val isWalkable: Boolean,
     val currentEntities: MutableList<GameEntity<EntityType>> = mutableListOf()
 ) : BlockBase<Tile>() {
@@ -22,12 +22,14 @@ class GameBlock(
             return mutableListOf(tile)
         }
 
+    val name get() = currentEntities.firstOrNull()?.name ?: tileName
+
     override fun fetchSide(side: BlockSide): Tile {
         return GameTileRepository.EMPTY
     }
 
     companion object {
-        fun floor() = GameBlock(GameTileRepository.FLOOR, "Floor",true)
-        fun wall() = GameBlock(GameTileRepository.WALL, "Wall",true)
+        fun floor() = GameBlock(GameTileRepository.FLOOR, "Floor", true)
+        fun wall() = GameBlock(GameTileRepository.WALL, "Wall", true)
     }
 }

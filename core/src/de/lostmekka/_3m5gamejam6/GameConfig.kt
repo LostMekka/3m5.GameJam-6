@@ -13,6 +13,6 @@ object GameConfig {
     val tileSet = CP437TilesetResources.rogueYun16x16()
     val theme = ColorThemes.zenburnVanilla()
 
-    val isDebug = true
+    val isDebug = false
 
 }
