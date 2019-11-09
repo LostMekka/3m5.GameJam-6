@@ -41,8 +41,15 @@ class World(
             oldBlock.get().currentEntities -= entity
             entity.position = position
             newBlock.get().currentEntities += entity
+            checkMadness(newBlock.get())
         }
         return success
+    }
+
+    private fun checkMadness(block: GameBlock) {
+        if (block.hasMadness) {
+            // TODO: decrease health of player
+        }
     }
 
     fun update(screen: Screen, uiEvent: UIEvent) {

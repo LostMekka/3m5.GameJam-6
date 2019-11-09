@@ -9,6 +9,7 @@ class GameBlock(
     private val tile: Tile,
     val tileName: String,
     val isWalkable: Boolean,
+    val hasMadness: Boolean = false,
     val currentEntities: MutableList<GameEntity<EntityType>> = mutableListOf()
 ) : BlockBase<Tile>() {
     override val layers: MutableList<Tile>
