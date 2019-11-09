@@ -17,6 +17,7 @@ class GameView : BaseView() {
 
         val sidebar = Components.panel()
             .withSize(GameConfig.sidebarWidth, GameConfig.windowHeight)
+            .withAlignmentWithin(screen, ComponentAlignment.RIGHT_CENTER)
             .wrapWithBox()
             .build()
 
