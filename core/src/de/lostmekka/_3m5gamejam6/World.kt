@@ -57,7 +57,7 @@ class World(
     }
 
     private fun bothBlocksPresentAndWalkable(oldBlock: Maybe<GameBlock>, newBlock: Maybe<GameBlock>) =
-        oldBlock.isPresent && newBlock.isPresent && oldBlock.get().isWalkable && newBlock.get().isWalkable
+        oldBlock.isPresent && newBlock.isPresent && newBlock.get().isWalkable
 
     fun generateRooms() {
         val (w, h) = gameArea.actualSize().to2DSize()
