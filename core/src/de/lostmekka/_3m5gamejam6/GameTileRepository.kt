@@ -1,5 +1,6 @@
 package de.lostmekka._3m5gamejam6
 
+import de.lostmekka._3m5gamejam6.config.GameColors
 import org.hexworks.zircon.api.Tiles
 import org.hexworks.zircon.api.data.CharacterTile
 import org.hexworks.zircon.api.graphics.Symbols

@@ -1,5 +1,9 @@
-package de.lostmekka._3m5gamejam6
+package de.lostmekka._3m5gamejam6.world
 
+import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.GameTileRepository
+import de.lostmekka._3m5gamejam6.entity.GameEntity
+import de.lostmekka._3m5gamejam6.entity.attribute.tile
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.zircon.api.data.BlockSide
 import org.hexworks.zircon.api.data.Tile
@@ -38,8 +42,26 @@ class GameBlock(
     }
 
     companion object {
-        fun floor() = GameBlock(GameTileRepository.FLOOR, GameTileRepository.FLOOR_MADNESS,"Floor", true, true)
-        fun wall() = GameBlock(GameTileRepository.WALL, GameTileRepository.WALL_MADNESS, "Wall", false, false)
-        fun door() = GameBlock(GameTileRepository.DOOR, GameTileRepository.DOOR_MADNESS, "Door", true, false)
+        fun floor() = GameBlock(
+            GameTileRepository.FLOOR,
+            GameTileRepository.FLOOR_MADNESS,
+            "Floor",
+            true,
+            true
+        )
+        fun wall() = GameBlock(
+            GameTileRepository.WALL,
+            GameTileRepository.WALL_MADNESS,
+            "Wall",
+            false,
+            false
+        )
+        fun door() = GameBlock(
+            GameTileRepository.DOOR,
+            GameTileRepository.DOOR_MADNESS,
+            "Door",
+            true,
+            false
+        )
     }
 }

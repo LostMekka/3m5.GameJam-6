@@ -1,5 +1,10 @@
 package de.lostmekka._3m5gamejam6
 
+import de.lostmekka._3m5gamejam6.entity.attribute.health
+import de.lostmekka._3m5gamejam6.entity.attribute.inventory
+import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.world.GameBlock
+import de.lostmekka._3m5gamejam6.world.World
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.UIEventResponses
@@ -101,7 +106,7 @@ class GameView : BaseView() {
         screen.onKeyboardEvent(KeyboardEventType.KEY_PRESSED) { event, _ ->
             world.onKeyInput(screen, event)
             txtHealth.text = "HP: " + world.player.health
-            txtTorches.text = "Torches: " + world.player.inventory.Torches
+            txtTorches.text = "Torches: " + world.player.inventory.torches
             Processed
         }
     }

@@ -1,7 +1,9 @@
 package de.lostmekka._3m5gamejam6
 
+import de.lostmekka._3m5gamejam6.entity.GameEntity
+import de.lostmekka._3m5gamejam6.entity.Player
+import de.lostmekka._3m5gamejam6.world.World
 import org.hexworks.amethyst.api.Context
-import org.hexworks.amethyst.api.base.BaseEntityType
 import org.hexworks.zircon.api.screen.Screen
 import org.hexworks.zircon.api.uievent.UIEvent
 
@@ -12,6 +14,3 @@ data class GameContext(
     val player: GameEntity<Player>
 ) : Context
 
-object Player : BaseEntityType("Player")
-object TorchItem : BaseEntityType("Torch Item")
-object Torch : BaseEntityType("Torch")

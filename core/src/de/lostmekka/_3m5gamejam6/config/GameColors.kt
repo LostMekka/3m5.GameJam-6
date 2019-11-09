@@ -1,4 +1,4 @@
-package de.lostmekka._3m5gamejam6
+package de.lostmekka._3m5gamejam6.config
 
 import org.hexworks.zircon.api.TileColors
 

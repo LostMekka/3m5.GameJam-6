@@ -1,5 +1,17 @@
-package de.lostmekka._3m5gamejam6
+package de.lostmekka._3m5gamejam6.world
 
+import de.lostmekka._3m5gamejam6.config.GameColors
+import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.GameContext
+import de.lostmekka._3m5gamejam6.entity.Torch
+import de.lostmekka._3m5gamejam6.entity.TorchItem
+import de.lostmekka._3m5gamejam6.entity.AnyGameEntity
+import de.lostmekka._3m5gamejam6.entity.EntityFactory
+import de.lostmekka._3m5gamejam6.entity.GameEntity
+import de.lostmekka._3m5gamejam6.entity.attribute.health
+import de.lostmekka._3m5gamejam6.entity.attribute.position
+import de.lostmekka._3m5gamejam6.entity.attribute.tile
+import de.lostmekka._3m5gamejam6.to3DPosition
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.Engines
 import org.hexworks.amethyst.api.entity.EntityType
@@ -166,8 +178,12 @@ class World(
         for (rect in rects) {
             val x = rect.x + Random.nextInt(1, rect.w - 1)
             val y = rect.y + Random.nextInt(1, rect.h - 1)
-            if (rect.x > 0) gameArea.setBlockAt(Position3D.create(rect.x, y, 0), GameBlock.door())
-            if (rect.y > 0) gameArea.setBlockAt(Position3D.create(x, rect.y, 0), GameBlock.door())
+            if (rect.x > 0) gameArea.setBlockAt(Position3D.create(rect.x, y, 0),
+                GameBlock.door()
+            )
+            if (rect.y > 0) gameArea.setBlockAt(Position3D.create(x, rect.y, 0),
+                GameBlock.door()
+            )
         }
     }
 
@@ -251,11 +267,17 @@ private val Rect.area get() = w * h
 private fun Rect.splitHorizontal(): List<Rect> {
     if (h <= 6) return listOf(this)
     val pos = 3 + Random.nextInt(h - 6)
-    return listOf(Rect(x, y, w, pos), Rect(x, y + pos, w, h - pos))
+    return listOf(
+        Rect(x, y, w, pos),
+        Rect(x, y + pos, w, h - pos)
+    )
 }
 
 private fun Rect.splitVertical(): List<Rect> {
     if (w <= 6) return listOf(this)
     val pos = 3 + Random.nextInt(w - 6)
-    return listOf(Rect(x, y, pos, h), Rect(x + pos, y, w - pos, h))
+    return listOf(
+        Rect(x, y, pos, h),
+        Rect(x + pos, y, w - pos, h)
+    )
 }

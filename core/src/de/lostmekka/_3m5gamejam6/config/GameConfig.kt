@@ -1,4 +1,4 @@
-package de.lostmekka._3m5gamejam6
+package de.lostmekka._3m5gamejam6.config
 
 import org.hexworks.zircon.api.CP437TilesetResources
 import org.hexworks.zircon.api.ColorThemes
@@ -9,7 +9,9 @@ object GameConfig {
     val sidebarWidth = 25
     val windowWidth = 120
     val windowHeight = 62
-    val worldSize = Size3D.create(windowWidth - sidebarWidth, windowHeight, 1)
+    val worldSize = Size3D.create(
+        windowWidth - sidebarWidth,
+        windowHeight, 1)
     val tileSet = CP437TilesetResources.rogueYun16x16()
     val theme = ColorThemes.zenburnVanilla()
 

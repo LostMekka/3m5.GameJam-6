@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import de.lostmekka._3m5gamejam6.config.GameConfig
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import org.hexworks.zircon.api.AppConfigs
@@ -15,14 +16,14 @@ import org.hexworks.zircon.api.application.Application
 
 class JamGame : KtxGame<Screen>() {
     override fun create() {
-        addScreen(ExampleScreen())
-        setScreen<ExampleScreen>()
+        addScreen(FakeScreen())
+        setScreen<FakeScreen>()
     }
 }
 
-class ExampleScreen : KtxScreen {
+class FakeScreen : KtxScreen {
     private var batch = SpriteBatch()
-    private var img = Texture("badlogic.jpg")
+//    private var img = Texture("badlogic.jpg")
     private val application: Application
 
     init {
@@ -32,7 +33,6 @@ class ExampleScreen : KtxScreen {
             .withSize(Sizes.create(GameConfig.windowWidth, GameConfig.windowHeight))
             .build()
         application = SwingApplications.startApplication(config)
-
         application.dock(GameView())
     }
 
@@ -46,6 +46,6 @@ class ExampleScreen : KtxScreen {
 
     override fun dispose() {
         batch.dispose()
-        img.dispose()
+//        img.dispose()
     }
 }
