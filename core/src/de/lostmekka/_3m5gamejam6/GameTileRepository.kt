@@ -31,4 +31,11 @@ object GameTileRepository {
         .withBackgroundColor(GameColors.FLOOR_BACKGROUND)
         .withForegroundColor(GameColors.ACCENT_COLOR)
         .buildCharacterTile()
+
+    val TORCH = Tiles.newBuilder()
+        .withCharacter('T')
+        .withBackgroundColor(GameColors.FLOOR_BACKGROUND)
+        .withForegroundColor(GameColors.TORCH_COLOR_0)
+        .buildCharacterTile()
+
 }
