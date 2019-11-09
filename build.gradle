@@ -36,6 +36,12 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
 }
 
 project(":desktop") {
@@ -77,5 +83,6 @@ project(":core") {
 
         implementation 'org.hexworks.zircon:zircon.core-jvm:2019.1.0-PREVIEW'
         implementation 'org.hexworks.zircon:zircon.jvm.swing:2019.1.0-PREVIEW'
+        implementation 'org.hexworks.amethyst:amethyst.core-jvm:2019.0.4-PREVIEW'
     }
 }
