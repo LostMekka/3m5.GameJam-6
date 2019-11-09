@@ -15,10 +15,8 @@ import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.Positions
 import org.hexworks.zircon.api.mvc.base.BaseView
 import org.hexworks.zircon.internal.application.SwingApplication
-import org.lwjgl.input.Keyboard.KEY_A
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.extensions.onMouseEvent
-import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.UIEventResponses
 import org.hexworks.zircon.api.uievent.*
 
@@ -31,7 +29,7 @@ class GameView : BaseView() {
         )
 
         val sidebar = Components.panel()
-            .withSize(GameConfig.sidebarWidth, GameConfig.windowHeight-2)
+            .withSize(GameConfig.sidebarWidth, GameConfig.windowHeight - 2)
             .withAlignmentWithin(screen, ComponentAlignment.RIGHT_CENTER)
             .wrapWithBox()
             .withTitle("Game Info")
