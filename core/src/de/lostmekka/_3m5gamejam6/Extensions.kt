@@ -26,9 +26,25 @@ var AnyGameEntity.position2D
         position = value.to3DPosition()
     }
 
+var AnyGameEntity.health
+    get() = tryToFindAttribute(EntityHealth::class).health
+    set(value) {
+        findAttribute(EntityHealth::class).map {
+            it.health = value
+        }
+    }
+
+
+var AnyGameEntity.inventory
+    get() = tryToFindAttribute(EntityInventory::class).inventory
+    set(value) {
+        findAttribute(EntityInventory::class).map {
+            it.inventory = value
+        }
+    }
+
 val AnyGameEntity.tile: Tile
     get() = this.tryToFindAttribute(EntityTile::class).tile
-
 
 fun <T : Attribute> AnyGameEntity.tryToFindAttribute(klass: KClass<T>): T = findAttribute(klass).orElseThrow {
     NoSuchElementException("Entity '$this' has no property with type '${klass.simpleName}'.")

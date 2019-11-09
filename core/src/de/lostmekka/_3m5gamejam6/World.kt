@@ -15,6 +15,9 @@ import org.hexworks.zircon.api.shape.LineFactory
 import org.hexworks.zircon.api.uievent.UIEvent
 import kotlin.random.Random
 
+val madnessPropability = 0.05
+val torchspawnPropability = 0.01
+
 class World(
     visibleSize: Size3D,
     actualSize: Size3D
@@ -44,21 +47,68 @@ class World(
         gameArea.setBlockAt(pos, block)
     }
 
+    private fun checkTorch(pos: Position3D) {
+        this.gameArea.fetchBlockOrDefault(pos).currentEntities.filter { it.type is TorchItem }.forEach {
+            gameArea.fetchBlockOrDefault(pos).currentEntities -= it
+            engine.removeEntity(it)
+            //Increase Player Torches
+            player.inventory.Torches += 1
+        }
+
+    }
+
     fun moveEntity(entity: GameEntity<EntityType>, position: Position3D): Boolean {
         var success = false
         val oldBlock = gameArea.fetchBlockAt(entity.position)
         val newBlock = gameArea.fetchBlockAt(position)
 
         if (bothBlocksPresentAndWalkable(oldBlock, newBlock)) {
+            // walk
             success = true
             oldBlock.get().currentEntities -= entity
             entity.position = position
             newBlock.get().currentEntities += entity
+            checkMadness(newBlock.get())
+            checkTorch(position)
         }
+
+
+        // spread madness
+        for (block in gameArea.fetchBlocks()) {
+            if (block.block.hasMadness) {
+                if (Random.nextDouble() < madnessPropability) {
+                    val availablePositions = getGoodNeighbors(block.position)
+                    if (availablePositions.isEmpty()) continue
+                    gameArea.fetchBlockAt(availablePositions.shuffled()[0]).get().hasMadness = true
+                }
+            }
+        }
+
         return success
     }
 
+    private fun getGoodNeighbors(position: Position3D): List<Position3D> {
+        val goodNeighbors = mutableListOf<Position3D>()
+        for (x in position.x - 1..position.x + 1) {
+            for (y in position.y - 1..position.y + 1) {
+                val neighbor = Position3D.create(x, y, 0)
+                if (gameArea.fetchBlockAt(neighbor).isPresent) {
+                    if (!gameArea.fetchBlockAt(neighbor).get().hasMadness) goodNeighbors += neighbor
+                }
+            }
+        }
+
+        return goodNeighbors
+    }
+
+    private fun checkMadness(block: GameBlock) {
+        if (block.hasMadness) {
+            // TODO: decrease health of player
+        }
+    }
+
     fun update(screen: Screen, uiEvent: UIEvent) {
+        torchGenerator()
         engine.update(
             GameContext(
                 world = this,
@@ -104,11 +154,42 @@ class World(
         }
     }
 
+    private fun GetRandomPos(): Position3D {
+        val x = Random.nextInt(0, GameConfig.windowWidth - GameConfig.sidebarWidth)
+        val y = Random.nextInt(0, GameConfig.windowHeight)
+        var pos: Position3D = Position3D.create(x, y, 0)
+        return pos
+    }
+
+
+    fun torchGenerator() {
+        if (Random.nextFloat() <= torchspawnPropability) {
+            placeTorch(GetRandomPos())
+        }
+    }
+
+
+    fun placeTorch(pos: Position3D) {
+        val newTorch = EntityFactory.newTorch()
+        gameArea.fetchBlockOrDefault(pos).currentEntities += newTorch
+        newTorch.position = pos
+        engine.addEntity(newTorch)
+    }
+
+
     fun placePlayer() {
         val positionPlayerStart = Position3D.create(10, 10, 0)
         gameArea.fetchBlockOrDefault(positionPlayerStart).currentEntities += player
         player.position = positionPlayerStart
         engine.addEntity(player)
+    }
+
+    fun generateMadness() {
+        repeat(5) {
+            val x = Random.nextInt(gameArea.actualSize().xLength - 1)
+            val y = Random.nextInt(gameArea.actualSize().yLength - 1)
+            gameArea.fetchBlockAt(Position3D.create(x, y, 0)).get().hasMadness = true
+        }
     }
 
     fun updateLighting() {
