@@ -9,12 +9,11 @@ import org.hexworks.zircon.api.uievent.KeyCode;
 import org.hexworks.zircon.api.uievent.KeyboardEventType;
 import org.hexworks.zircon.api.uievent.MouseEventType;
 import org.hexworks.zircon.api.uievent.UIEventPhase;
-
 import org.hexworks.zircon.api.component.ComponentAlignment.CENTER
 import org.hexworks.zircon.api.uievent.ComponentEventType.ACTIVATED
-
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.Positions
+import org.hexworks.zircon.api.component.Panel
 import org.hexworks.zircon.api.mvc.base.BaseView
 
 
@@ -23,8 +22,8 @@ import org.hexworks.zircon.api.mvc.base.BaseView
 
 
 class GameView : BaseView() {
+    lateinit var sidebar: Panel
     override fun onDock() {
-
 
         val tileGrid = SwingApplications.startTileGrid()
         val screen = Screens.createScreenFor(tileGrid)
@@ -32,6 +31,7 @@ class GameView : BaseView() {
 
         val sidebar = Components.panel()
             .withSize(GameConfig.SIDEBAR_WIDTH, GameConfig.WINDOW_HEIGHT-2)
+
             .wrapWithBox()
             .withTitle("Game Info")
             .withPosition(Positions.offset1x1())
