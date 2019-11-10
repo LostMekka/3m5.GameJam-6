@@ -8,8 +8,9 @@ Wicked forces came to life but nothing  can persist against the light. It is up 
 > How to play
 
 - Use WASD to navigate your charackter
-- Use T 5 times to place a torch on the ground
-- Use E 5 times to activate an altar. (has a bigger light-sphere than a torch)
+- Use T five times to place a torch on the ground
+- Use E five times to activate an altar. (has a bigger light-sphere than a torch)
+- Use keys 1 & 2 to switch bitween your sword and torches
 - Use Escape for pausing the game and showing help
 
 > How to win
