@@ -12,6 +12,8 @@ Wicked forces came to life but nothing  can persist against the light. It is up 
 
 Used IDE is "IntelliJ IDEA Community 2019.2"
 
-Within the project-directory navigate to DesktopLauncher >> right-mouse-click >> "Run 'DesktopLauncher.main()'"
+1. Clone the reop
+2. Go to project on the left sidepanel
+3. Navigate to DesktopLauncher >> right-mouse-click >> "Run 'DesktopLauncher.main()'"
 
 Enjoy the game.
