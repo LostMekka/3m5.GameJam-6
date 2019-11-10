@@ -6,6 +6,7 @@ import de.lostmekka._3m5gamejam6.entity.attribute.EntityHealth
 import de.lostmekka._3m5gamejam6.entity.attribute.EntityInventory
 import de.lostmekka._3m5gamejam6.entity.attribute.EntityPosition
 import de.lostmekka._3m5gamejam6.entity.attribute.EntityTileAnimation
+import de.lostmekka._3m5gamejam6.entity.behavior.EnemyAI
 import de.lostmekka._3m5gamejam6.entity.behavior.InputReceiver
 import de.lostmekka._3m5gamejam6.entity.facet.Equipable
 import de.lostmekka._3m5gamejam6.entity.facet.TorchHandling
@@ -31,6 +32,17 @@ object EntityFactory {
         behaviors(InputReceiver)
         facets(Movable, TorchHandling, Equipable)
     }
+
+    fun newEnemyZombie() = newGameEntityOfType(Enemy) {
+        attributes(
+            EntityPosition(),
+            EntityTileAnimation(GameTileRepository.enemyZombie),
+            EntityHealth()
+        )
+        behaviors(EnemyAI)
+        facets(Movable)
+    }
+
 
     fun newTorchItem() = newGameEntityOfType(TorchItem) {
         attributes(

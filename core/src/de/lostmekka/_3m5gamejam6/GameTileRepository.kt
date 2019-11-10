@@ -92,6 +92,12 @@ object GameTileRepository {
         .withBackgroundColor(GameColors.floorBg)
         .buildCharacterTile()
 
+    val enemyZombie = Tiles.newBuilder()
+        .withCharacter('z')
+        .withBackgroundColor(GameColors.zombieBg)
+        .withForegroundColor(GameColors.zombieFg)
+        .buildCharacterTile()
+
     val playerMadness = Tiles.newBuilder()
         .withCharacter('@')
         .withForegroundColor(GameColors.doorFgMadness)

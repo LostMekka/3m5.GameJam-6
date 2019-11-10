@@ -72,13 +72,13 @@ class World(
             oldBlock.get().currentEntities -= entity
             entity.position = position
             newBlock.get().currentEntities += entity
-            checkMadness(newBlock.get())
+            //checkMadness(newBlock.get())
         }
 
         return success
     }
 
-    private fun checkMadness(block: GameBlock) {
+    private fun checkPlayerMadness(block: GameBlock) {
         if (block.hasMadness) {
             player.health -= GameConfig.madnessHealthDecrease
             if (player.health <= 0) {
@@ -104,6 +104,7 @@ class World(
         updateTorches()
         updateLighting()
         updateMadness()
+        checkPlayerMadness(gameArea.fetchBlockAt(player.position).get())
     }
 
     fun findVisiblePositionsFor(pos: Position, radius: Int): Iterable<Position> {
