@@ -1,52 +1,58 @@
 package de.lostmekka._3m5gamejam6.world
 
-import de.lostmekka._3m5gamejam6.Rect
 import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.EntityFactory
 import de.lostmekka._3m5gamejam6.entity.Torch
 import de.lostmekka._3m5gamejam6.entity.attribute.position
-import de.lostmekka._3m5gamejam6.splitHorizontal
-import de.lostmekka._3m5gamejam6.splitVertical
-import de.lostmekka._3m5gamejam6.touchesBorder
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.impl.Position3D
 import kotlin.random.Random
 
 fun World.generateRooms() {
     val (w, h) = gameArea.actualSize().to2DSize()
-    val rects = mutableListOf(Rect(0, 0, w - 1, h - 1))
-    repeat(40) {
-        val i = rects.indices.random()
-        val rect = rects.removeAt(i)
-        rects += if (Random.nextBoolean()) {
-            rect.splitHorizontal()
-        } else {
-            rect.splitVertical()
-        }
-    }
-
     for (x in 0 until w) {
         for (y in 0 until h) {
-            val wall = rects.any { it.touchesBorder(x, y) }
-            val block = if (wall) GameBlock.wall() else GameBlock.floor()
-            gameArea.setBlockAt(Position3D.create(x, y, 0), block)
+            gameArea.setBlockAt(Position3D.create(x, y, 0), GameBlock.floor())
         }
     }
 
-    // create doors
-    for (rect in rects) {
-        val x = rect.x + Random.nextInt(1, rect.w - 1)
-        val y = rect.y + Random.nextInt(1, rect.h - 1)
-        if (rect.x > 0) gameArea.setBlockAt(
-            Position3D.create(rect.x, y, 0),
-            GameBlock.door()
-        )
-        if (rect.y > 0) gameArea.setBlockAt(
-            Position3D.create(x, rect.y, 0),
-            GameBlock.door()
-        )
+    generateRandomWalls(-1, Random.nextInt(h - 1))
+}
+
+private fun World.generateRandomWalls(_x: Int, _y: Int, prop: Double = 0.01, doorNext: Boolean = true, xDir: Boolean = true, increase: Int = 1) {
+    val x = if (xDir) _x + increase else _x
+    val y = if (xDir) _y else _y + increase
+    val position = Position3D.create(x, y, 0)
+    if (xDir) {
+        if (checkBlockForFloor(Position3D.create(x, y - 1, 0))) return
+        if (checkBlockForFloor(Position3D.create(x, y - 2, 0))) return
+        if (checkBlockForFloor(Position3D.create(x, y + 1, 0))) return
+        if (checkBlockForFloor(Position3D.create(x, y + 2, 0))) return
+    } else {
+        if (checkBlockForFloor(Position3D.create(x - 1, y, 0))) return
+        if (checkBlockForFloor(Position3D.create(x - 2, y, 0))) return
+        if (checkBlockForFloor(Position3D.create(x + 1, y, 0))) return
+        if (checkBlockForFloor(Position3D.create(x + 2, y, 0))) return
+    }
+    if (checkBlockForFloor(position)) return
+    if (Random.nextDouble() < prop) {
+        if (doorNext) {
+            gameArea.setBlockAt(position, GameBlock.door())
+            generateRandomWalls(_x = x, _y = y, doorNext = false, increase = increase, xDir = xDir)
+        } else {
+            gameArea.setBlockAt(position, GameBlock.wall())
+            generateRandomWalls(_x = x, _y = y, xDir = !xDir, increase = increase * (-1))
+            generateRandomWalls(_x = x, _y = y, xDir = !xDir, increase = increase)
+            return
+        }
+    } else {
+        gameArea.setBlockAt(position, GameBlock.wall())
+        generateRandomWalls(_x = x, _y = y, prop = prop * 2, increase = increase, xDir = xDir, doorNext = doorNext)
     }
 }
+
+private fun World.checkBlockForFloor(position: Position3D) =
+        !gameArea.hasBlockAt(position) || !gameArea.fetchBlockAt(position).get().isWalkable
 
 fun World.placeTorch(pos: Position3D): Boolean {
     val block = this[pos] ?: return false
