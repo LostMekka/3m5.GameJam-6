@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.world.MadnessExpanse
 import de.lostmekka._3m5gamejam6.world.SoundEvent
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
@@ -36,10 +37,24 @@ class FakeScreen : KtxScreen {
             .build()
         application = SwingApplications.startApplication(config)
         application.dock(StartView())
-        val doorSound = Gdx.audio.newSound(Gdx.files.internal("door.wav"))
-        val stepSound = Gdx.audio.newSound(Gdx.files.internal("step.wav"))
-        val nextLevelSound = Gdx.audio.newSound(Gdx.files.internal("nextLevel.wav"))
-        val hitSound = Gdx.audio.newSound(Gdx.files.internal("hit.wav"))
+
+        // start background music
+        var backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/music.ogg"))
+        backgroundMusic.isLooping = true
+        backgroundMusic.play()
+        backgroundMusic.volume = GameConfig.backgroundMusicVolume
+
+        // start madness whispering
+        var madnessWhisper = Gdx.audio.newMusic(Gdx.files.internal("sound/madness.ogg"))
+        madnessWhisper.isLooping = true
+        madnessWhisper.play()
+        madnessWhisper.volume = GameConfig.whisperVolumeMin
+
+        // add sound effects
+        val doorSound = Gdx.audio.newSound(Gdx.files.internal("sound/door.wav"))
+        val stepSound = Gdx.audio.newSound(Gdx.files.internal("sound/step.wav"))
+        val nextLevelSound = Gdx.audio.newSound(Gdx.files.internal("sound/nextLevel.wav"))
+        val hitSound = Gdx.audio.newSound(Gdx.files.internal("sound/hit.wav"))
         Zircon.eventBus.subscribe<SoundEvent> {
             when(it.cause) {
                 "Door" -> doorSound.play()
@@ -47,6 +62,12 @@ class FakeScreen : KtxScreen {
                 "NextLevel" -> nextLevelSound.play()
                 "Hit" -> hitSound.play()
             }
+        }
+
+        // calculate madness whispering volume
+        Zircon.eventBus.subscribe<MadnessExpanse> {
+            madnessWhisper.volume = GameConfig.whisperVolumeMin +
+                    ((it.percentage).toFloat() / 100 * (GameConfig.whisperVolumeMax - GameConfig.whisperVolumeMin))
         }
     }
 

@@ -107,7 +107,14 @@ class World(
     }
 
     private fun checkPlayerMadness(block: GameBlock) {
+        var madnessSum = 0
         if (block.hasMadness) player.health -= GameConfig.madnessHealthDecrease
+        for (x in player.position.x - 5 .. player.position.x + 5) {
+            for (y in player.position.y - 5 .. player.position.y + 5) {
+                if (this[Position3D.create(x, y, 0)]?.hasMadness == true) madnessSum += 1
+            }
+        }
+        Zircon.eventBus.publish(MadnessExpanse(madnessSum))
     }
 
     fun onKeyInput(screen: Screen, uiEvent: UIEvent) {
@@ -126,6 +133,7 @@ class World(
         if (this[player.position]?.isDoor == true) {
             Zircon.eventBus.publish(SoundEvent("Door"))
         } else if (this[player.position]?.isStairs == true) {
+            // TODO: check all altars
             // go to next level
             if (levelDepth + 1 < GameConfig.levelCount) {
                 Zircon.eventBus.publish(SoundEvent("NextLevel"))
