@@ -4,6 +4,7 @@ import de.lostmekka._3m5gamejam6.GameTileRepository
 import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
 import de.lostmekka._3m5gamejam6.entity.GameEntity
+import de.lostmekka._3m5gamejam6.entity.OpenedStairs
 import de.lostmekka._3m5gamejam6.entity.attribute.tile
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.zircon.api.data.BlockSide
@@ -51,6 +52,7 @@ class GameBlock(
     var isLit = false
     var averageSurroundingMadness = 0.0
     val altarIsActive get() = currentEntities.any { it.type is ActivatedAltar }
+    val stairsAreOpened get() = currentEntities.any { it.type is OpenedStairs }
 
     override fun fetchSide(side: BlockSide): Tile {
         return GameTileRepository.empty
