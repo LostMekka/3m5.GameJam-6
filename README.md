@@ -17,7 +17,7 @@ Wicked forces came to life but nothing  can persist against the light. It is up 
 - Fight the madness 
 - Open the portal and travel to the next area
 
-*Enjoy the game*
+***Enjoy the game***
 
 ![alt text](https://github.com/LostMekka/3m5.GameJam-6/blob/master/documentation/00.png)
 ![alt text](https://github.com/LostMekka/3m5.GameJam-6/blob/master/documentation/01.png)
