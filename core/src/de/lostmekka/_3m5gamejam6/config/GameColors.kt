@@ -25,6 +25,9 @@ object GameColors {
 
     val torchItemFg = TileColors.fromString("#FF834C")
 
+    val zombieFg = TileColors.fromString("#E62020")
+    val zombieBg = TileColors.fromString("#000000")
+
     val torchFgColors = listOf(
         TileColors.fromString("#FF834C"),
         TileColors.fromString("#FF954C"),

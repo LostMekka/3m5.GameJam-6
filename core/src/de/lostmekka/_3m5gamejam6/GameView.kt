@@ -29,7 +29,7 @@ import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.mvc.base.BaseView
 import org.hexworks.zircon.api.uievent.*
 import org.hexworks.zircon.internal.Zircon
-
+import de.lostmekka._3m5gamejam6.world.*
 
 class GameView : BaseView() {
 
@@ -42,6 +42,7 @@ class GameView : BaseView() {
         world.placePlayer()
         world.generateAltars()
         world.generateTorchItems()
+        world.generateEnemies()
         world.generateMadness()
         world.updateLighting()
 
