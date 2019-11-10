@@ -17,7 +17,7 @@ Wicked forces came to life but nothing  can persist against the light. It is up 
 - Fight the madness 
 - Open the portal and travel to the next area
 
-*** Enjoy the game :cherries: ***
+***Enjoy the game :cherries:***
 
 
 
