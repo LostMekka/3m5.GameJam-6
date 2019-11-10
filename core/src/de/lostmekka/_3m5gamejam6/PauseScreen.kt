@@ -1,8 +1,6 @@
 package de.lostmekka._3m5gamejam6
 
 import de.lostmekka._3m5gamejam6.config.GameConfig
-import de.lostmekka._3m5gamejam6.entity.GameEntity
-import de.lostmekka._3m5gamejam6.entity.Player
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.builder.component.ModalBuilder
 import org.hexworks.zircon.api.component.ComponentAlignment
@@ -39,13 +37,24 @@ class PauseDialog(screen: Screen) : Dialog(screen) {
 
     override val container = Components.vbox()
         .withTitle("Pause")
-        .withSize(30, 15)
+        .withSize(60, 40)
         .withBoxType(BoxType.TOP_BOTTOM_DOUBLE)
         .wrapWithBox()
         .build().apply {
-            addComponent(Components.textBox()
-                .withContentWidth(27)
-                .addParagraph("Click \"OK\" to continue"))
+            addComponent(
+                Components.textBox()
+                    .withContentWidth(56)
+                    .withAlignmentWithin(this, ComponentAlignment.CENTER)
+                    .addParagraph("Move with WASD")
+                    .addParagraph("Press Space to wait")
+                    .addParagraph("Press G to grab torches")
+                    .addParagraph("Press T repeatedly to place torches")
+                    .addParagraph("Press E repeatedly to activate altars")
+                    .addParagraph("Activate all altars to unlock the portal")
+                    .addParagraph("Press 1/2 to equip your torch/sword")
+                    .addParagraph("Run into enemies with your sword to damage them")
+                    .addParagraph("Click \"OK\" to continue")
+            )
         }
 }
 

@@ -164,7 +164,7 @@ class GameView : BaseView() {
         }
 
         screen.onKeyboardEvent(KeyboardEventType.KEY_PRESSED) { event, _ ->
-            if (event.code == KeyCode.KEY_P) {
+            if (event.code == KeyCode.ESCAPE) {
                 screen.openModal(PauseDialog(screen))
             } else {
                 world.onKeyInput(screen, event)
