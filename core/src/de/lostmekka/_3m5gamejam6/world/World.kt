@@ -67,15 +67,12 @@ class World(
 
 
     fun movePlayer(position: Position3D): Boolean {
-
-
         val success = moveEntity(player, position)
         if (success) onPlayerMoved()
         return success
     }
 
-    private fun World.checkEnemyDamage(position: Position3D) {
-
+    private fun checkEnemyDamage(position: Position3D) {
         if (player.inventory.holdsSword) {
             get(position)?.currentEntities?.filter { it.type == EnemyZombie }?.forEach {
                 it.health -= Random.nextInt(GameConfig.SwordDamageMin, GameConfig.SwordDamageMax)
@@ -126,14 +123,21 @@ class World(
 
     fun onPlayerMoved() {
         player.inventory.buildingProgress = 0
-        // check for stairs and go to next level
-        if (this[player.position]?.isStairs == true) {
+        if (this[player.position]?.isDoor == true) {
+            Zircon.eventBus.publish(SoundEvent("Door"))
+        } else if (this[player.position]?.isStairs == true) {
+            // go to next level
             if (levelDepth + 1 < GameConfig.levelCount) {
+                Zircon.eventBus.publish(SoundEvent("NextLevel"))
                 Zircon.eventBus.publish(NextLevel(levelDepth + 1))
             } else {
+                Zircon.eventBus.publish(SoundEvent("YouWon"))
                 Zircon.eventBus.publish(WON)
             }
+        } else {
+            Zircon.eventBus.publish(SoundEvent("Step"))
         }
+
     }
 
     fun tick() {
