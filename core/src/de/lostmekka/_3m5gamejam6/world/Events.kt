@@ -9,3 +9,5 @@ data class NextLevel(val depth: Int) : Event
 object WON : Event
 
 object ValidInput : Event
+
+data class SoundEvent(val cause: String) : Event
