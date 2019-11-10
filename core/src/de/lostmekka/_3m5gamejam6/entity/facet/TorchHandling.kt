@@ -41,17 +41,19 @@ object TorchHandling : BaseFacet<GameContext>() {
         }
 
         command.whenCommandIs(BuildTorch::class) { (context, _, position) ->
-            val success = build(
-                context = context,
-                position = position,
-                buildingCost = GameConfig.torchBuildingCost,
-                buildingTime = GameConfig.torchBuildingTime,
-                buildingType = Torch,
-                buildOperation = { context.world.placeTorch(it) }
-            )
-            if (success) response = Consumed
-            success
-        }
+               val success = build(
+                  context = context,
+                  position = position,
+                  buildingCost = GameConfig.torchBuildingCost,
+                  buildingTime = GameConfig.torchBuildingTime,
+                  buildingType = Torch,
+                  buildOperation = { context.world.placeTorch(it) }
+              )
+
+              if (success) response = Consumed
+              success
+
+          }
 
         command.whenCommandIs(ActivateAltar::class) { (context, _, position) ->
             val success = build(

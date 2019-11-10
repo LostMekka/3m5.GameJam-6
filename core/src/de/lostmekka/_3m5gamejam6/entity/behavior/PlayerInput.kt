@@ -8,6 +8,7 @@ import de.lostmekka._3m5gamejam6.entity.EquipTorch
 import de.lostmekka._3m5gamejam6.entity.GameEntity
 import de.lostmekka._3m5gamejam6.entity.GrabTorchItem
 import de.lostmekka._3m5gamejam6.entity.MoveTo
+import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.entity.attribute.position
 import de.lostmekka._3m5gamejam6.world.ValidInput
 import org.hexworks.amethyst.api.Consumed
@@ -28,10 +29,10 @@ object InputReceiver : BaseBehavior<GameContext>() {
                 uiEvent.code == KeyCode.KEY_G -> player.executeCommand(GrabTorchItem(context, player, currentPos))
 
                 // build torch
-                uiEvent.code == KeyCode.KEY_T -> player.executeCommand(BuildTorch(context, player, currentPos))
+                uiEvent.code == KeyCode.KEY_T && !player.inventory.holdsSword -> player.executeCommand(BuildTorch(context, player, currentPos))
 
                 // activate altar
-                uiEvent.code == KeyCode.KEY_E -> player.executeCommand(ActivateAltar(context, player, currentPos))
+                uiEvent.code == KeyCode.KEY_E && !player.inventory.holdsSword -> player.executeCommand(ActivateAltar(context, player, currentPos))
 
                 // equip torch
                 uiEvent.code == KeyCode.DIGIT_1 -> player.executeCommand(EquipTorch(context, player))
