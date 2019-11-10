@@ -14,6 +14,6 @@ Used IDE is "IntelliJ IDEA Community 2019.2"
 
 1. Clone the repo
 2. Go to project on the left sidepanel
-3. Navigate to DesktopLauncher >> right-mouse-click >> "Run 'DesktopLauncher.main()'"
+3. Navigate to desktop\src[main]\...\DesktopLauncher >> right-mouse-click >> "Run 'DesktopLauncher.main()'"
 
 Enjoy the game.
