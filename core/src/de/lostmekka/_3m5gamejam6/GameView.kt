@@ -65,8 +65,6 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
         world.updateLighting()
 
 
-        var index = 1
-
         val sidebar = Components.panel()
             .withSize(GameConfig.sidebarWidth, GameConfig.windowHeight)
             .withAlignmentWithin(screen, ComponentAlignment.RIGHT_CENTER)
@@ -80,6 +78,17 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
             .withProjectionMode(ProjectionMode.TOP_DOWN)
             .withAlignmentWithin(screen, ComponentAlignment.TOP_LEFT)
             .build()
+
+
+        var index = 2
+
+        val txtLevel = Components.label()
+            .withSize(GameConfig.sidebarWidth, 1)
+            .withText( "Level 1")
+            .withPosition(0, index)
+            .build()
+
+        index += 4
 
         val txtPosition = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
@@ -115,6 +124,7 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
         val txtEquipment = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
             .withPosition(0, index)
+            .withText("Equipped: Torch")
             .build()
         index += 2
 
@@ -138,6 +148,7 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
             .withAlignmentWithin(screen, BOTTOM_LEFT)
             .build()
 
+        sidebar.addComponent(txtLevel)
         sidebar.addComponent(txtPosition)
         sidebar.addComponent(txtPointingLabel)
         sidebar.addComponent(txtPointingItem)
@@ -167,6 +178,7 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
 
         Zircon.eventBus.subscribe<NextLevel> {
             if (isActive) {
+                txtLevel.text = "Level " + it.depth + 1
                 replaceWith(GameView(levelDepth = it.depth))
                 close()
             }
@@ -214,8 +226,8 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
                 txtTorches.text = "Torches: " + world.player.inventory.torches
 
                 if (world.player.inventory.holdsSword)
-                    txtEquipment.text = "Equiped: Sword"
-                else txtEquipment.text = "Equiped: Torch"
+                    txtEquipment.text = "Equipped: Sword"
+                else txtEquipment.text = "Equipped: Torch"
 
                 if (world.player.inventory.buildingProgress > 0) {
                     txtTorchBuildProgress.isVisible = Visibility.Visible

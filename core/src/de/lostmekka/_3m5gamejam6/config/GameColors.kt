@@ -20,8 +20,6 @@ object GameColors {
     val floorFgMadness = TileColors.fromString("#4b2b5e")
     val floorBgMadness = TileColors.fromString("#000000")
 
-
-
     val doorFg = TileColors.fromString("#FFCD22")
     val doorFgMadness = TileColors.fromString("#8923c7")
 
@@ -38,7 +36,7 @@ object GameColors {
         TileColors.fromString("#FF834C"),
         TileColors.fromString("#FF954C"),
         TileColors.fromString("#FFC923"),
-        TileColors.fromString("#EB49D1")
+        TileColors.fromString("#facc14")
     )
 
 }

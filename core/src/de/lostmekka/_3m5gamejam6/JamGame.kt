@@ -39,26 +39,39 @@ class FakeScreen : KtxScreen {
         application.dock(StartView())
 
         // start background music
-        var backGroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/madness.ogg"))
-        backGroundMusic.isLooping = true
-        backGroundMusic.play()
-        backGroundMusic.volume = 0.1f
+        var backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/music.ogg"))
+        backgroundMusic.isLooping = true
+        backgroundMusic.play()
+        backgroundMusic.volume = GameConfig.backgroundMusicVolume
+
+        // start madness whispering
+        var madnessWhisper = Gdx.audio.newMusic(Gdx.files.internal("sound/madness.ogg"))
+        madnessWhisper.isLooping = true
+        madnessWhisper.play()
+        madnessWhisper.volume = GameConfig.whisperVolumeMin
 
         // add sound effects
         val doorSound = Gdx.audio.newSound(Gdx.files.internal("sound/door.wav"))
         val stepSound = Gdx.audio.newSound(Gdx.files.internal("sound/step.wav"))
         val nextLevelSound = Gdx.audio.newSound(Gdx.files.internal("sound/nextLevel.wav"))
         val hitSound = Gdx.audio.newSound(Gdx.files.internal("sound/hit.wav"))
+        val buildProgressSound = Gdx.audio.newSound(Gdx.files.internal("sound/build_progress.wav"))
+        val buildFinishedSound = Gdx.audio.newSound(Gdx.files.internal("sound/build_finished.wav"))
         Zircon.eventBus.subscribe<SoundEvent> {
             when(it.cause) {
                 "Door" -> doorSound.play()
-                "Step" -> stepSound.play()
+                "Step" -> stepSound.play(0.5f)
                 "NextLevel" -> nextLevelSound.play()
                 "Hit" -> hitSound.play()
+                "BuildProgress" -> buildProgressSound.play()
+                "BuildFinished" -> buildFinishedSound.play()
             }
         }
+
+        // calculate madness whispering volume
         Zircon.eventBus.subscribe<MadnessExpanse> {
-            backGroundMusic.volume = if (it.percentage > 10) (it.percentage).toFloat() / 100 else 0.1f
+            madnessWhisper.volume = GameConfig.whisperVolumeMin +
+                    ((it.percentage).toFloat() / 100 * (GameConfig.whisperVolumeMax - GameConfig.whisperVolumeMin))
         }
     }
 
