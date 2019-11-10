@@ -81,8 +81,8 @@ project(":core") {
         compile "io.github.libktx:ktx-log:$ktxVersion"
         compile "io.github.libktx:ktx-math:$ktxVersion"
 
-        implementation 'org.hexworks.zircon:zircon.core-jvm:2019.1.0-PREVIEW'
-        implementation 'org.hexworks.zircon:zircon.jvm.swing:2019.1.0-PREVIEW'
-        implementation 'org.hexworks.amethyst:amethyst.core-jvm:2019.0.4-PREVIEW'
+        compile 'org.hexworks.zircon:zircon.core-jvm:2019.1.0-PREVIEW'
+        compile 'org.hexworks.zircon:zircon.jvm.swing:2019.1.0-PREVIEW'
+        compile 'org.hexworks.amethyst:amethyst.core-jvm:2019.0.4-PREVIEW'
     }
 }
