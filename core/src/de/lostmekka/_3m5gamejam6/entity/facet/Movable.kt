@@ -1,4 +1,4 @@
-package de.lostmekka._3m5gamejam6.entity.system
+package de.lostmekka._3m5gamejam6.entity.facet
 
 import de.lostmekka._3m5gamejam6.GameContext
 import de.lostmekka._3m5gamejam6.entity.GameCommand
