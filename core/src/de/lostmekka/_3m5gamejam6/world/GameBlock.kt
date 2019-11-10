@@ -17,6 +17,7 @@ class GameBlock(
     val isWalkable: Boolean,
     val isTransparent: Boolean,
     var hasMadness: Boolean = false,
+    val isDoor: Boolean = false,
     val isAltar: Boolean = false,
     val isStairs: Boolean = false,
     val currentEntities: MutableList<GameEntity<EntityType>> = mutableListOf()
@@ -93,7 +94,8 @@ class GameBlock(
             madnessTile = GameTileRepository.doorMadness,
             tileName = "Door",
             isWalkable = true,
-            isTransparent = false
+            isTransparent = false,
+            isDoor = true
         )
 
         fun altar() = GameBlock(

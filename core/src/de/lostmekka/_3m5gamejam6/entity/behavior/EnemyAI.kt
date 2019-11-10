@@ -8,11 +8,12 @@ import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.position
 import de.lostmekka._3m5gamejam6.entity.attribute.position2D
 import de.lostmekka._3m5gamejam6.nextBoolean
-import javafx.geometry.Dimension2D
-import javafx.geometry.Pos
+import de.lostmekka._3m5gamejam6.world.SoundEvent
 import org.hexworks.amethyst.api.base.BaseBehavior
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.zircon.api.data.impl.Position3D
+import org.hexworks.zircon.internal.Zircon
+import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.random.Random
 
@@ -48,50 +49,36 @@ object EnemyAI : BaseBehavior<GameContext>() {
 
     }
 
-    fun randomX(currentPos: Position3D): Position3D {
-        var newPosition = currentPos.withRelativeX(Random.nextInt(-1, 2))
-        return newPosition
-
+    private fun randomX(currentPos: Position3D): Position3D {
+        return currentPos.withRelativeX(Random.nextInt(-1, 2))
     }
 
-    fun randomY(currentPos: Position3D): Position3D {
-        var newPosition = currentPos.withRelativeY(Random.nextInt(-1, 2))
-        return newPosition
-
+    private fun randomY(currentPos: Position3D): Position3D {
+        return currentPos.withRelativeY(Random.nextInt(-1, 2))
     }
 
-    fun getDistance(pos1: Position3D, pos2: Position3D): Double {
-
-        var dx: Double = Math.pow((pos1.x - pos2.x).toDouble(),2.0)
-        var dy: Double = Math.pow((pos1.y - pos2.y).toDouble(),2.0)
-
-        var dist = sqrt(dx + dy)
-
-
-        return dist
+    private fun getDistance(pos1: Position3D, pos2: Position3D): Double {
+        val dx: Double = (pos1.x - pos2.x).toDouble().pow(2.0)
+        val dy: Double = (pos1.y - pos2.y).toDouble().pow(2.0)
+        return sqrt(dx + dy)
     }
 
     override fun update(entity: GameEntity<out EntityType>, context: GameContext): Boolean {
-        val (world, _, uiEvent, player) = context
+        val (world, _, _, player) = context
         val currentPos = entity.position
 
-
         //check for isPlayer near???
-        val playerfound = world
+        val playerFound = world
             .findVisiblePositionsFor(currentPos.to2DPosition(), GameConfig.enemyViewDistance)
             .any { player.position2D == it }
-        if (playerfound) {
-
+        if (playerFound) {
             if (Random.nextBoolean((GameConfig.enemyChasesPlayer))) {
-
                 //if yes calc delta distance
                 deltaX = player.position2D.x - entity.position2D.x
                 deltaY = player.position2D.y - entity.position2D.y
 
-
                 val pos1 = adaptX(currentPos)
                 val pos2 = adaptY(currentPos)
-
                 if (getDistance(pos1, player.position) >= getDistance(pos2, player.position)) {
                     entity.executeCommand(MoveTo(context, entity, pos2))
                 } else {
@@ -102,7 +89,6 @@ object EnemyAI : BaseBehavior<GameContext>() {
         } else {
 
             if (Random.nextBoolean((1 - GameConfig.enemySleeps))) {
-
                 if (Random.nextBoolean(0.5)) {
                     entity.executeCommand(MoveTo(context, entity, randomX(currentPos)))
                 } else {
@@ -113,10 +99,10 @@ object EnemyAI : BaseBehavior<GameContext>() {
 
         //check if player is caught >> kill player
         if (player.position2D == entity.position2D) {
+            Zircon.eventBus.publish(SoundEvent("Hit"))
             player.health -= GameConfig.enemyDamage
             world.checkPlayerDeath()
         }
-
         return true
     }
 }
