@@ -33,7 +33,7 @@ object EntityFactory {
         facets(Movable, TorchHandling, Equipable)
     }
 
-    fun newEnemyZombie() = newGameEntityOfType(Enemy) {
+    fun newEnemyZombie() = newGameEntityOfType(EnemyZombie) {
         attributes(
             EntityPosition(),
             EntityTileAnimation(GameTileRepository.enemyZombie),

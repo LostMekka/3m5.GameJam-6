@@ -100,10 +100,16 @@ class GameView : BaseView() {
             .withPosition(0, 7)
             .build()
 
-        val txtTorchBuildProgress = Components.label()
+        val txtEquipment = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
             .withPosition(0, 9)
             .build()
+
+        val txtTorchBuildProgress = Components.label()
+            .withSize(GameConfig.sidebarWidth, 1)
+            .withPosition(0, 11)
+            .build()
+
 
         val logArea = Components.logArea()
             .withTitle("Log")
@@ -117,6 +123,7 @@ class GameView : BaseView() {
         sidebar.addComponent(txtPointingItem)
         sidebar.addComponent(txtHealth)
         sidebar.addComponent(txtTorches)
+        sidebar.addComponent(txtEquipment)
         sidebar.addComponent(txtTorchBuildProgress)
 
         screen.addComponent(sidebar)
@@ -170,6 +177,11 @@ class GameView : BaseView() {
                 world.onKeyInput(screen, event)
                 txtHealth.text = "HP: " + world.player.health
                 txtTorches.text = "Torches: " + world.player.inventory.torches
+
+                if (world.player.inventory.holdsSword)
+                    txtEquipment.text = "Equiped: Sword"
+                else txtEquipment.text = "Equiped: Torch"
+
                 if (world.player.inventory.buildingProgress > 0) {
                     txtTorchBuildProgress.isVisible = Visibility.Visible
                     txtTorchBuildProgress.text = "Build: " + getTorchBuildingProgressBar(world)
