@@ -3,6 +3,7 @@ package de.lostmekka._3m5gamejam6.entity.system
 import de.lostmekka._3m5gamejam6.GameContext
 import de.lostmekka._3m5gamejam6.entity.GameCommand
 import de.lostmekka._3m5gamejam6.entity.MoveTo
+import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Pass
 import org.hexworks.amethyst.api.Response
@@ -15,6 +16,7 @@ object Movable : BaseFacet<GameContext>() {
             val world = context.world
             var result: Response = Pass
             if (world.moveEntity(entity, position)) {
+                context.world.player.inventory.torchBuildingProgress = 0
                 result = Consumed
             }
 

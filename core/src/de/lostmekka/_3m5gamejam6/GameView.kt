@@ -76,6 +76,11 @@ class GameView : BaseView() {
             .withPosition(0, 3)
             .build()
 
+        val txtTorchBuildProgress = Components.label()
+            .withSize(GameConfig.sidebarWidth, 2)
+            .withPosition(0, 9)
+            .build()
+
         val logArea = Components.logArea()
             .withTitle("Log")
             .wrapWithBox()
@@ -87,6 +92,7 @@ class GameView : BaseView() {
         sidebar.addComponent(txtPointingItem)
         sidebar.addComponent(txtHealth)
         sidebar.addComponent(txtTorches)
+        sidebar.addComponent(txtTorchBuildProgress)
 
         screen.addComponent(sidebar)
         screen.addComponent(mainArea)
@@ -99,7 +105,7 @@ class GameView : BaseView() {
             txtPosition.text = "Mouse: ${event.position.x} | ${event.position.y}"
 
             val temp = world.gameArea.fetchBlockOrDefault(Position3D.create(event.position.x, event.position.y, 0))
-            txtPointingItem.text = "Pointing at: " + temp.name
+            txtPointingItem.text = "Looking at: " + temp.name
 
             UIEventResponses.processed()
         }
@@ -119,7 +125,15 @@ class GameView : BaseView() {
             world.onKeyInput(screen, event)
             txtHealth.text = "HP: " + world.player.health
             txtTorches.text = "Torches: " + world.player.inventory.torches
+            txtTorchBuildProgress.text = "Torch Build:\n" + getTorchBuildingProgressBar(world)
             Processed
         }
+    }
+
+    private fun getTorchBuildingProgressBar(world: World): String {
+        var progressBar = "["
+        for (i in 0..4) progressBar += if (i < world.player.inventory.torchBuildingProgress) "=" else " "
+        progressBar += "]"
+        return progressBar
     }
 }

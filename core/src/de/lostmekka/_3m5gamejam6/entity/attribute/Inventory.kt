@@ -7,7 +7,8 @@ import org.hexworks.cobalt.databinding.api.createPropertyFrom
 import org.hexworks.cobalt.datatypes.extensions.map
 
 class Inventory(
-    var torches: Int = GameConfig.playerInitialTorchCount
+    var torches: Int = GameConfig.playerInitialTorchCount,
+    var torchBuildingProgress: Int = 0
 )
 
 class EntityInventory(initialInventory: Inventory = Inventory()) : Attribute {

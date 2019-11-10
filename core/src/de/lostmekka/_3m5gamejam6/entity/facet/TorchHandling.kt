@@ -35,8 +35,17 @@ object TorchHandling : BaseFacet<GameContext>() {
         }
 
         command.whenCommandIs(BuildTorch::class) { (context, _, position) ->
-            if (context.world.player.inventory.torches > 0 && context.world.placeTorch(position)) {
-                context.world.player.inventory.torches -= 1
+            // check whether torch is dropable
+            val block = context.world[position] ?: return@whenCommandIs false
+            if (block.currentEntities.any { it.type is Torch }) return@whenCommandIs false
+            // check progress of build
+            val inventory = context.world.player.inventory
+            if (inventory.torches > 0 && inventory.torchBuildingProgress < 5) {
+                inventory.torchBuildingProgress += 1
+            }
+            if (inventory.torchBuildingProgress == 5 && context.world.placeTorch(position)) {
+                inventory.torches -= 1
+                inventory.torchBuildingProgress = 0
             }
             response = Consumed
             true
