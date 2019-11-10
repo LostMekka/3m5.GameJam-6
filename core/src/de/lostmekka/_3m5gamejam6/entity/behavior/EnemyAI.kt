@@ -61,8 +61,11 @@ object EnemyAI : BaseBehavior<GameContext>() {
     }
 
     fun getDistance(pos1: Position3D, pos2: Position3D): Double {
-        var dx: Double = ((pos1.x - pos2.x) * (pos1.x - pos2.x)).toDouble()
-        var dy: Double = ((pos1.y - pos2.y) * (pos1.y - pos2.y)).toDouble()
+
+        println( Math.pow(4.0,2.0))
+
+        var dx: Double = Math.pow((pos1.x - pos2.x).toDouble(),2.0)
+        var dy: Double = Math.pow((pos1.y - pos2.y).toDouble(),2.0)
 
         var dist = sqrt(dx + dy)
 
