@@ -73,6 +73,27 @@ fun World.placeTorchItem(pos: Position3D) {
     newTorch.position = pos
 }
 
+fun World.generateEnemies()
+{
+    repeat(GameConfig.areaInitialEnemyZombieCount) {
+        val x = Random.nextInt(gameArea.actualSize().xLength - 1)
+        val y = Random.nextInt(gameArea.actualSize().yLength - 1)
+        val pos = Position3D.create(x, y, 0)
+        placeEnemyZombie(pos)
+    }
+}
+
+fun World.placeEnemyZombie(pos: Position3D)
+{
+    val block = this[pos]
+    if (block != null && block.isWalkable && block.isTransparent) {
+        val newZombie = EntityFactory.newEnemyZombie()
+        newZombie.position = pos
+        block.currentEntities += newZombie
+        engine.addEntity(newZombie)
+    }
+}
+
 fun World.placePlayer() {
     val pos = Position3D.create(10, 10, 0)
     val block = this[pos] ?: return

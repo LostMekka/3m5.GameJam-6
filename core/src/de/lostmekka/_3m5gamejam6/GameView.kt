@@ -3,15 +3,7 @@ package de.lostmekka._3m5gamejam6
 import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
-import de.lostmekka._3m5gamejam6.world.GameBlock
-import de.lostmekka._3m5gamejam6.world.World
-import de.lostmekka._3m5gamejam6.world.generateMadness
-import de.lostmekka._3m5gamejam6.world.generateRooms
-import de.lostmekka._3m5gamejam6.world.generateTorchItems
-import de.lostmekka._3m5gamejam6.world.placePlayer
-import de.lostmekka._3m5gamejam6.world.placeTorch
-import de.lostmekka._3m5gamejam6.world.placeTorchItem
-import de.lostmekka._3m5gamejam6.world.updateLighting
+import de.lostmekka._3m5gamejam6.world.*
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.UIEventResponses
@@ -39,6 +31,7 @@ class GameView : BaseView() {
         world.generateRooms()
         world.placePlayer()
         world.generateTorchItems()
+        world.generateEnemies()
         world.generateMadness()
         world.updateLighting()
 
