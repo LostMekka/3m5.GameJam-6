@@ -19,54 +19,47 @@ object EnemyAI : BaseBehavior<GameContext>() {
         val currentPos = entity.position
         var newPosition = Position3D.unknown()
 
+        //check for isPlayer near???
         val playerfound = world
             .findVisiblePositionsFor(currentPos.to2DPosition(), GameConfig.enemyViewDistance)
             .any { player.position2D == it }
         if (playerfound) {
-            println("Iam gonna kill you")
 
+            //if yes calc delta distance
             var deltaX = player.position2D.x - entity.position2D.x
             var deltaY = player.position2D.y - entity.position2D.y
 
             newPosition = currentPos
 
-
-
-            println("DeltaX " + deltaX)
-            println("DeltaY " + deltaY)
-
+            //decrese distance bitween player and enemy
             if (deltaX != 0) if (deltaX > 0) {
                 newPosition =
                     newPosition.withRelativeX(+1)
-                println("Chasing player x+1")
             } else {
-                println("Chasing player x-1")
                 newPosition = newPosition.withRelativeX(-1)
             }
 
             if (deltaY != 0) if (deltaY > 0) {
-                println("Chasing player y+1")
                 newPosition =
                     newPosition.withRelativeY(+1)
             } else {
-                println("Chasing player y-1")
                 newPosition = newPosition.withRelativeY(-1)
             }
 
-
+//no player >> Do some random movement
         } else {
             newPosition = currentPos.withRelativeX(Random.nextInt(-1, 2))
             newPosition = newPosition.withRelativeY(Random.nextInt(-1, 2))
         }
 
+        //finaly do the movement
         entity.executeCommand(MoveTo(context, entity, newPosition))
 
 
-
+        //check if player is caught >> kill player
         if (player.position2D == entity.position2D) {
-            //Deal some damage
-            println("I got you")
             player.health -= GameConfig.enemyDamage
+            world.checkPlayerDeath()
         }
 
         return true

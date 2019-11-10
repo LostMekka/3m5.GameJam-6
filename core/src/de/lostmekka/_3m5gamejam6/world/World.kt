@@ -77,12 +77,17 @@ class World(
         return success
     }
 
+    fun checkPlayerDeath()
+    {
+        if (player.health <= 0) {
+            Zircon.eventBus.publish(PlayerDied("You died because of madness!"))
+        }
+    }
+
     private fun checkPlayerMadness(block: GameBlock) {
         if (block.hasMadness) {
             player.health -= GameConfig.madnessHealthDecrease
-            if (player.health <= 0) {
-                Zircon.eventBus.publish(PlayerDied("You died because of madness!"))
-            }
+            checkPlayerDeath()
         }
     }
 
