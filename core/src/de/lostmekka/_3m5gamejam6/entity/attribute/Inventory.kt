@@ -12,6 +12,7 @@ class Inventory(
     var buildingProgress: Int = 0,
     var maxBuildingProgress: Int = 0,
     var buildingType: EntityType? = null
+    var holdsSword: Boolean = false
 )
 
 class EntityInventory(initialInventory: Inventory = Inventory()) : Attribute {

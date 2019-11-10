@@ -7,6 +7,7 @@ import de.lostmekka._3m5gamejam6.entity.attribute.EntityInventory
 import de.lostmekka._3m5gamejam6.entity.attribute.EntityPosition
 import de.lostmekka._3m5gamejam6.entity.attribute.EntityTileAnimation
 import de.lostmekka._3m5gamejam6.entity.behavior.InputReceiver
+import de.lostmekka._3m5gamejam6.entity.facet.Equipable
 import de.lostmekka._3m5gamejam6.entity.facet.TorchHandling
 import de.lostmekka._3m5gamejam6.entity.facet.Movable
 import org.hexworks.amethyst.api.Entities
@@ -28,7 +29,7 @@ object EntityFactory {
             EntityInventory()
         )
         behaviors(InputReceiver)
-        facets(Movable, TorchHandling)
+        facets(Movable, TorchHandling, Equipable)
     }
 
     fun newTorchItem() = newGameEntityOfType(TorchItem) {

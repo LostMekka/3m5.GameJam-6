@@ -22,7 +22,6 @@ object GameConfig {
     const val madnessHealthDecrease = 10
 
     const val fogOfWarEnabled = true
-    const val playerLightRadius = 2
     const val torchLightRadius = 6
     const val altarLightRadius = 8
 

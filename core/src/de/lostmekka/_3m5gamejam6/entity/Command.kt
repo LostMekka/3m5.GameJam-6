@@ -22,6 +22,16 @@ data class BuildTorch(
     val position: Position3D
 ) : GameCommand<EntityType>
 
+data class EquipTorch(
+    override val context: GameContext,
+    override val source: GameEntity<EntityType>
+) : GameCommand<EntityType>
+
+data class EquipSword(
+    override val context: GameContext,
+    override val source: GameEntity<EntityType>
+) : GameCommand<EntityType>
+
 data class ActivateAltar(
     override val context: GameContext,
     override val source: GameEntity<EntityType>,

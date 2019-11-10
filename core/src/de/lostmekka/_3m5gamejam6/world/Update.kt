@@ -82,8 +82,12 @@ fun World.updateLighting() {
         altars += block.currentEntities.filter { it.type is ActivatedAltar }
     }
 
-    val playerLight = if (player.inventory.torches > 0) GameConfig.torchLightRadius else GameConfig.playerLightRadius
-    floodLight(player.position.to2DPosition(), playerLight)
+    // light around player if not holding sword and torches available
+    if (!player.inventory.holdsSword && player.inventory.torches > 0) {
+        floodLight(player.position.to2DPosition(), GameConfig.torchLightRadius)
+    } else {
+        this[player.position.to2DPosition()]?.isLit = true
+    }
 
     torches.forEach { floodLight(it.position.to2DPosition(), GameConfig.torchLightRadius) }
 
