@@ -34,7 +34,6 @@ abstract class Dialog(
 }
 
 class PauseDialog(screen: Screen) : Dialog(screen) {
-
     override val container = Components.vbox()
         .withTitle("Pause")
         .withSize(60, 40)
@@ -54,6 +53,25 @@ class PauseDialog(screen: Screen) : Dialog(screen) {
                     .addParagraph("Press 1/2 to equip your torch/sword")
                     .addParagraph("Run into enemies with your sword to damage them")
                     .addParagraph("Click \"OK\" to continue")
+            )
+        }
+}
+
+fun Screen.storyModal(title: String, vararg paragraphs: String) {
+    openModal(StoryDialog(this, title, *paragraphs))
+}
+class StoryDialog(screen: Screen, title: String, vararg paragraphs: String) : Dialog(screen) {
+    override val container = Components.vbox()
+        .withTitle(title)
+        .withSize(60, 40)
+        .withBoxType(BoxType.TOP_BOTTOM_DOUBLE)
+        .wrapWithBox()
+        .build().apply {
+            addComponent(
+                Components.textBox()
+                    .withContentWidth(56)
+                    .withAlignmentWithin(this, ComponentAlignment.CENTER)
+                    .apply { for (text in paragraphs) addParagraph(text) }
             )
         }
 }

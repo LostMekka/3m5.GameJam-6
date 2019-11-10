@@ -8,6 +8,7 @@ import de.lostmekka._3m5gamejam6.entity.attribute.position2D
 import de.lostmekka._3m5gamejam6.nextBoolean
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.zircon.api.data.impl.Position3D
+import org.hexworks.zircon.internal.Zircon
 import kotlin.math.sqrt
 import kotlin.random.Random
 
@@ -106,6 +107,7 @@ fun World.updateEnemyZombie(entity: GameEntity<EntityType>) {
 
     //check if player is caught >> kill player
     if (player.position2D == entity.position2D) {
+        Zircon.eventBus.publish(SoundEvent("Hit"))
         player.health -= GameConfig.enemyDamage
         this.checkPlayerDeath()
     }

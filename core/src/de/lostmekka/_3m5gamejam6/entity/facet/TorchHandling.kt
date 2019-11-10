@@ -11,6 +11,7 @@ import de.lostmekka._3m5gamejam6.entity.Player
 import de.lostmekka._3m5gamejam6.entity.Torch
 import de.lostmekka._3m5gamejam6.entity.TorchItem
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
+import de.lostmekka._3m5gamejam6.world.SoundEvent
 import de.lostmekka._3m5gamejam6.world.activateAltar
 import de.lostmekka._3m5gamejam6.world.placeTorch
 import de.lostmekka._3m5gamejam6.world.updateLighting
@@ -20,6 +21,7 @@ import org.hexworks.amethyst.api.Response
 import org.hexworks.amethyst.api.base.BaseFacet
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.zircon.api.data.impl.Position3D
+import org.hexworks.zircon.internal.Zircon
 
 object TorchHandling : BaseFacet<GameContext>() {
     override fun executeCommand(command: GameCommand<out EntityType>): Response {
@@ -102,12 +104,14 @@ object TorchHandling : BaseFacet<GameContext>() {
             }
             !buildingDone -> {
                 inventory.buildingProgress += 1
+                Zircon.eventBus.publish(SoundEvent("BuildProgress"))
             }
             buildOperation(position) -> {
                 inventory.torches -= buildingCost
                 inventory.buildingProgress = 0
                 inventory.maxBuildingProgress = 0
                 inventory.buildingType = null
+                Zircon.eventBus.publish(SoundEvent("BuildFinished"))
             }
         }
         return true
