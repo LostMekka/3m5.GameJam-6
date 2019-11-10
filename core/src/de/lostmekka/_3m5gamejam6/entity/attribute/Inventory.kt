@@ -8,7 +8,8 @@ import org.hexworks.cobalt.datatypes.extensions.map
 
 class Inventory(
     var torches: Int = GameConfig.playerInitialTorchCount,
-    var torchBuildingProgress: Int = 0
+    var torchBuildingProgress: Int = 0,
+    var holdsSword: Boolean = false
 )
 
 class EntityInventory(initialInventory: Inventory = Inventory()) : Attribute {
