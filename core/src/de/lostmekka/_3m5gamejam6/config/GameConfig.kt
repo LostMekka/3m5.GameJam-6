@@ -21,7 +21,7 @@ object GameConfig {
     const val madnessRetreatProbability = 0.6
     const val madnessHealthDecrease = 10
 
-    const val fogOfWarEnabled = true
+    const val fogOfWarEnabled = false
     const val torchLightRadius = 6
     const val altarLightRadius = 8
 
@@ -37,5 +37,6 @@ object GameConfig {
     const val areaInitialEnemyZombieCount = 20
     const val enemyViewDistance = 7
     const val enemyDamage = 30
-
+    const val enemySleeps = 0.7 //How proper it is that enemy will move
+    const val enemyChasesPlayer = 0.6
 }

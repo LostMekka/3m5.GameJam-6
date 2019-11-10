@@ -10,14 +10,16 @@ import org.hexworks.zircon.api.data.impl.Position3D
 import kotlin.random.Random
 
 fun World.generateRooms() {
+    // fill all with floor, border with walls
     val (w, h) = gameArea.actualSize().to2DSize()
     for (x in 0 until w) {
         for (y in 0 until h) {
-            gameArea.setBlockAt(Position3D.create(x, y, 0), GameBlock.floor())
+            val block = if (x == 0 || y == 0 || x == w-1 || y == h-1) GameBlock.wall() else GameBlock.floor()
+            gameArea.setBlockAt(Position3D.create(x, y, 0), block)
         }
     }
 
-    generateRandomWalls(-1, Random.nextInt(h - 1))
+    generateRandomWalls(0, Random.nextInt(1, h - 1))
 }
 
 private fun World.generateRandomWalls(
@@ -27,36 +29,40 @@ private fun World.generateRandomWalls(
     doorNext: Boolean = true,
     xDir: Boolean = true,
     increase: Int = 1
-) {
+): Boolean {
     val x = if (xDir) _x + increase else _x
     val y = if (xDir) _y else _y + increase
     val position = Position3D.create(x, y, 0)
     if (xDir) {
-        if (checkBlockForFloor(Position3D.create(x, y - 1, 0))) return
-        if (checkBlockForFloor(Position3D.create(x, y - 2, 0))) return
-        if (checkBlockForFloor(Position3D.create(x, y + 1, 0))) return
-        if (checkBlockForFloor(Position3D.create(x, y + 2, 0))) return
+        if (checkBlockForFloor(Position3D.create(x, y - 1, 0))) return false
+        if (checkBlockForFloor(Position3D.create(x, y - 2, 0))) return false
+        if (checkBlockForFloor(Position3D.create(x, y + 1, 0))) return false
+        if (checkBlockForFloor(Position3D.create(x, y + 2, 0))) return false
     } else {
-        if (checkBlockForFloor(Position3D.create(x - 1, y, 0))) return
-        if (checkBlockForFloor(Position3D.create(x - 2, y, 0))) return
-        if (checkBlockForFloor(Position3D.create(x + 1, y, 0))) return
-        if (checkBlockForFloor(Position3D.create(x + 2, y, 0))) return
+        if (checkBlockForFloor(Position3D.create(x - 1, y, 0))) return false
+        if (checkBlockForFloor(Position3D.create(x - 2, y, 0))) return false
+        if (checkBlockForFloor(Position3D.create(x + 1, y, 0))) return false
+        if (checkBlockForFloor(Position3D.create(x + 2, y, 0))) return false
     }
-    if (checkBlockForFloor(position)) return
+    if (checkBlockForFloor(position)) return false
     if (Random.nextDouble() < prop) {
         if (doorNext) {
             gameArea.setBlockAt(position, GameBlock.door())
             generateRandomWalls(_x = x, _y = y, doorNext = false, increase = increase, xDir = xDir)
         } else {
             gameArea.setBlockAt(position, GameBlock.wall())
-            generateRandomWalls(_x = x, _y = y, xDir = !xDir, increase = increase * (-1))
-            generateRandomWalls(_x = x, _y = y, xDir = !xDir, increase = increase)
-            return
+            val succ1 = generateRandomWalls(_x = x, _y = y, xDir = !xDir, increase = increase * (-1))
+            val succ2 = generateRandomWalls(_x = x, _y = y, xDir = !xDir, increase = increase)
+            if (!(succ1 && succ2)) {
+                gameArea.setBlockAt(Position3D.create(if (xDir) x + increase else x, if (xDir) y else y + increase, 0), GameBlock.wall())
+            }
+            return true
         }
     } else {
         gameArea.setBlockAt(position, GameBlock.wall())
         generateRandomWalls(_x = x, _y = y, prop = prop * 2, increase = increase, xDir = xDir, doorNext = doorNext)
     }
+    return true
 }
 
 private fun World.checkBlockForFloor(position: Position3D) =
