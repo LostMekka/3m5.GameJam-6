@@ -40,6 +40,7 @@ class FakeScreen : KtxScreen {
 
         // start background music
         var backGroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/madness.ogg"))
+        backGroundMusic.isLooping = true
         backGroundMusic.play()
         backGroundMusic.volume = 0.1f
 
