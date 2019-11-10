@@ -32,7 +32,7 @@ class FakeScreen : KtxScreen {
             .withSize(Sizes.create(GameConfig.windowWidth, GameConfig.windowHeight))
             .build()
         application = SwingApplications.startApplication(config)
-        application.dock(GameView())
+        application.dock(StartView())
     }
 
     override fun render(delta: Float) {

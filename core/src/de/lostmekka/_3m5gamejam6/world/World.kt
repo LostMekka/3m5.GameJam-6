@@ -20,6 +20,7 @@ import org.hexworks.zircon.api.screen.Screen
 import org.hexworks.zircon.api.shape.EllipseFactory
 import org.hexworks.zircon.api.shape.LineFactory
 import org.hexworks.zircon.api.uievent.UIEvent
+import org.hexworks.zircon.internal.Zircon
 
 class World(
     visibleSize: Size3D,
@@ -80,7 +81,7 @@ class World(
         if (block.hasMadness) {
             player.health -= GameConfig.madnessHealthDecrease
             if (player.health <= 0) {
-                // TODO: quit
+                Zircon.eventBus.publish(PlayerDied("You died because of madness!"))
             }
         }
     }
