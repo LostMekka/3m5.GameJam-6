@@ -12,14 +12,17 @@ import org.hexworks.zircon.api.uievent.MouseEventType
 import org.hexworks.zircon.api.uievent.UIEventPhase
 import kotlin.system.exitProcess
 
-class LoseView(private val causeOfDeath: String) : BaseView() {
+class WinView : BaseView() {
+
     override val theme = GameConfig.theme
 
     override fun onDock() {
-        val msg = "Game Over"
+        val msg = "You won!"
         val header = Components.textBox()
-            .withContentWidth(30)
+            .withContentWidth(GameConfig.windowWidth / 2)
             .addHeader(msg)
+            .addNewLine()
+            .addParagraph("Congratulations! You have escaped from the Madness!", withNewLine = false)
             .withAlignmentWithin(screen, ComponentAlignment.CENTER)
             .build()
         val restartButton = Components.button()
@@ -42,7 +45,7 @@ class LoseView(private val causeOfDeath: String) : BaseView() {
             UIEventResponses.processed()
         }
 
-        exitButton.onMouseEvent(MouseEventType.MOUSE_RELEASED) {event: MouseEvent, _: UIEventPhase ->
+        exitButton.onMouseEvent(MouseEventType.MOUSE_RELEASED) { _: MouseEvent, _: UIEventPhase ->
             exitProcess(0)
         }
 

@@ -25,7 +25,8 @@ import org.hexworks.zircon.internal.Zircon
 
 class World(
     visibleSize: Size3D,
-    actualSize: Size3D
+    actualSize: Size3D,
+    private var levelDepth: Int = 0
 ) {
     val gameArea = GameAreaBuilder.newBuilder<Tile, GameBlock>()
         .withVisibleSize(visibleSize)
@@ -107,6 +108,14 @@ class World(
 
     fun onPlayerMoved() {
         player.inventory.buildingProgress = 0
+        // check for stairs and go to next level
+        if (this[player.position]?.isStairs == true) {
+            if (levelDepth + 1 < GameConfig.levelCount) {
+                Zircon.eventBus.publish(NextLevel(levelDepth + 1))
+            } else {
+                Zircon.eventBus.publish(WON)
+            }
+        }
     }
 
     fun tick() {

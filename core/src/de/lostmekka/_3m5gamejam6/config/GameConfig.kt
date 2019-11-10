@@ -11,6 +11,7 @@ object GameConfig {
     const val windowHeight = 62
 
     val worldSize = Size3D.create(windowWidth - sidebarWidth, windowHeight, 1)
+    val levelCount = 5
     val tileSet = CP437TilesetResources.rogueYun16x16()
     val theme = ColorThemes.zenburnVanilla()
 

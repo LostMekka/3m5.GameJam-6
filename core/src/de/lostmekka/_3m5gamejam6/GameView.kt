@@ -3,20 +3,7 @@ package de.lostmekka._3m5gamejam6
 import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
-import de.lostmekka._3m5gamejam6.world.GameBlock
-import de.lostmekka._3m5gamejam6.world.PlayerDied
-import de.lostmekka._3m5gamejam6.world.ValidInput
-import de.lostmekka._3m5gamejam6.world.World
-import de.lostmekka._3m5gamejam6.world.generateAltars
-import de.lostmekka._3m5gamejam6.world.generateEnemies
-import de.lostmekka._3m5gamejam6.world.generateMadness
-import de.lostmekka._3m5gamejam6.world.generateRooms
-import de.lostmekka._3m5gamejam6.world.generateTorchItems
-import de.lostmekka._3m5gamejam6.world.placePlayer
-import de.lostmekka._3m5gamejam6.world.placeStairs
-import de.lostmekka._3m5gamejam6.world.placeTorch
-import de.lostmekka._3m5gamejam6.world.placeTorchItem
-import de.lostmekka._3m5gamejam6.world.updateLighting
+import de.lostmekka._3m5gamejam6.world.*
 import org.hexworks.cobalt.events.api.subscribe
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
@@ -37,7 +24,7 @@ import org.hexworks.zircon.api.uievent.Processed
 import org.hexworks.zircon.api.uievent.UIEventPhase
 import org.hexworks.zircon.internal.Zircon
 
-class GameView : BaseView() {
+class GameView(private val levelDepth: Int = 0) : BaseView() {
 
     private var isActive = false
 
@@ -50,7 +37,8 @@ class GameView : BaseView() {
 
         val world = World(
             GameConfig.worldSize,
-            GameConfig.worldSize
+            GameConfig.worldSize,
+            levelDepth
         )
         world.generateRooms()
         world.placePlayer()
@@ -135,6 +123,20 @@ class GameView : BaseView() {
 
         Zircon.eventBus.subscribe<ValidInput> {
             if (isActive) world.tick()
+        }
+
+        Zircon.eventBus.subscribe<NextLevel> {
+            if (isActive) {
+                replaceWith(GameView(levelDepth = it.depth))
+                close()
+            }
+        }
+
+        Zircon.eventBus.subscribe<WON> {
+            if (isActive) {
+                replaceWith(WinView())
+                close()
+            }
         }
 
         mainArea.onMouseEvent(MouseEventType.MOUSE_MOVED) { event: MouseEvent, _: UIEventPhase ->

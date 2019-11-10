@@ -18,6 +18,7 @@ class GameBlock(
     val isTransparent: Boolean,
     var hasMadness: Boolean = false,
     val isAltar: Boolean = false,
+    val isStairs: Boolean = false,
     val currentEntities: MutableList<GameEntity<EntityType>> = mutableListOf()
 ) : BlockBase<Tile>() {
     override val layers: MutableList<Tile>
@@ -93,7 +94,8 @@ class GameBlock(
             madnessTile = GameTileRepository.stairsMadness,
             tileName = "Sealed Stairs",
             isWalkable = true,
-            isTransparent = false
+            isTransparent = false,
+            isStairs = true
         )
     }
 }

@@ -19,7 +19,7 @@ fun World.generateRooms() {
         }
     }
 
-    generateRandomWalls(0, Random.nextInt(1, h - 1))
+    generateRandomWalls(0, Random.nextInt(1, h - 2))
 }
 
 private fun World.generateRandomWalls(
