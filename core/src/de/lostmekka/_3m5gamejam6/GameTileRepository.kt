@@ -14,10 +14,17 @@ object GameTileRepository {
         .withBackgroundColor(GameColors.shadowBg)
         .buildCharacterTile()
 
-    val floor: CharacterTile = Tiles.newBuilder()
+    val floor1: CharacterTile = Tiles.newBuilder()
         .withCharacter('.')
-        .withForegroundColor(GameColors.floorFg)
-        .withBackgroundColor(GameColors.floorBg)
+        .withForegroundColor(GameColors.floor1Fg)
+        .withBackgroundColor(GameColors.floor1Bg)
+        .buildCharacterTile()
+
+
+    val floor2: CharacterTile = Tiles.newBuilder()
+        .withCharacter(',')
+        .withForegroundColor(GameColors.floor2Fg)
+        .withBackgroundColor(GameColors.floor2Bg)
         .buildCharacterTile()
 
     val floorMadness: CharacterTile = Tiles.newBuilder()
@@ -89,7 +96,7 @@ object GameTileRepository {
     val player = Tiles.newBuilder()
         .withCharacter('@')
         .withForegroundColor(GameColors.doorFg)
-        .withBackgroundColor(GameColors.floorBg)
+        .withBackgroundColor(GameColors.floor1Bg)
         .buildCharacterTile()
 
     val enemyZombie = Tiles.newBuilder()
@@ -107,14 +114,14 @@ object GameTileRepository {
     val torchItem = Tiles.newBuilder()
         .withCharacter('t')
         .withForegroundColor(GameColors.torchItemFg)
-        .withBackgroundColor(GameColors.floorBg)
+        .withBackgroundColor(GameColors.floor1Bg)
         .buildCharacterTile()
 
     val torch = GameColors.torchFgColors.map {
         Tiles.newBuilder()
             .withCharacter('T')
             .withForegroundColor(it)
-            .withBackgroundColor(GameColors.floorBg)
+            .withBackgroundColor(GameColors.floor1Bg)
             .buildCharacterTile()
     }
 

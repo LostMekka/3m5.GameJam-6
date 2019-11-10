@@ -49,6 +49,9 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
         world.generateMadness()
         world.updateLighting()
 
+
+        var index = 1
+
         val sidebar = Components.panel()
             .withSize(GameConfig.sidebarWidth, GameConfig.windowHeight)
             .withAlignmentWithin(screen, ComponentAlignment.RIGHT_CENTER)
@@ -65,37 +68,51 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
 
         val txtPosition = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
-            .withPosition(0, 1)
+            .withPosition(0, index)
             .build()
+
+        index+=2
 
         val txtPointingLabel = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
-            .withPosition(0, 3)
+            .withPosition(0, index)
             .build()
+        index+=2
 
         val txtPointingItem = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
-            .withPosition(0, 4)
+            .withPosition(0, index)
             .build()
+        index+=2
 
         val txtHealth = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
-            .withPosition(0, 5)
+            .withPosition(0, index)
             .build()
+        index+=2
 
         val txtTorches = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
-            .withPosition(0, 7)
+            .withPosition(0, index)
             .build()
+        index+=2
 
         val txtEquipment = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
-            .withPosition(0, 9)
+            .withPosition(0, index)
             .build()
+        index+=2
 
         val txtTorchBuildProgress = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
-            .withPosition(0, 11)
+            .withPosition(0, index)
+            .build()
+        index+=2
+
+        val txtTutotialInfo = Components.label()
+            .withSize(GameConfig.sidebarWidth, 1)
+            .withPosition(0, sidebar.height-5)
+            .withText("Press esc => Pause")
             .build()
 
 
@@ -113,6 +130,7 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
         sidebar.addComponent(txtTorches)
         sidebar.addComponent(txtEquipment)
         sidebar.addComponent(txtTorchBuildProgress)
+        sidebar.addComponent(txtTutotialInfo)
 
         screen.addComponent(sidebar)
         screen.addComponent(mainArea)

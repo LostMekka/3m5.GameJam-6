@@ -6,6 +6,7 @@ import de.lostmekka._3m5gamejam6.entity.EntityFactory
 import de.lostmekka._3m5gamejam6.entity.OpenedStairs
 import de.lostmekka._3m5gamejam6.entity.Player
 import de.lostmekka._3m5gamejam6.entity.attribute.position
+import de.lostmekka._3m5gamejam6.nextBoolean
 import org.hexworks.zircon.api.data.impl.Position3D
 import kotlin.random.Random
 
@@ -14,7 +15,8 @@ fun World.generateRooms() {
     val (w, h) = gameArea.actualSize().to2DSize()
     for (x in 0 until w) {
         for (y in 0 until h) {
-            val block = if (x == 0 || y == 0 || x == w-1 || y == h-1) GameBlock.wall() else GameBlock.floor()
+            val block = if (x == 0 || y == 0 || x == w-1 || y == h-1) GameBlock.wall() else{
+                if (Random.nextBoolean(GameConfig.floor2prop)) GameBlock.floor2() else GameBlock.floor1()}
             gameArea.setBlockAt(Position3D.create(x, y, 0), block)
         }
     }

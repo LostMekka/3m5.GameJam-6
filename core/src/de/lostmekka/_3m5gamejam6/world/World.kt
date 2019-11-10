@@ -8,7 +8,6 @@ import de.lostmekka._3m5gamejam6.entity.GameEntity
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.entity.attribute.position
-import de.lostmekka._3m5gamejam6.entity.attribute.position2D
 import de.lostmekka._3m5gamejam6.to3DPosition
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.Engines
@@ -34,7 +33,7 @@ class World(
     val gameArea = GameAreaBuilder.newBuilder<Tile, GameBlock>()
         .withVisibleSize(visibleSize)
         .withActualSize(actualSize)
-        .withDefaultBlock(GameBlock.floor())
+        .withDefaultBlock(GameBlock.floor1())
         .withLayersPerBlock(1)
         .build()
 

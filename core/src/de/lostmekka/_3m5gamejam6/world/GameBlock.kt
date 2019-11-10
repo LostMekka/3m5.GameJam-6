@@ -56,13 +56,21 @@ class GameBlock(
     }
 
     companion object {
-        fun floor() = GameBlock(
-            tile = GameTileRepository.floor,
+        fun floor1() = GameBlock(
+            tile = GameTileRepository.floor1,
             madnessTile = GameTileRepository.floorMadness,
             tileName = "Floor",
             isWalkable = true,
             isTransparent = true
         )
+        fun floor2() = GameBlock(
+            tile = GameTileRepository.floor2,
+            madnessTile = GameTileRepository.floorMadness,
+            tileName = "Floor",
+            isWalkable = true,
+            isTransparent = true
+        )
+
 
         fun wall() = GameBlock(
             tile = GameTileRepository.wall,
