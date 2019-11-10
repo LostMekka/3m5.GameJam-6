@@ -21,7 +21,7 @@ object GameConfig {
     const val madnessRetreatProbability = 0.6
     const val madnessHealthDecrease = 10
 
-    const val fogOfWarEnabled = true
+    const val fogOfWarEnabled = false
     const val torchLightRadius = 6
     const val altarLightRadius = 8
 
@@ -32,5 +32,5 @@ object GameConfig {
 
     const val playerInitialTorchCount = 10
     const val areaInitialTorchCount = 75
-    const val areaAltarCount = 5
+    const val areaAltarCount = 1
 }

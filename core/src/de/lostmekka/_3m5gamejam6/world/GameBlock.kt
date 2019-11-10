@@ -87,5 +87,13 @@ class GameBlock(
             isTransparent = false,
             isAltar = true
         )
+
+        fun stairs() = GameBlock(
+            tile = GameTileRepository.stairs,
+            madnessTile = GameTileRepository.stairsMadness,
+            tileName = "Sealed Stairs",
+            isWalkable = true,
+            isTransparent = false
+        )
     }
 }

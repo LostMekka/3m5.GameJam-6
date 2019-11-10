@@ -10,6 +10,7 @@ import de.lostmekka._3m5gamejam6.world.generateMadness
 import de.lostmekka._3m5gamejam6.world.generateRooms
 import de.lostmekka._3m5gamejam6.world.generateTorchItems
 import de.lostmekka._3m5gamejam6.world.placePlayer
+import de.lostmekka._3m5gamejam6.world.placeStairs
 import de.lostmekka._3m5gamejam6.world.placeTorch
 import de.lostmekka._3m5gamejam6.world.placeTorchItem
 import de.lostmekka._3m5gamejam6.world.updateLighting
@@ -40,6 +41,7 @@ class GameView : BaseView() {
         )
         world.generateRooms()
         world.placePlayer()
+        world.placeStairs()
         world.generateAltars()
         world.generateTorchItems()
         world.generateMadness()
@@ -118,13 +120,14 @@ class GameView : BaseView() {
         mainArea.onMouseEvent(MouseEventType.MOUSE_MOVED) { event: MouseEvent, _: UIEventPhase ->
             txtPosition.text = "Mouse: ${event.position.x} | ${event.position.y}"
 
-            val temp = world.gameArea.fetchBlockOrDefault(Position3D.create(event.position.x, event.position.y, 0))
-            val item = if (temp.isLit) temp.name else "Darkness"
+            val item = world[event.position]?.name ?: "????"
             txtPointingLabel.text = "Looking at: "
             if (item.length < 10) {
                 txtPointingLabel.text += item
                 txtPointingItem.text = " "
-            } else txtPointingItem.text = "  $item"
+            } else {
+                txtPointingItem.text = "  $item"
+            }
 
             UIEventResponses.processed()
         }

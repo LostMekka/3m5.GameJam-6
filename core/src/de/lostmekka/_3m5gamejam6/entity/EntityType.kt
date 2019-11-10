@@ -26,3 +26,12 @@ object ActivatedAltar : BaseEntityType("Activated Altar") {
         )
     }
 }
+
+object OpenedStairs : BaseEntityType("Opened Stairs") {
+    fun create() = newGameEntityOfType(OpenedStairs) {
+        attributes(
+            EntityPosition(),
+            EntityTileAnimation(GameTileRepository.stairsActivated)
+        )
+    }
+}

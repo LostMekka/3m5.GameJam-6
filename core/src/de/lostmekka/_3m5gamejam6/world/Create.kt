@@ -3,6 +3,7 @@ package de.lostmekka._3m5gamejam6.world
 import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
 import de.lostmekka._3m5gamejam6.entity.EntityFactory
+import de.lostmekka._3m5gamejam6.entity.OpenedStairs
 import de.lostmekka._3m5gamejam6.entity.Player
 import de.lostmekka._3m5gamejam6.entity.attribute.position
 import org.hexworks.zircon.api.data.impl.Position3D
@@ -89,6 +90,16 @@ fun World.activateAltar(pos: Position3D): Boolean {
         engine.addEntity(it)
     }
     activatedAltarCount++
+
+    if (activatedAltarCount >= altarCount) {
+        val stairsBlock = this[stairsPosition]!!
+        OpenedStairs.create().also {
+            it.position = stairsPosition
+            stairsBlock.currentEntities += it
+            engine.addEntity(it)
+        }
+    }
+
     return true
 }
 
@@ -97,6 +108,12 @@ fun World.placePlayer() {
     player.position = pos
     block.currentEntities += player
     engine.addEntity(player)
+}
+
+fun World.placeStairs() {
+    val (pos, _) = fetchSpawnableBlocks().random()
+    stairsPosition = pos
+    this[pos] = GameBlock.stairs()
 }
 
 fun World.generateMadness() {

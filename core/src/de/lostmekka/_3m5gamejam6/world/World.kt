@@ -39,6 +39,7 @@ class World(
 
     var altarCount = 0
     var activatedAltarCount = 0
+    lateinit var stairsPosition: Position3D
 
     operator fun get(pos: Position) = this[pos.to3DPosition()]
 
