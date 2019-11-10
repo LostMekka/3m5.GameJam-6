@@ -11,3 +11,5 @@ object WON : Event
 object ValidInput : Event
 
 data class SoundEvent(val cause: String) : Event
+
+data class MadnessExpanse(val percentage: Int) : Event
