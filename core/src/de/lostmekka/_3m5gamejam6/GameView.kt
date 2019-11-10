@@ -117,7 +117,7 @@ class GameView : BaseView() {
             if (item.length < 10) {
                 txtPointingLabel.text += item
                 txtPointingItem.text = " "
-            } else txtPointingItem.text = "  " + item
+            } else txtPointingItem.text = "  $item"
 
             UIEventResponses.processed()
         }
