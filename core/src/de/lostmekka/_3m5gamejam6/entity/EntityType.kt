@@ -16,7 +16,7 @@ private fun <T : EntityType> newGameEntityOfType(
 ) = Entities.newEntityOfType(type, init)
 
 object Player : BaseEntityType("Player")
-object Enemy : BaseEntityType("Zombiez")
+object EnemyZombie : BaseEntityType("Zombiez")
 object TorchItem : BaseEntityType("Torch Item")
 object Torch : BaseEntityType("Torch")
 

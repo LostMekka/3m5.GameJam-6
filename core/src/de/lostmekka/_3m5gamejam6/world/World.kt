@@ -2,11 +2,13 @@ package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.GameContext
 import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.entity.EnemyZombie
 import de.lostmekka._3m5gamejam6.entity.EntityFactory
 import de.lostmekka._3m5gamejam6.entity.GameEntity
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.entity.attribute.position
+import de.lostmekka._3m5gamejam6.entity.attribute.position2D
 import de.lostmekka._3m5gamejam6.to3DPosition
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.Engines
@@ -22,6 +24,7 @@ import org.hexworks.zircon.api.shape.EllipseFactory
 import org.hexworks.zircon.api.shape.LineFactory
 import org.hexworks.zircon.api.uievent.UIEvent
 import org.hexworks.zircon.internal.Zircon
+import kotlin.random.Random
 
 class World(
     visibleSize: Size3D,
@@ -63,16 +66,33 @@ class World(
     private fun bothBlocksPresentAndWalkable(oldBlock: Maybe<GameBlock>, newBlock: Maybe<GameBlock>) =
         oldBlock.isPresent && newBlock.isPresent && newBlock.get().isWalkable
 
+
     fun movePlayer(position: Position3D): Boolean {
+
+
         val success = moveEntity(player, position)
         if (success) onPlayerMoved()
         return success
+    }
+
+    private fun World.checkEnemyDamage(position: Position3D) {
+
+        if (player.inventory.holdsSword) {
+            get(position)?.currentEntities?.filter { it.type == EnemyZombie }?.forEach {
+                println("Zombie gefunden, health= " + it.health + "    position: " + it.position2D.toString())
+                it.health -= Random.nextInt(GameConfig.SwordDamageMin, GameConfig.SwordDamageMax)
+                if (it.health <= 0) engine.removeEntity(it)
+            }
+            get(position)?.currentEntities?.removeIf {it.type == EnemyZombie && it.health <= 0 }
+        }
     }
 
     fun moveEntity(entity: GameEntity<EntityType>, position: Position3D): Boolean {
         var success = false
         val oldBlock = gameArea.fetchBlockAt(entity.position)
         val newBlock = gameArea.fetchBlockAt(position)
+
+        checkEnemyDamage(player.position)
 
         if (bothBlocksPresentAndWalkable(oldBlock, newBlock)) {
             // walk
