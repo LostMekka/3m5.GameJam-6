@@ -49,15 +49,15 @@ object EnemyAI : BaseBehavior<GameContext>() {
 
     }
 
-    private fun randomX(currentPos: Position3D): Position3D {
+    fun randomX(currentPos: Position3D): Position3D {
         return currentPos.withRelativeX(Random.nextInt(-1, 2))
     }
 
-    private fun randomY(currentPos: Position3D): Position3D {
+    fun randomY(currentPos: Position3D): Position3D {
         return currentPos.withRelativeY(Random.nextInt(-1, 2))
     }
 
-    private fun getDistance(pos1: Position3D, pos2: Position3D): Double {
+    fun getDistance(pos1: Position3D, pos2: Position3D): Double {
         val dx: Double = (pos1.x - pos2.x).toDouble().pow(2.0)
         val dy: Double = (pos1.y - pos2.y).toDouble().pow(2.0)
         return sqrt(dx + dy)
