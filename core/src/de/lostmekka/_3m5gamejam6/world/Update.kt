@@ -1,6 +1,7 @@
 package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
 import de.lostmekka._3m5gamejam6.entity.AnyGameEntity
 import de.lostmekka._3m5gamejam6.entity.Torch
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
@@ -74,13 +75,19 @@ private fun World.hasMadnessNeighbor(position: Position3D): Boolean {
 
 fun World.updateLighting() {
     val torches = mutableListOf<AnyGameEntity>()
+    val altars = mutableListOf<AnyGameEntity>()
     for ((_, block) in gameArea.fetchBlocks()) {
         block.isLit = false
         torches += block.currentEntities.filter { it.type is Torch }
+        altars += block.currentEntities.filter { it.type is ActivatedAltar }
     }
+
     val playerLight = if (player.inventory.torches > 0) GameConfig.torchLightRadius else GameConfig.playerLightRadius
     floodLight(player.position.to2DPosition(), playerLight)
+
     torches.forEach { floodLight(it.position.to2DPosition(), GameConfig.torchLightRadius) }
+
+    altars.forEach { floodLight(it.position.to2DPosition(), GameConfig.altarLightRadius) }
 }
 
 private fun World.floodLight(pos: Position, radius: Int) {

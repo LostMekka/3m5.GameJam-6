@@ -2,6 +2,7 @@ package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.GameTileRepository
 import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
 import de.lostmekka._3m5gamejam6.entity.GameEntity
 import de.lostmekka._3m5gamejam6.entity.attribute.tile
 import org.hexworks.amethyst.api.entity.EntityType
@@ -16,6 +17,7 @@ class GameBlock(
     val isWalkable: Boolean,
     val isTransparent: Boolean,
     var hasMadness: Boolean = false,
+    val isAltar: Boolean = false,
     val currentEntities: MutableList<GameEntity<EntityType>> = mutableListOf()
 ) : BlockBase<Tile>() {
     override val layers: MutableList<Tile>
@@ -46,6 +48,7 @@ class GameBlock(
 
     var isLit = false
     var averageSurroundingMadness = 0.0
+    val altarIsActive get() = currentEntities.any { it.type is ActivatedAltar }
 
     override fun fetchSide(side: BlockSide): Tile {
         return GameTileRepository.empty
@@ -74,6 +77,15 @@ class GameBlock(
             tileName = "Door",
             isWalkable = true,
             isTransparent = false
+        )
+
+        fun altar() = GameBlock(
+            tile = GameTileRepository.altar,
+            madnessTile = GameTileRepository.altarMadness,
+            tileName = "Altar",
+            isWalkable = true,
+            isTransparent = false,
+            isAltar = true
         )
     }
 }

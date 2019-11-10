@@ -1,6 +1,7 @@
 package de.lostmekka._3m5gamejam6.entity.behavior
 
 import de.lostmekka._3m5gamejam6.GameContext
+import de.lostmekka._3m5gamejam6.entity.ActivateAltar
 import de.lostmekka._3m5gamejam6.entity.BuildTorch
 import de.lostmekka._3m5gamejam6.entity.GameEntity
 import de.lostmekka._3m5gamejam6.entity.GrabTorchItem
@@ -21,8 +22,11 @@ object InputReceiver : BaseBehavior<GameContext>() {
                 // grab torch item
                 uiEvent.code == KeyCode.KEY_G -> player.executeCommand(GrabTorchItem(context, player, currentPos))
 
-                // drop torch
+                // build torch
                 uiEvent.code == KeyCode.KEY_T -> player.executeCommand(BuildTorch(context, player, currentPos))
+
+                // drop torch
+                uiEvent.code == KeyCode.KEY_E -> player.executeCommand(ActivateAltar(context, player, currentPos))
 
                 // move
                 else -> {

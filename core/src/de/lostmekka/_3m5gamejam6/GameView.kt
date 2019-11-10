@@ -5,6 +5,7 @@ import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.world.GameBlock
 import de.lostmekka._3m5gamejam6.world.World
+import de.lostmekka._3m5gamejam6.world.generateAltars
 import de.lostmekka._3m5gamejam6.world.generateMadness
 import de.lostmekka._3m5gamejam6.world.generateRooms
 import de.lostmekka._3m5gamejam6.world.generateTorchItems
@@ -39,6 +40,7 @@ class GameView : BaseView() {
         )
         world.generateRooms()
         world.placePlayer()
+        world.generateAltars()
         world.generateTorchItems()
         world.generateMadness()
         world.updateLighting()
@@ -137,18 +139,22 @@ class GameView : BaseView() {
             world.onKeyInput(screen, event)
             txtHealth.text = "HP: " + world.player.health
             txtTorches.text = "Torches: " + world.player.inventory.torches
-            if (world.player.inventory.torchBuildingProgress > 0) {
+            if (world.player.inventory.buildingProgress > 0) {
                 txtTorchBuildProgress.isVisible = Visibility.Visible
-                txtTorchBuildProgress.text = "Torch Build: " + getTorchBuildingProgressBar(world)
-            } else txtTorchBuildProgress.isVisible = Visibility.Hidden
+                txtTorchBuildProgress.text = "Build " + getTorchBuildingProgressBar(world)
+            } else {
+                txtTorchBuildProgress.isVisible = Visibility.Hidden
+            }
             Processed
         }
     }
 
     private fun getTorchBuildingProgressBar(world: World): String {
-        var progressBar = "["
-        for (i in 0..4) progressBar += if (i < world.player.inventory.torchBuildingProgress) "=" else " "
-        progressBar += "]"
-        return progressBar
+        return (0 until world.player.inventory.maxBuildingProgress)
+            .joinToString(
+                prefix = "[",
+                postfix = "]",
+                separator = ""
+            ) { if (it < world.player.inventory.buildingProgress) "=" else "." }
     }
 }

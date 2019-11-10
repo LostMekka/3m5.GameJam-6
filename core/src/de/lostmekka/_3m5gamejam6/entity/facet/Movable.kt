@@ -16,7 +16,7 @@ object Movable : BaseFacet<GameContext>() {
             val world = context.world
             var result: Response = Pass
             if (world.moveEntity(entity, position)) {
-                context.world.player.inventory.torchBuildingProgress = 0
+                context.world.player.inventory.buildingProgress = 0
                 result = Consumed
             }
 

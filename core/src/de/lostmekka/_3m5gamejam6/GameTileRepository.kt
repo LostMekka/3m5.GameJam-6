@@ -50,6 +50,24 @@ object GameTileRepository {
         .withBackgroundColor(GameColors.wallBgMadness)
         .buildCharacterTile()
 
+    val altar: CharacterTile = Tiles.newBuilder()
+        .withCharacter('A')
+        .withForegroundColor(GameColors.altarFg)
+        .withBackgroundColor(GameColors.wallBg)
+        .buildCharacterTile()
+
+    val altarMadness: CharacterTile = Tiles.newBuilder()
+        .withCharacter('A')
+        .withForegroundColor(GameColors.altarFgMadness)
+        .withBackgroundColor(GameColors.wallBgMadness)
+        .buildCharacterTile()
+
+    val altarActivated: CharacterTile = Tiles.newBuilder()
+        .withCharacter('A')
+        .withForegroundColor(GameColors.altarFgActivated)
+        .withBackgroundColor(GameColors.wallBg)
+        .buildCharacterTile()
+
     val player = Tiles.newBuilder()
         .withCharacter('@')
         .withForegroundColor(GameColors.doorFg)

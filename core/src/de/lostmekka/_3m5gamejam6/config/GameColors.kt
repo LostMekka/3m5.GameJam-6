@@ -11,15 +11,17 @@ object GameColors {
     val wallBg = TileColors.fromString("#3E3D32")
     val wallBgMadness = TileColors.fromString("#000000")
 
-    val floorFg = TileColors.fromString("#75715E")
+    val floorFg = TileColors.fromString("#555144")
     val floorFgMadness = TileColors.fromString("#4b2b5e")
     val floorBg = TileColors.fromString("#1e2320")
     val floorBgMadness = TileColors.fromString("#000000")
 
     val doorFg = TileColors.fromString("#FFCD22")
     val doorFgMadness = TileColors.fromString("#8923c7")
-    val doorBg = TileColors.fromString("#00FF00")
-    val doorBgMadness = TileColors.fromString("#ff6400")
+
+    val altarFg = TileColors.fromString("#4d5645")
+    val altarFgMadness = TileColors.fromString("#4d2675")
+    val altarFgActivated = TileColors.fromString("#CdE645")
 
     val torchItemFg = TileColors.fromString("#FF834C")
 

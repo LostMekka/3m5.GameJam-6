@@ -1,10 +1,10 @@
 package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
 import de.lostmekka._3m5gamejam6.entity.EntityFactory
-import de.lostmekka._3m5gamejam6.entity.Torch
+import de.lostmekka._3m5gamejam6.entity.Player
 import de.lostmekka._3m5gamejam6.entity.attribute.position
-import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.impl.Position3D
 import kotlin.random.Random
 
@@ -19,7 +19,14 @@ fun World.generateRooms() {
     generateRandomWalls(-1, Random.nextInt(h - 1))
 }
 
-private fun World.generateRandomWalls(_x: Int, _y: Int, prop: Double = 0.01, doorNext: Boolean = true, xDir: Boolean = true, increase: Int = 1) {
+private fun World.generateRandomWalls(
+    _x: Int,
+    _y: Int,
+    prop: Double = 0.01,
+    doorNext: Boolean = true,
+    xDir: Boolean = true,
+    increase: Int = 1
+) {
     val x = if (xDir) _x + increase else _x
     val y = if (xDir) _y else _y + increase
     val position = Position3D.create(x, y, 0)
@@ -52,11 +59,11 @@ private fun World.generateRandomWalls(_x: Int, _y: Int, prop: Double = 0.01, doo
 }
 
 private fun World.checkBlockForFloor(position: Position3D) =
-        !gameArea.hasBlockAt(position) || !gameArea.fetchBlockAt(position).get().isWalkable
+    !gameArea.hasBlockAt(position) || !gameArea.fetchBlockAt(position).get().isWalkable
 
 fun World.placeTorch(pos: Position3D): Boolean {
     val block = this[pos] ?: return false
-    if (block.currentEntities.any { it.type is Torch }) return false
+    if (block.isAltar || block.currentEntities.any { it.type !is Player }) return false
     val newTorch = EntityFactory.newTorch()
     newTorch.position = pos
     block.currentEntities += newTorch
@@ -73,33 +80,44 @@ fun World.placeTorchItem(pos: Position3D) {
     newTorch.position = pos
 }
 
+fun World.activateAltar(pos: Position3D): Boolean {
+    val block = this[pos] ?: return false
+    if (!block.isAltar || block.currentEntities.any { it.type !is Player }) return false
+    ActivatedAltar.create().also {
+        it.position = pos
+        block.currentEntities += it
+        engine.addEntity(it)
+    }
+    activatedAltarCount++
+    return true
+}
+
 fun World.placePlayer() {
-    val pos = Position3D.create(10, 10, 0)
-    val block = this[pos] ?: return
+    val (pos, block) = fetchSpawnableBlocks().random()
     player.position = pos
     block.currentEntities += player
     engine.addEntity(player)
 }
 
 fun World.generateMadness() {
-    repeat(5) {
-        val x = Random.nextInt(gameArea.actualSize().xLength - 1)
-        val y = Random.nextInt(gameArea.actualSize().yLength - 1)
-        this[Position.create(x, y)]?.hasMadness = true
-    }
+    gameArea.fetchBlocks()
+        .shuffled()
+        .take(5)
+        .forEach { it.block.hasMadness = true }
 }
 
 fun World.generateTorchItems() {
-    repeat(GameConfig.areaInitialTorchCount) {
-        val x = Random.nextInt(gameArea.actualSize().xLength - 1)
-        val y = Random.nextInt(gameArea.actualSize().yLength - 1)
-        val pos = Position3D.create(x, y, 0)
-        val block = this[pos]
-        if (block != null && block.isWalkable && block.isTransparent) {
-            val newTorch = EntityFactory.newTorchItem()
-            block.currentEntities += newTorch
-            engine.addEntity(newTorch)
-            newTorch.position = pos
-        }
+    for ((pos, block) in fetchRandomSpawnableBlocks(GameConfig.areaInitialTorchCount)) {
+        val newTorch = EntityFactory.newTorchItem()
+        block.currentEntities += newTorch
+        engine.addEntity(newTorch)
+        newTorch.position = pos
+    }
+}
+
+fun World.generateAltars() {
+    for ((pos, _) in fetchRandomSpawnableBlocks(GameConfig.areaAltarCount)) {
+        this[pos] = GameBlock.altar()
+        altarCount++
     }
 }

@@ -36,6 +36,9 @@ class World(
 
     val engine: Engine<GameContext> = Engines.newEngine()
 
+    var altarCount = 0
+    var activatedAltarCount = 0
+
     operator fun get(pos: Position) = this[pos.to3DPosition()]
 
     operator fun get(pos: Position3D) = gameArea
@@ -120,4 +123,26 @@ class World(
                 result
             }
     }
+
+    fun neighboursOf(position: Position3D): List<GameBlock> {
+        val ans = mutableListOf<GameBlock>()
+        for (x in position.x - 1..position.x + 1) {
+            for (y in position.y - 1..position.y + 1) {
+                this[Position3D.create(x,y,0)]?.also { ans += it }
+            }
+        }
+        return ans
+    }
+
+    fun fetchSpawnableBlocks() = gameArea.fetchBlocks()
+        .filter { !it.block.isAltar && it.block.isWalkable && it.block.isTransparent && it.block.currentEntities.isEmpty() }
+        .filter {
+            val neighbours = neighboursOf(it.position)
+            neighbours.size == 9 && neighbours.all { it.isTransparent && it.isWalkable }
+        }
+
+    fun fetchRandomSpawnableBlocks(count: Int) = fetchSpawnableBlocks()
+        .shuffled()
+        .take(count)
+
 }

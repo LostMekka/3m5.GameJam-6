@@ -24,6 +24,14 @@ object GameConfig {
     const val fogOfWarEnabled = true
     const val playerLightRadius = 2
     const val torchLightRadius = 6
+    const val altarLightRadius = 8
+
+    const val torchBuildingTime = 5
+    const val torchBuildingCost = 1
+    const val altarBuildingTime = 6
+    const val altarBuildingCost = 3
+
     const val playerInitialTorchCount = 10
     const val areaInitialTorchCount = 75
+    const val areaAltarCount = 5
 }

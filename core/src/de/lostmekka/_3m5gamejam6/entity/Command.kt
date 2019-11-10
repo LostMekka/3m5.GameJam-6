@@ -21,3 +21,9 @@ data class BuildTorch(
     override val source: GameEntity<EntityType>,
     val position: Position3D
 ) : GameCommand<EntityType>
+
+data class ActivateAltar(
+    override val context: GameContext,
+    override val source: GameEntity<EntityType>,
+    val position: Position3D
+) : GameCommand<EntityType>
