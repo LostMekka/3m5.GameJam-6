@@ -62,6 +62,16 @@ class GameView : BaseView() {
             .withPosition(0, 1)
             .build()
 
+        val txtPointingLabel = Components.label()
+            .withSize(GameConfig.sidebarWidth, 1)
+            .withPosition(0, 3)
+            .build()
+
+        val txtPointingItem = Components.label()
+            .withSize(GameConfig.sidebarWidth, 1)
+            .withPosition(0, 4)
+            .build()
+
         val txtHealth = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
             .withPosition(0, 5)
@@ -72,13 +82,8 @@ class GameView : BaseView() {
             .withPosition(0, 7)
             .build()
 
-        val txtPointingItem = Components.label()
-            .withSize(GameConfig.sidebarWidth, 1)
-            .withPosition(0, 3)
-            .build()
-
         val txtTorchBuildProgress = Components.label()
-            .withSize(GameConfig.sidebarWidth, 2)
+            .withSize(GameConfig.sidebarWidth, 1)
             .withPosition(0, 9)
             .build()
 
@@ -90,6 +95,7 @@ class GameView : BaseView() {
             .build()
 
         sidebar.addComponent(txtPosition)
+        sidebar.addComponent(txtPointingLabel)
         sidebar.addComponent(txtPointingItem)
         sidebar.addComponent(txtHealth)
         sidebar.addComponent(txtTorches)
@@ -106,7 +112,12 @@ class GameView : BaseView() {
             txtPosition.text = "Mouse: ${event.position.x} | ${event.position.y}"
 
             val temp = world.gameArea.fetchBlockOrDefault(Position3D.create(event.position.x, event.position.y, 0))
-            txtPointingItem.text = "Looking at: " + temp.name
+            val item = if (temp.isLit) temp.name else "Darkness"
+            txtPointingLabel.text = "Looking at: "
+            if (item.length < 10) {
+                txtPointingLabel.text += item
+                txtPointingItem.text = " "
+            } else txtPointingItem.text = "  " + item
 
             UIEventResponses.processed()
         }
@@ -128,7 +139,7 @@ class GameView : BaseView() {
             txtTorches.text = "Torches: " + world.player.inventory.torches
             if (world.player.inventory.torchBuildingProgress > 0) {
                 txtTorchBuildProgress.isVisible = Visibility.Visible
-                txtTorchBuildProgress.text = "Torch Build:\n" + getTorchBuildingProgressBar(world)
+                txtTorchBuildProgress.text = "Torch Build: " + getTorchBuildingProgressBar(world)
             } else txtTorchBuildProgress.isVisible = Visibility.Hidden
             Processed
         }
