@@ -5,6 +5,7 @@ import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.EntityFactory
 import de.lostmekka._3m5gamejam6.entity.GameEntity
 import de.lostmekka._3m5gamejam6.entity.attribute.health
+import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.entity.attribute.position
 import de.lostmekka._3m5gamejam6.to3DPosition
 import org.hexworks.amethyst.api.Engine
@@ -61,6 +62,12 @@ class World(
     private fun bothBlocksPresentAndWalkable(oldBlock: Maybe<GameBlock>, newBlock: Maybe<GameBlock>) =
         oldBlock.isPresent && newBlock.isPresent && newBlock.get().isWalkable
 
+    fun movePlayer(position: Position3D): Boolean {
+        val success = moveEntity(player, position)
+        if (success) onPlayerMoved()
+        return success
+    }
+
     fun moveEntity(entity: GameEntity<EntityType>, position: Position3D): Boolean {
         var success = false
         val oldBlock = gameArea.fetchBlockAt(entity.position)
@@ -72,7 +79,6 @@ class World(
             oldBlock.get().currentEntities -= entity
             entity.position = position
             newBlock.get().currentEntities += entity
-            //checkMadness(newBlock.get())
         }
 
         return success
@@ -98,6 +104,10 @@ class World(
         )
         // TODO: only update on successful command
         tick()
+    }
+
+    fun onPlayerMoved() {
+        player.inventory.buildingProgress = 0
     }
 
     fun tick() {
