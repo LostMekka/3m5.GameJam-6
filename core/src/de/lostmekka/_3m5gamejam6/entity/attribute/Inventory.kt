@@ -11,7 +11,7 @@ class Inventory(
     var torches: Int = GameConfig.playerInitialTorchCount,
     var buildingProgress: Int = 0,
     var maxBuildingProgress: Int = 0,
-    var buildingType: EntityType? = null
+    var buildingType: EntityType? = null,
     var holdsSword: Boolean = false
 )
 

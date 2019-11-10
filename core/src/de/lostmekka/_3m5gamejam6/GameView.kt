@@ -13,6 +13,8 @@ import de.lostmekka._3m5gamejam6.world.placePlayer
 import de.lostmekka._3m5gamejam6.world.placeTorch
 import de.lostmekka._3m5gamejam6.world.placeTorchItem
 import de.lostmekka._3m5gamejam6.world.updateLighting
+import de.lostmekka._3m5gamejam6.world.*
+import org.hexworks.cobalt.events.api.subscribe
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.UIEventResponses
@@ -25,14 +27,12 @@ import org.hexworks.zircon.api.extensions.onKeyboardEvent
 import org.hexworks.zircon.api.extensions.onMouseEvent
 import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.mvc.base.BaseView
-import org.hexworks.zircon.api.uievent.KeyboardEventType
-import org.hexworks.zircon.api.uievent.MouseEvent
-import org.hexworks.zircon.api.uievent.MouseEventType
-import org.hexworks.zircon.api.uievent.Processed
-import org.hexworks.zircon.api.uievent.UIEventPhase
+import org.hexworks.zircon.api.uievent.*
+import org.hexworks.zircon.internal.Zircon
 
 
 class GameView : BaseView() {
+
     override fun onDock() {
         val world = World(
             GameConfig.worldSize,
@@ -110,6 +110,11 @@ class GameView : BaseView() {
             screen.addComponent(logArea)
         }
 
+        Zircon.eventBus.subscribe<PlayerDied> {
+            replaceWith(LoseView(it.cause))
+            close()
+        }
+
         mainArea.onMouseEvent(MouseEventType.MOUSE_MOVED) { event: MouseEvent, _: UIEventPhase ->
             txtPosition.text = "Mouse: ${event.position.x} | ${event.position.y}"
 
@@ -136,14 +141,18 @@ class GameView : BaseView() {
         }
 
         screen.onKeyboardEvent(KeyboardEventType.KEY_PRESSED) { event, _ ->
-            world.onKeyInput(screen, event)
-            txtHealth.text = "HP: " + world.player.health
-            txtTorches.text = "Torches: " + world.player.inventory.torches
-            if (world.player.inventory.buildingProgress > 0) {
-                txtTorchBuildProgress.isVisible = Visibility.Visible
-                txtTorchBuildProgress.text = "Build " + getTorchBuildingProgressBar(world)
+            if (event.code == KeyCode.KEY_P) {
+                screen.openModal(PauseDialog(screen))
             } else {
-                txtTorchBuildProgress.isVisible = Visibility.Hidden
+                world.onKeyInput(screen, event)
+                txtHealth.text = "HP: " + world.player.health
+                txtTorches.text = "Torches: " + world.player.inventory.torches
+                if (world.player.inventory.buildingProgress > 0) {
+                    txtTorchBuildProgress.isVisible = Visibility.Visible
+                    txtTorchBuildProgress.text = "Build: " + getTorchBuildingProgressBar(world)
+                } else {
+                    txtTorchBuildProgress.isVisible = Visibility.Hidden
+                }
             }
             Processed
         }
