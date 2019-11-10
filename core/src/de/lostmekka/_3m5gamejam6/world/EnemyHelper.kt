@@ -1,13 +1,10 @@
 package de.lostmekka._3m5gamejam6.world
 
-import de.lostmekka._3m5gamejam6.GameContext
 import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.GameEntity
-import de.lostmekka._3m5gamejam6.entity.MoveTo
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.position
 import de.lostmekka._3m5gamejam6.entity.attribute.position2D
-import de.lostmekka._3m5gamejam6.entity.behavior.EnemyAI
 import de.lostmekka._3m5gamejam6.nextBoolean
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.zircon.api.data.impl.Position3D
@@ -58,8 +55,8 @@ fun randomY(currentPos: Position3D): Position3D {
 
 fun getDistance(pos1: Position3D, pos2: Position3D): Double {
 
-    var dx: Double = Math.pow((pos1.x - pos2.x).toDouble(),2.0)
-    var dy: Double = Math.pow((pos1.y - pos2.y).toDouble(),2.0)
+    var dx: Double = Math.pow((pos1.x - pos2.x).toDouble(), 2.0)
+    var dy: Double = Math.pow((pos1.y - pos2.y).toDouble(), 2.0)
 
     var dist = sqrt(dx + dy)
 
@@ -68,9 +65,7 @@ fun getDistance(pos1: Position3D, pos2: Position3D): Double {
 }
 
 
-
-fun World.updateEnemyZombie(entity: GameEntity<EntityType>)
-{
+fun World.updateEnemyZombie(entity: GameEntity<EntityType>) {
 
 
     val currentPos = entity.position
@@ -83,17 +78,17 @@ fun World.updateEnemyZombie(entity: GameEntity<EntityType>)
         if (Random.nextBoolean((GameConfig.enemyChasesPlayer))) {
 
             //if yes calc delta distance
-            EnemyAI.deltaX = player.position2D.x - entity.position2D.x
-            EnemyAI.deltaY = player.position2D.y - entity.position2D.y
+            deltaX = player.position2D.x - entity.position2D.x
+            deltaY = player.position2D.y - entity.position2D.y
 
 
-            val pos1 = EnemyAI.adaptX(currentPos)
-            val pos2 = EnemyAI.adaptY(currentPos)
+            val pos1 = adaptX(currentPos)
+            val pos2 = adaptY(currentPos)
 
-            if (EnemyAI.getDistance(pos1, player.position) >= EnemyAI.getDistance(pos2, player.position)) {
+            if (getDistance(pos1, player.position) >= getDistance(pos2, player.position)) {
                 moveEntity(entity, pos2)
             } else {
-                moveEntity( entity, pos1)
+                moveEntity(entity, pos1)
             }
         }
 //no player >> Do some random movement
@@ -102,9 +97,9 @@ fun World.updateEnemyZombie(entity: GameEntity<EntityType>)
         if (Random.nextBoolean((1 - GameConfig.enemySleeps))) {
 
             if (Random.nextBoolean(0.5)) {
-                moveEntity( entity, EnemyAI.randomX(currentPos))
+                moveEntity(entity, randomX(currentPos))
             } else {
-                moveEntity( entity, EnemyAI.randomY(currentPos))
+                moveEntity(entity, randomY(currentPos))
             }
         }
     }
