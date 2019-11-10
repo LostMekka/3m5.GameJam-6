@@ -39,10 +39,16 @@ class FakeScreen : KtxScreen {
         application.dock(StartView())
 
         // start background music
-        var backGroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/madness.ogg"))
-        backGroundMusic.isLooping = true
-        backGroundMusic.play()
-        backGroundMusic.volume = 0.1f
+        var backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/music.ogg"))
+        backgroundMusic.isLooping = true
+        backgroundMusic.play()
+        backgroundMusic.volume = GameConfig.backgroundMusicVolume
+
+        // start madness whispering
+        var madnessWhisper = Gdx.audio.newMusic(Gdx.files.internal("sound/madness.ogg"))
+        madnessWhisper.isLooping = true
+        madnessWhisper.play()
+        madnessWhisper.volume = GameConfig.whisperVolumeMin
 
         // add sound effects
         val doorSound = Gdx.audio.newSound(Gdx.files.internal("sound/door.wav"))
@@ -57,8 +63,11 @@ class FakeScreen : KtxScreen {
                 "Hit" -> hitSound.play()
             }
         }
+
+        // calculate madness whispering volume
         Zircon.eventBus.subscribe<MadnessExpanse> {
-            backGroundMusic.volume = if (it.percentage > 10) (it.percentage).toFloat() / 100 else 0.1f
+            madnessWhisper.volume = GameConfig.whisperVolumeMin +
+                    ((it.percentage).toFloat() / 100 * (GameConfig.whisperVolumeMax - GameConfig.whisperVolumeMin))
         }
     }
 

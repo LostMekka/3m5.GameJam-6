@@ -133,6 +133,7 @@ class World(
         if (this[player.position]?.isDoor == true) {
             Zircon.eventBus.publish(SoundEvent("Door"))
         } else if (this[player.position]?.isStairs == true) {
+            // TODO: check all altars
             // go to next level
             if (levelDepth + 1 < GameConfig.levelCount) {
                 Zircon.eventBus.publish(SoundEvent("NextLevel"))

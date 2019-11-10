@@ -48,5 +48,7 @@ object GameConfig {
     const val SwordDamageMin = 30
     const val SwordDamageMax = 40
 
-
+    val whisperVolumeMin = 0.1f
+    val whisperVolumeMax = 1f
+    val backgroundMusicVolume = 0.5f
 }
