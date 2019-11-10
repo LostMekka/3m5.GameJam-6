@@ -84,18 +84,14 @@ class World(
         return success
     }
 
-    fun checkPlayerDeath()
-    {
+    fun checkPlayerDeath() {
         if (player.health <= 0) {
             Zircon.eventBus.publish(PlayerDied("You died because of madness!"))
         }
     }
 
     private fun checkPlayerMadness(block: GameBlock) {
-        if (block.hasMadness) {
-            player.health -= GameConfig.madnessHealthDecrease
-            checkPlayerDeath()
-        }
+        if (block.hasMadness) player.health -= GameConfig.madnessHealthDecrease
     }
 
     fun onKeyInput(screen: Screen, uiEvent: UIEvent) {
@@ -107,8 +103,6 @@ class World(
                 player = player
             )
         )
-        // TODO: only update on successful command
-        tick()
     }
 
     fun onPlayerMoved() {
@@ -120,6 +114,7 @@ class World(
         updateLighting()
         updateMadness()
         checkPlayerMadness(gameArea.fetchBlockAt(player.position).get())
+        checkPlayerDeath()
     }
 
     fun findVisiblePositionsFor(pos: Position, radius: Int): Iterable<Position> {
@@ -146,7 +141,7 @@ class World(
         val ans = mutableListOf<GameBlock>()
         for (x in position.x - 1..position.x + 1) {
             for (y in position.y - 1..position.y + 1) {
-                this[Position3D.create(x,y,0)]?.also { ans += it }
+                this[Position3D.create(x, y, 0)]?.also { ans += it }
             }
         }
         return ans

@@ -118,6 +118,10 @@ class GameView : BaseView() {
             close()
         }
 
+        Zircon.eventBus.subscribe<ValidInput> {
+            world.tick()
+        }
+
         mainArea.onMouseEvent(MouseEventType.MOUSE_MOVED) { event: MouseEvent, _: UIEventPhase ->
             txtPosition.text = "Mouse: ${event.position.x} | ${event.position.y}"
 
