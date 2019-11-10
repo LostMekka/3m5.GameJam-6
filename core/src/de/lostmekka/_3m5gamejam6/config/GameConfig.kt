@@ -38,5 +38,5 @@ object GameConfig {
     const val enemyViewDistance = 7
     const val enemyDamage = 30
     const val enemySleeps = 0.7 //How proper it is that enemy will move
-    const val enemyChasesPlayer = 0.9
+    const val enemyChasesPlayer = 0.8
 }
