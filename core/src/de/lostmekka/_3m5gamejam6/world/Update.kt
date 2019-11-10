@@ -1,13 +1,12 @@
 package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.config.GameConfig
-import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
-import de.lostmekka._3m5gamejam6.entity.AnyGameEntity
-import de.lostmekka._3m5gamejam6.entity.Torch
+import de.lostmekka._3m5gamejam6.entity.*
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.entity.attribute.position
 import de.lostmekka._3m5gamejam6.entity.attribute.tileAnimation
 import de.lostmekka._3m5gamejam6.nextBoolean
+import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.impl.Position3D
 import kotlin.random.Random
@@ -17,6 +16,17 @@ fun World.updateTorches() {
         block.currentEntities
             .filter { it.type is Torch }
             .forEach { it.tileAnimation.tick() }
+    }
+}
+
+
+
+fun World.updateEnemyZombies()
+{
+    gameArea.fetchBlocks().forEach{(_, block)->
+        block.currentEntities
+            .filter{it.type is EnemyZombie}
+            .forEach{updateEnemyZombie(it)}
     }
 }
 

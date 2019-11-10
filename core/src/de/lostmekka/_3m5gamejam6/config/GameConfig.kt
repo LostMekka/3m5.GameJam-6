@@ -42,7 +42,7 @@ object GameConfig {
     const val areaInitialEnemyZombieCount = 20
     const val enemyViewDistance = 7
     const val enemyDamage = 5
-    const val enemySleeps = 0.7 //How proper it is that enemy will move
+    const val enemySleeps = 0.7
     const val enemyChasesPlayer = 0.6
 
     const val SwordDamageMin = 30

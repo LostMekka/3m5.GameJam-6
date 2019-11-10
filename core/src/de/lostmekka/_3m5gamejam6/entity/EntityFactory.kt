@@ -39,7 +39,7 @@ object EntityFactory {
             EntityTileAnimation(GameTileRepository.enemyZombie),
             EntityHealth()
         )
-        behaviors(EnemyAI)
+        //behaviors(EnemyAI)
         facets(Movable)
     }
 

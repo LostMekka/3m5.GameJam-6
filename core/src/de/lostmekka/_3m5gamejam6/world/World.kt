@@ -140,6 +140,7 @@ class World(
         updateTorches()
         updateLighting()
         updateMadness()
+        updateEnemyZombies()
         checkPlayerMadness(gameArea.fetchBlockAt(player.position).get())
         checkPlayerDeath()
     }
