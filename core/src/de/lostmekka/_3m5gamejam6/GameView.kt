@@ -17,6 +17,7 @@ import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.UIEventResponses
 import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.component.ComponentAlignment.BOTTOM_LEFT
+import org.hexworks.zircon.api.component.Visibility
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.impl.Position3D
 import org.hexworks.zircon.api.extensions.onKeyboardEvent
@@ -125,7 +126,10 @@ class GameView : BaseView() {
             world.onKeyInput(screen, event)
             txtHealth.text = "HP: " + world.player.health
             txtTorches.text = "Torches: " + world.player.inventory.torches
-            txtTorchBuildProgress.text = "Torch Build:\n" + getTorchBuildingProgressBar(world)
+            if (world.player.inventory.torchBuildingProgress > 0) {
+                txtTorchBuildProgress.isVisible = Visibility.Visible
+                txtTorchBuildProgress.text = "Torch Build:\n" + getTorchBuildingProgressBar(world)
+            } else txtTorchBuildProgress.isVisible = Visibility.Hidden
             Processed
         }
     }
