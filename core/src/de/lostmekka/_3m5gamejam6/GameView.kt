@@ -3,7 +3,22 @@ package de.lostmekka._3m5gamejam6
 import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
-import de.lostmekka._3m5gamejam6.world.*
+import de.lostmekka._3m5gamejam6.world.GameBlock
+import de.lostmekka._3m5gamejam6.world.NextLevel
+import de.lostmekka._3m5gamejam6.world.PlayerDied
+import de.lostmekka._3m5gamejam6.world.ValidInput
+import de.lostmekka._3m5gamejam6.world.WON
+import de.lostmekka._3m5gamejam6.world.World
+import de.lostmekka._3m5gamejam6.world.generateAltars
+import de.lostmekka._3m5gamejam6.world.generateEnemies
+import de.lostmekka._3m5gamejam6.world.generateMadness
+import de.lostmekka._3m5gamejam6.world.generateRooms
+import de.lostmekka._3m5gamejam6.world.generateTorchItems
+import de.lostmekka._3m5gamejam6.world.placePlayer
+import de.lostmekka._3m5gamejam6.world.placeStairs
+import de.lostmekka._3m5gamejam6.world.placeTorch
+import de.lostmekka._3m5gamejam6.world.placeTorchItem
+import de.lostmekka._3m5gamejam6.world.updateLighting
 import org.hexworks.cobalt.events.api.subscribe
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
@@ -71,47 +86,47 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
             .withPosition(0, index)
             .build()
 
-        index+=2
+        index += 2
 
         val txtPointingLabel = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
             .withPosition(0, index)
             .build()
-        index+=2
+        index += 2
 
         val txtPointingItem = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
             .withPosition(0, index)
             .build()
-        index+=2
+        index += 2
 
         val txtHealth = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
             .withPosition(0, index)
             .build()
-        index+=2
+        index += 2
 
         val txtTorches = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
             .withPosition(0, index)
             .build()
-        index+=2
+        index += 2
 
         val txtEquipment = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
             .withPosition(0, index)
             .build()
-        index+=2
+        index += 2
 
         val txtTorchBuildProgress = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
             .withPosition(0, index)
             .build()
-        index+=2
+        index += 2
 
         val txtTutotialInfo = Components.label()
             .withSize(GameConfig.sidebarWidth, 1)
-            .withPosition(0, sidebar.height-5)
+            .withPosition(0, sidebar.height - 5)
             .withText("Press esc => Pause")
             .build()
 
@@ -210,6 +225,39 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
                 }
             }
             Processed
+        }
+
+        when (levelDepth) {
+            0 -> screen.storyModal(
+                "Arrival",
+                "I have finally arived.",
+                "As the heavy doors shut behind me, a cold shiver runs down my spine. I can already hear the whispers, trying to lure me into the madness.",
+                "But I have to do this. There is no other way. The altars of this place should be able to open the way ahead."
+            )
+            1 -> screen.storyModal(
+                "The Crypt",
+                "So far so good. I managed to get past these fiends, but I am sure there will be more where they came from.",
+                "This place may be bigger than I thought and I feel the whispers coming through the cracks in the wall, taunting me.",
+                "The quicker I get through this temple, the better..."
+            )
+            2 -> screen.storyModal(
+                "The Calling",
+                "They are calling me! I was dead sure I heard my name, always from right around the next corner.",
+                "Is this place toying with me? Perhaps the darkness is just making me paranoid...",
+                "I need to get through, no matter the cost. For her."
+            )
+            3 -> screen.storyModal(
+                "Heat",
+                "It is getting warmer; I must be getting closer.",
+                "The voices are clearer now. They suggest - no - command me to end this here and now.",
+                "But this is not about me. This is not the time for my death."
+            )
+            4 -> screen.storyModal(
+                "Heart of Madness",
+                "I saw her in the shadows. Mocking me. How can this be? am I too late? Is this even real?",
+                "How did I even get here? This place is feeding on my sanity one thought at a time.",
+                "The twisted architecture of this place is getting ever more grotesque. The final portal is near..."
+            )
         }
     }
 
