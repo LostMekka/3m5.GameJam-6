@@ -79,7 +79,6 @@ class World(
 
         if (player.inventory.holdsSword) {
             get(position)?.currentEntities?.filter { it.type == EnemyZombie }?.forEach {
-                println("Zombie gefunden, health= " + it.health + "    position: " + it.position2D.toString())
                 it.health -= Random.nextInt(GameConfig.SwordDamageMin, GameConfig.SwordDamageMax)
                 if (it.health <= 0) engine.removeEntity(it)
             }
