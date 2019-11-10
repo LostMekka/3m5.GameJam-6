@@ -56,7 +56,7 @@ class FakeScreen : KtxScreen {
         val nextLevelSound = Gdx.audio.newSound(Gdx.files.internal("sound/nextLevel.wav"))
         val hitSound = Gdx.audio.newSound(Gdx.files.internal("sound/hit.wav"))
         val buildProgressSound = Gdx.audio.newSound(Gdx.files.internal("sound/build_progress.wav"))
-        val buildFinishedSound = Gdx.audio.newSound(Gdx.files.internal("sound/build_finished.wav"))
+        val buildFinishedSound = Gdx.audio.newSound(Gdx.files.internal("sound/basedrum.wav"))
         Zircon.eventBus.subscribe<SoundEvent> {
             when(it.cause) {
                 "Door" -> doorSound.play()
