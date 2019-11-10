@@ -6,9 +6,11 @@ object GameColors {
     val shadowFg = TileColors.fromString("#111111")
     val shadowBg = TileColors.fromString("#000000")
 
-    val wallFg = TileColors.fromString("#75715E")
+    val wall1Fg = TileColors.fromString("#75715E")
+    val wall1Bg = TileColors.fromString("#3E3D32")
+    val wall2Fg = TileColors.fromString("#44755A")
+    val wall2Bg = TileColors.fromString("#423D2D")
     val wallFgMadness = TileColors.fromString("#4b2b5e")
-    val wallBg = TileColors.fromString("#3E3D32")
     val wallBgMadness = TileColors.fromString("#000000")
 
     val floor1Fg = TileColors.fromString("#555144")
@@ -35,7 +37,8 @@ object GameColors {
     val torchFgColors = listOf(
         TileColors.fromString("#FF834C"),
         TileColors.fromString("#FF954C"),
-        TileColors.fromString("#FFC923")
+        TileColors.fromString("#FFC923"),
+        TileColors.fromString("#EB49D1")
     )
 
 }

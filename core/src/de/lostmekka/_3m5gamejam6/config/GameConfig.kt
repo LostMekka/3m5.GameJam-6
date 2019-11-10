@@ -7,7 +7,7 @@ import org.hexworks.zircon.api.data.impl.Size3D
 object GameConfig {
 
     const val floor2prop = 0.15
-
+    const val wall2prop = 0.20
 
     const val logAreaHeight = 20
     const val sidebarWidth = 25

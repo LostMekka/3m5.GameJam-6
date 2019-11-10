@@ -33,11 +33,18 @@ object GameTileRepository {
         .withBackgroundColor(GameColors.floorBgMadness)
         .buildCharacterTile()
 
-    val wall: CharacterTile = Tiles.newBuilder()
+    val wall1: CharacterTile = Tiles.newBuilder()
         .withCharacter('#')
-        .withForegroundColor(GameColors.wallFg)
-        .withBackgroundColor(GameColors.wallBg)
+        .withForegroundColor(GameColors.wall1Fg)
+        .withBackgroundColor(GameColors.wall1Bg)
         .buildCharacterTile()
+
+    val wall2: CharacterTile = Tiles.newBuilder()
+        .withCharacter('+')
+        .withForegroundColor(GameColors.wall2Fg)
+        .withBackgroundColor(GameColors.wall2Bg)
+        .buildCharacterTile()
+
 
     val wallMadness: CharacterTile = Tiles.newBuilder()
         .withCharacter('#')
@@ -48,7 +55,7 @@ object GameTileRepository {
     val door: CharacterTile = Tiles.newBuilder()
         .withCharacter('H')
         .withForegroundColor(GameColors.doorFg)
-        .withBackgroundColor(GameColors.wallBg)
+        .withBackgroundColor(GameColors.wall1Bg)
         .buildCharacterTile()
 
     val doorMadness: CharacterTile = Tiles.newBuilder()
@@ -60,7 +67,7 @@ object GameTileRepository {
     val altar: CharacterTile = Tiles.newBuilder()
         .withCharacter('a')
         .withForegroundColor(GameColors.altarFg)
-        .withBackgroundColor(GameColors.wallBg)
+        .withBackgroundColor(GameColors.wall1Bg)
         .buildCharacterTile()
 
     val altarMadness: CharacterTile = Tiles.newBuilder()
@@ -72,13 +79,13 @@ object GameTileRepository {
     val altarActivated: CharacterTile = Tiles.newBuilder()
         .withCharacter('A')
         .withForegroundColor(GameColors.altarFgActivated)
-        .withBackgroundColor(GameColors.wallBg)
+        .withBackgroundColor(GameColors.wall1Bg)
         .buildCharacterTile()
 
     val stairs: CharacterTile = Tiles.newBuilder()
         .withCharacter('s')
         .withForegroundColor(GameColors.altarFg)
-        .withBackgroundColor(GameColors.wallBg)
+        .withBackgroundColor(GameColors.wall1Bg)
         .buildCharacterTile()
 
     val stairsMadness: CharacterTile = Tiles.newBuilder()
@@ -90,7 +97,7 @@ object GameTileRepository {
     val stairsActivated: CharacterTile = Tiles.newBuilder()
         .withCharacter('S')
         .withForegroundColor(GameColors.altarFgActivated)
-        .withBackgroundColor(GameColors.wallBg)
+        .withBackgroundColor(GameColors.wall1Bg)
         .buildCharacterTile()
 
     val player = Tiles.newBuilder()

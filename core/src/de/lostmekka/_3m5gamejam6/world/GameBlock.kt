@@ -72,8 +72,16 @@ class GameBlock(
         )
 
 
-        fun wall() = GameBlock(
-            tile = GameTileRepository.wall,
+        fun wall1() = GameBlock(
+            tile = GameTileRepository.wall1,
+            madnessTile = GameTileRepository.wallMadness,
+            tileName = "Wall",
+            isWalkable = false,
+            isTransparent = false
+        )
+
+        fun wall2() = GameBlock(
+            tile = GameTileRepository.wall2,
             madnessTile = GameTileRepository.wallMadness,
             tileName = "Wall",
             isWalkable = false,

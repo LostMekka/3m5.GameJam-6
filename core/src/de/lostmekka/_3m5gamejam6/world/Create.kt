@@ -15,7 +15,7 @@ fun World.generateRooms() {
     val (w, h) = gameArea.actualSize().to2DSize()
     for (x in 0 until w) {
         for (y in 0 until h) {
-            val block = if (x == 0 || y == 0 || x == w-1 || y == h-1) GameBlock.wall() else{
+            val block = if (x == 0 || y == 0 || x == w-1 || y == h-1) GameBlock.wall1() else{
                 if (Random.nextBoolean(GameConfig.floor2prop)) GameBlock.floor2() else GameBlock.floor1()}
             gameArea.setBlockAt(Position3D.create(x, y, 0), block)
         }
@@ -52,16 +52,16 @@ private fun World.generateRandomWalls(
             gameArea.setBlockAt(position, GameBlock.door())
             generateRandomWalls(_x = x, _y = y, doorNext = false, increase = increase, xDir = xDir)
         } else {
-            gameArea.setBlockAt(position, GameBlock.wall())
+            gameArea.setBlockAt(position, if(Random.nextBoolean(GameConfig.wall2prop)) GameBlock.wall2() else GameBlock.wall1())
             val succ1 = generateRandomWalls(_x = x, _y = y, xDir = !xDir, increase = increase * (-1))
             val succ2 = generateRandomWalls(_x = x, _y = y, xDir = !xDir, increase = increase)
             if (!(succ1 && succ2)) {
-                gameArea.setBlockAt(Position3D.create(if (xDir) x + increase else x, if (xDir) y else y + increase, 0), GameBlock.wall())
+                gameArea.setBlockAt(Position3D.create(if (xDir) x + increase else x, if (xDir) y else y + increase, 0),  if(Random.nextBoolean(GameConfig.wall2prop)) GameBlock.wall2() else GameBlock.wall1())
             }
             return true
         }
     } else {
-        gameArea.setBlockAt(position, GameBlock.wall())
+        gameArea.setBlockAt(position, if(Random.nextBoolean(GameConfig.wall2prop)) GameBlock.wall2() else GameBlock.wall1())
         generateRandomWalls(_x = x, _y = y, prop = prop * 2, increase = increase, xDir = xDir, doorNext = doorNext)
     }
     return true
