@@ -4,8 +4,11 @@ import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.world.GameBlock
+import de.lostmekka._3m5gamejam6.world.PlayerDied
+import de.lostmekka._3m5gamejam6.world.ValidInput
 import de.lostmekka._3m5gamejam6.world.World
 import de.lostmekka._3m5gamejam6.world.generateAltars
+import de.lostmekka._3m5gamejam6.world.generateEnemies
 import de.lostmekka._3m5gamejam6.world.generateMadness
 import de.lostmekka._3m5gamejam6.world.generateRooms
 import de.lostmekka._3m5gamejam6.world.generateTorchItems
@@ -14,7 +17,6 @@ import de.lostmekka._3m5gamejam6.world.placeStairs
 import de.lostmekka._3m5gamejam6.world.placeTorch
 import de.lostmekka._3m5gamejam6.world.placeTorchItem
 import de.lostmekka._3m5gamejam6.world.updateLighting
-import de.lostmekka._3m5gamejam6.world.*
 import org.hexworks.cobalt.events.api.subscribe
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.GameComponents
@@ -23,18 +25,29 @@ import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.component.ComponentAlignment.BOTTOM_LEFT
 import org.hexworks.zircon.api.component.Visibility
 import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.api.data.impl.Position3D
 import org.hexworks.zircon.api.extensions.onKeyboardEvent
 import org.hexworks.zircon.api.extensions.onMouseEvent
 import org.hexworks.zircon.api.game.ProjectionMode
 import org.hexworks.zircon.api.mvc.base.BaseView
-import org.hexworks.zircon.api.uievent.*
+import org.hexworks.zircon.api.uievent.KeyCode
+import org.hexworks.zircon.api.uievent.KeyboardEventType
+import org.hexworks.zircon.api.uievent.MouseEvent
+import org.hexworks.zircon.api.uievent.MouseEventType
+import org.hexworks.zircon.api.uievent.Processed
+import org.hexworks.zircon.api.uievent.UIEventPhase
 import org.hexworks.zircon.internal.Zircon
-import de.lostmekka._3m5gamejam6.world.*
 
 class GameView : BaseView() {
 
+    private var isActive = false
+
+    override fun onUndock() {
+        isActive = false
+    }
+
     override fun onDock() {
+        isActive = true
+
         val world = World(
             GameConfig.worldSize,
             GameConfig.worldSize
@@ -114,12 +127,14 @@ class GameView : BaseView() {
         }
 
         Zircon.eventBus.subscribe<PlayerDied> {
-            replaceWith(LoseView(it.cause))
-            close()
+            if (isActive) {
+                replaceWith(LoseView(it.cause))
+                close()
+            }
         }
 
         Zircon.eventBus.subscribe<ValidInput> {
-            world.tick()
+            if (isActive) world.tick()
         }
 
         mainArea.onMouseEvent(MouseEventType.MOUSE_MOVED) { event: MouseEvent, _: UIEventPhase ->
