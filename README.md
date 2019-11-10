@@ -19,6 +19,9 @@ Wicked forces came to life but nothing  can persist against the light. It is up 
 
 ***Enjoy the game***
 
+
+#Screenshots
+
 ![alt text](https://github.com/LostMekka/3m5.GameJam-6/blob/master/documentation/00.png)
 ![alt text](https://github.com/LostMekka/3m5.GameJam-6/blob/master/documentation/01.png)
 
