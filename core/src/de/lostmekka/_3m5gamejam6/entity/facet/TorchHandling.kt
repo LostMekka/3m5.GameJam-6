@@ -25,6 +25,7 @@ import org.hexworks.zircon.internal.Zircon
 
 object TorchHandling : BaseFacet<GameContext>() {
     override fun executeCommand(command: GameCommand<out EntityType>): Response {
+        val entity = command.source
         var response: Response = Pass
 
         command.whenCommandIs(GrabTorchItem::class) { (context, _, position) ->
@@ -42,32 +43,32 @@ object TorchHandling : BaseFacet<GameContext>() {
             true
         }
 
-        command.whenCommandIs(BuildTorch::class) { (context, _, position) ->
-               val success = build(
-                  context = context,
-                  position = position,
-                  buildingCost = GameConfig.torchBuildingCost,
-                  buildingTime = GameConfig.torchBuildingTime,
-                  buildingType = Torch,
-                  buildOperation = { context.world.placeTorch(it) }
-              )
+        if (!entity.inventory.holdsSword) {
+            command.whenCommandIs(BuildTorch::class) { (context, _, position) ->
+                   val success = build(
+                      context = context,
+                      position = position,
+                      buildingCost = GameConfig.torchBuildingCost,
+                      buildingTime = GameConfig.torchBuildingTime,
+                      buildingType = Torch,
+                      buildOperation = { context.world.placeTorch(it) }
+                  )
+                  if (success) response = Consumed
+                  success
+              }
 
-              if (success) response = Consumed
-              success
-
-          }
-
-        command.whenCommandIs(ActivateAltar::class) { (context, _, position) ->
-            val success = build(
-                context = context,
-                position = position,
-                buildingCost = GameConfig.altarBuildingCost,
-                buildingTime = GameConfig.altarBuildingTime,
-                buildingType = ActivatedAltar,
-                buildOperation = { context.world.activateAltar(it) }
-            )
-            if (success) response = Consumed
-            success
+            command.whenCommandIs(ActivateAltar::class) { (context, _, position) ->
+                val success = build(
+                    context = context,
+                    position = position,
+                    buildingCost = GameConfig.altarBuildingCost,
+                    buildingTime = GameConfig.altarBuildingTime,
+                    buildingType = ActivatedAltar,
+                    buildOperation = { context.world.activateAltar(it) }
+                )
+                if (success) response = Consumed
+                success
+            }
         }
 
         return response

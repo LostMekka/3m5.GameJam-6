@@ -11,8 +11,8 @@ object GameConfig {
 
     const val logAreaHeight = 20
     const val sidebarWidth = 25
-    const val windowWidth = 120
-    const val windowHeight = 62
+    const val windowWidth = 90
+    const val windowHeight = 50
 
     val worldSize = Size3D.create(windowWidth - sidebarWidth, windowHeight, 1)
     val levelCount = 5
@@ -34,6 +34,7 @@ object GameConfig {
     const val torchBuildingCost = 1
     const val altarBuildingTime = 6
     const val altarBuildingCost = 3
+    const val altarHealthBonus = 20
 
     const val playerInitialTorchCount = 10
     const val areaInitialTorchCount = 75
@@ -42,8 +43,8 @@ object GameConfig {
     const val areaInitialEnemyZombieCount = 20
     const val enemyViewDistance = 7
     const val enemyDamage = 4
-    const val enemySleeps = 0.7
-    const val enemyChasesPlayer = 0.6
+    const val enemyRoamProbability = 0.3
+    const val enemyChaseProbability = 0.6
 
     const val SwordDamageMin = 30
     const val SwordDamageMax = 40

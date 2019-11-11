@@ -72,22 +72,10 @@ class World(
         return success
     }
 
-    private fun checkEnemyDamage(position: Position3D) {
-        if (player.inventory.holdsSword) {
-            get(position)?.currentEntities?.filter { it.type == EnemyZombie }?.forEach {
-                it.health -= Random.nextInt(GameConfig.SwordDamageMin, GameConfig.SwordDamageMax)
-                if (it.health <= 0) engine.removeEntity(it)
-            }
-            get(position)?.currentEntities?.removeIf {it.type == EnemyZombie && it.health <= 0 }
-        }
-    }
-
     fun moveEntity(entity: GameEntity<EntityType>, position: Position3D): Boolean {
         var success = false
         val oldBlock = gameArea.fetchBlockAt(entity.position)
         val newBlock = gameArea.fetchBlockAt(position)
-
-        checkEnemyDamage(player.position)
 
         if (bothBlocksPresentAndWalkable(oldBlock, newBlock)) {
             // walk
@@ -100,7 +88,7 @@ class World(
         return success
     }
 
-    fun checkPlayerDeath() {
+    private fun checkPlayerDeath() {
         if (player.health <= 0) {
             Zircon.eventBus.publish(PlayerDied("You died because of madness!"))
         }
@@ -128,7 +116,7 @@ class World(
         )
     }
 
-    fun onPlayerMoved() {
+    private fun onPlayerMoved() {
         player.inventory.buildingProgress = 0
         if (this[player.position]?.isDoor == true) {
             Zircon.eventBus.publish(SoundEvent("Door"))
@@ -168,15 +156,32 @@ class World(
                 val line1 = LineFactory.buildLine(pos, ringPos).toList()
                 // line2 is necessary since there are direction dependent rounding errors that produce unwanted blind spots
                 val line2 = line1.map { Position.create(it.x, 2 * pos.y - it.y) }
-                val n1 = line1.takeWhile { it == pos || this[it]?.isTransparent == true }.size
-                val n2 = line2.takeWhile { it == pos || this[it]?.isTransparent == true }.size
-                result += line1.take(n1 + 1)
-                result += line2.take(n2 + 1)
+
+                fun trace(line: Iterable<Position>) {
+                    var persistence = 1
+                    var obstructed = false
+                    for (position in line) {
+                        if (obstructed) {
+                            persistence--
+                            if (persistence <= 0) break
+                        } else {
+                            val block = this[position]
+                            val transparent = block?.isTransparent ?: false
+                            val walkable = block?.isWalkable ?: false
+                            if (walkable && !transparent) persistence++
+                            if (!transparent) obstructed = position != line.first()
+                        }
+                        result += position
+                    }
+                }
+
+                trace(line1)
+                trace(line2)
                 result
             }
     }
 
-    fun neighboursOf(position: Position3D): List<GameBlock> {
+    private fun neighboursOf(position: Position3D): List<GameBlock> {
         val ans = mutableListOf<GameBlock>()
         for (x in position.x - 1..position.x + 1) {
             for (y in position.y - 1..position.y + 1) {

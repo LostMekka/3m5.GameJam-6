@@ -5,6 +5,7 @@ import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
 import de.lostmekka._3m5gamejam6.entity.EntityFactory
 import de.lostmekka._3m5gamejam6.entity.OpenedStairs
 import de.lostmekka._3m5gamejam6.entity.Player
+import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.position
 import de.lostmekka._3m5gamejam6.nextBoolean
 import org.hexworks.zircon.api.data.impl.Position3D
@@ -98,6 +99,7 @@ fun World.activateAltar(pos: Position3D): Boolean {
         engine.addEntity(it)
     }
     activatedAltarCount++
+    player.health += GameConfig.altarHealthBonus
 
     if (activatedAltarCount >= altarCount) {
         val stairsBlock = this[stairsPosition]!!

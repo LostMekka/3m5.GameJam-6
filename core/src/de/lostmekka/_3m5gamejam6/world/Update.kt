@@ -1,14 +1,21 @@
 package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.config.GameConfig
-import de.lostmekka._3m5gamejam6.entity.*
+import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
+import de.lostmekka._3m5gamejam6.entity.AnyGameEntity
+import de.lostmekka._3m5gamejam6.entity.EnemyZombie
+import de.lostmekka._3m5gamejam6.entity.Torch
+import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.entity.attribute.position
+import de.lostmekka._3m5gamejam6.entity.attribute.position2D
 import de.lostmekka._3m5gamejam6.entity.attribute.tileAnimation
 import de.lostmekka._3m5gamejam6.nextBoolean
-import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.impl.Position3D
+import org.hexworks.zircon.internal.Zircon
+import kotlin.math.abs
+import kotlin.math.sign
 import kotlin.random.Random
 
 fun World.updateTorches() {
@@ -19,14 +26,53 @@ fun World.updateTorches() {
     }
 }
 
+fun World.updateEnemyZombies() {
+    gameArea.fetchBlocks()
+        .flatMap { (_, block) -> block.currentEntities.filter { it.type is EnemyZombie } }
+        .forEach { updateEnemyZombie(it) }
+}
 
+fun World.updateEnemyZombie(entity: AnyGameEntity) {
+    val currentPos = entity.position
+    val playerFound = findVisiblePositionsFor(currentPos.to2DPosition(), GameConfig.enemyViewDistance)
+        .any { player.position2D == it }
+    if (playerFound) {
+        if (!Random.nextBoolean(GameConfig.enemyChaseProbability)) return
 
-fun World.updateEnemyZombies()
-{
-    gameArea.fetchBlocks().forEach{(_, block)->
-        block.currentEntities
-            .filter{it.type is EnemyZombie}
-            .forEach{updateEnemyZombie(it)}
+        val dx = player.position2D.x - entity.position2D.x
+        val dy = player.position2D.y - entity.position2D.y
+        val adx = abs(dx)
+        val ady = abs(dy)
+
+        if (adx + ady <= 1) {
+            // attack
+            Zircon.eventBus.publish(SoundEvent("Hit"))
+            player.health -= GameConfig.enemyDamage
+        } else {
+            // chase
+            val moveX = when {
+                adx > ady -> true
+                adx < ady -> false
+                else -> Random.nextBoolean()
+            }
+            val target = if (moveX) {
+                currentPos.withRelativeX(dx.sign)
+            } else {
+                currentPos.withRelativeY(dy.sign)
+            }
+            moveEntity(entity, target)
+        }
+    } else {
+        // no player >> Do some random movement
+        if (!Random.nextBoolean(GameConfig.enemyRoamProbability)) return
+
+        val amount = Random.nextInt(2) * 2 - 1
+        val target = if (Random.nextBoolean()) {
+            currentPos.withRelativeX(amount)
+        } else {
+            currentPos.withRelativeY(amount)
+        }
+        moveEntity(entity, target)
     }
 }
 
