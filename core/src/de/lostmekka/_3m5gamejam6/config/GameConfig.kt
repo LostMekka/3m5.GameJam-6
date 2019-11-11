@@ -34,17 +34,17 @@ object GameConfig {
     const val torchBuildingCost = 1
     const val altarBuildingTime = 6
     const val altarBuildingCost = 3
-    const val altarHealthBonus = 20
+    const val altarHealthBonus = 10
 
     const val playerInitialTorchCount = 10
-    const val areaInitialTorchCount = 75
+    const val areaInitialTorchCount = 60
     const val areaAltarCount = 5
 
     const val areaInitialEnemyZombieCount = 8
     const val enemyViewDistance = 7
     const val enemyDamage = 4
     const val enemyRoamProbability = 0.3
-    const val enemyChaseProbability = 0.6
+    const val enemyChaseProbability = 0.75
 
     const val SwordDamageMin = 30
     const val SwordDamageMax = 40
