@@ -26,7 +26,7 @@ import org.hexworks.zircon.internal.Zircon
 class World(
     visibleSize: Size3D,
     actualSize: Size3D,
-    private var levelDepth: Int = 0
+    val levelDepth: Int = 0
 ) {
     val gameArea = GameAreaBuilder.newBuilder<Tile, GameBlock>()
         .withVisibleSize(visibleSize)

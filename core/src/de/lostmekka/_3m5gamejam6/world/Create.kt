@@ -114,17 +114,8 @@ fun World.activateAltar(pos: Position3D): Boolean {
 }
 
 fun World.generateEnemies() {
-    repeat(GameConfig.areaInitialEnemyZombieCount) {
-        val x = Random.nextInt(gameArea.actualSize().xLength - 1)
-        val y = Random.nextInt(gameArea.actualSize().yLength - 1)
-        val pos = Position3D.create(x, y, 0)
-        placeEnemyZombie(pos)
-    }
-}
-
-fun World.placeEnemyZombie(pos: Position3D) {
-    val block = this[pos]
-    if (block != null && block.isWalkable && block.isTransparent) {
+    val count = GameConfig.areaInitialEnemyZombieCount + levelDepth
+    for ((pos, block) in fetchRandomSpawnableBlocks(count)) {
         val newZombie = EntityFactory.newEnemyZombie()
         newZombie.position = pos
         block.currentEntities += newZombie
@@ -148,7 +139,7 @@ fun World.placePortal() {
 fun World.generateMadness() {
     gameArea.fetchBlocks()
         .shuffled()
-        .take(5)
+        .take(5 + levelDepth)
         .forEach { it.block.hasMadness = true }
 }
 
