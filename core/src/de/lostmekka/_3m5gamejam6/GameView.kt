@@ -15,7 +15,7 @@ import de.lostmekka._3m5gamejam6.world.generateMadness
 import de.lostmekka._3m5gamejam6.world.generateRooms
 import de.lostmekka._3m5gamejam6.world.generateTorchItems
 import de.lostmekka._3m5gamejam6.world.placePlayer
-import de.lostmekka._3m5gamejam6.world.placeStairs
+import de.lostmekka._3m5gamejam6.world.placePortal
 import de.lostmekka._3m5gamejam6.world.placeTorch
 import de.lostmekka._3m5gamejam6.world.placeTorchItem
 import de.lostmekka._3m5gamejam6.world.updateLighting
@@ -57,7 +57,7 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
         )
         world.generateRooms()
         world.placePlayer()
-        world.placeStairs()
+        world.placePortal()
         world.generateAltars()
         world.generateTorchItems()
         world.generateEnemies()

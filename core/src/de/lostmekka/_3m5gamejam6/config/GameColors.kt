@@ -23,7 +23,7 @@ object GameColors {
     val doorFg = TileColors.fromString("#FFCD22")
     val doorFgMadness = TileColors.fromString("#8923c7")
 
-    val altarFg = TileColors.fromString("#4d5645")
+    val altarFg = TileColors.fromString("#5d6F45")
     val altarFgMadness = TileColors.fromString("#4d2675")
     val altarFgActivated = TileColors.fromString("#CdE645")
 

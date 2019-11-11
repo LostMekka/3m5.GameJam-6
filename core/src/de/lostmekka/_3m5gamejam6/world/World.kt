@@ -2,7 +2,6 @@ package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.GameContext
 import de.lostmekka._3m5gamejam6.config.GameConfig
-import de.lostmekka._3m5gamejam6.entity.EnemyZombie
 import de.lostmekka._3m5gamejam6.entity.EntityFactory
 import de.lostmekka._3m5gamejam6.entity.GameEntity
 import de.lostmekka._3m5gamejam6.entity.attribute.health
@@ -23,7 +22,6 @@ import org.hexworks.zircon.api.shape.EllipseFactory
 import org.hexworks.zircon.api.shape.LineFactory
 import org.hexworks.zircon.api.uievent.UIEvent
 import org.hexworks.zircon.internal.Zircon
-import kotlin.random.Random
 
 class World(
     visibleSize: Size3D,
@@ -43,7 +41,7 @@ class World(
 
     var altarCount = 0
     var activatedAltarCount = 0
-    lateinit var stairsPosition: Position3D
+    lateinit var portalPosition: Position3D
 
     operator fun get(pos: Position) = this[pos.to3DPosition()]
 
@@ -120,7 +118,7 @@ class World(
         player.inventory.buildingProgress = 0
         if (this[player.position]?.isDoor == true) {
             Zircon.eventBus.publish(SoundEvent("Door"))
-        } else if (this[player.position]?.stairsAreOpened == true) {
+        } else if (this[player.position]?.portalIsOpen == true) {
             // go to next level
             if (levelDepth + 1 < GameConfig.levelCount) {
                 Zircon.eventBus.publish(SoundEvent("NextLevel"))

@@ -3,7 +3,7 @@ package de.lostmekka._3m5gamejam6.world
 import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
 import de.lostmekka._3m5gamejam6.entity.EntityFactory
-import de.lostmekka._3m5gamejam6.entity.OpenedStairs
+import de.lostmekka._3m5gamejam6.entity.OpenedPortal
 import de.lostmekka._3m5gamejam6.entity.Player
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.position
@@ -102,10 +102,10 @@ fun World.activateAltar(pos: Position3D): Boolean {
     player.health += GameConfig.altarHealthBonus
 
     if (activatedAltarCount >= altarCount) {
-        val stairsBlock = this[stairsPosition]!!
-        OpenedStairs.create().also {
-            it.position = stairsPosition
-            stairsBlock.currentEntities += it
+        val portalBlock = this[portalPosition]!!
+        OpenedPortal.create().also {
+            it.position = portalPosition
+            portalBlock.currentEntities += it
             engine.addEntity(it)
         }
     }
@@ -139,10 +139,10 @@ fun World.placePlayer() {
     engine.addEntity(player)
 }
 
-fun World.placeStairs() {
+fun World.placePortal() {
     val (pos, _) = fetchSpawnableBlocks().random()
-    stairsPosition = pos
-    this[pos] = GameBlock.stairs()
+    portalPosition = pos
+    this[pos] = GameBlock.portal()
 }
 
 fun World.generateMadness() {

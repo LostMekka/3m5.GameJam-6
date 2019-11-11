@@ -4,7 +4,7 @@ import de.lostmekka._3m5gamejam6.GameTileRepository
 import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
 import de.lostmekka._3m5gamejam6.entity.GameEntity
-import de.lostmekka._3m5gamejam6.entity.OpenedStairs
+import de.lostmekka._3m5gamejam6.entity.OpenedPortal
 import de.lostmekka._3m5gamejam6.entity.attribute.tile
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.zircon.api.data.BlockSide
@@ -20,7 +20,7 @@ class GameBlock(
     var hasMadness: Boolean = false,
     val isDoor: Boolean = false,
     val isAltar: Boolean = false,
-    val isStairs: Boolean = false,
+    val isPortal: Boolean = false,
     val currentEntities: MutableList<GameEntity<EntityType>> = mutableListOf()
 ) : BlockBase<Tile>() {
     override val layers: MutableList<Tile>
@@ -52,7 +52,7 @@ class GameBlock(
     var isLit = false
     var averageSurroundingMadness = 0.0
     val altarIsActive get() = currentEntities.any { it.type is ActivatedAltar }
-    val stairsAreOpened get() = currentEntities.any { it.type is OpenedStairs }
+    val portalIsOpen get() = currentEntities.any { it.type is OpenedPortal }
 
     override fun fetchSide(side: BlockSide): Tile {
         return GameTileRepository.empty
@@ -109,13 +109,13 @@ class GameBlock(
             isAltar = true
         )
 
-        fun stairs() = GameBlock(
-            tile = GameTileRepository.stairs,
-            madnessTile = GameTileRepository.stairsMadness,
-            tileName = "Sealed Stairs",
+        fun portal() = GameBlock(
+            tile = GameTileRepository.portal,
+            madnessTile = GameTileRepository.portalMadness,
+            tileName = "Sealed Portal",
             isWalkable = true,
             isTransparent = false,
-            isStairs = true
+            isPortal = true
         )
     }
 }
