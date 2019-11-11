@@ -1,34 +1,135 @@
 package de.lostmekka._3m5gamejam6
 
+import de.lostmekka._3m5gamejam6.config.GameColors
 import org.hexworks.zircon.api.Tiles
 import org.hexworks.zircon.api.data.CharacterTile
-import org.hexworks.zircon.api.graphics.Symbols
 
 object GameTileRepository {
 
-    val EMPTY: CharacterTile = Tiles.empty()
+    val empty: CharacterTile = Tiles.empty()
 
-    val FLOOR: CharacterTile = Tiles.newBuilder()
-        .withCharacter(Symbols.INTERPUNCT)
-        .withForegroundColor(GameColors.FLOOR_FOREGROUND)
-        .withBackgroundColor(GameColors.FLOOR_BACKGROUND)
+    val shadow: CharacterTile = Tiles.newBuilder()
+        .withCharacter(' ')
+        .withForegroundColor(GameColors.shadowFg)
+        .withBackgroundColor(GameColors.shadowBg)
         .buildCharacterTile()
 
-    val WALL: CharacterTile = Tiles.newBuilder()
+    val floor1: CharacterTile = Tiles.newBuilder()
+        .withCharacter('.')
+        .withForegroundColor(GameColors.floor1Fg)
+        .withBackgroundColor(GameColors.floor1Bg)
+        .buildCharacterTile()
+
+
+    val floor2: CharacterTile = Tiles.newBuilder()
+        .withCharacter(',')
+        .withForegroundColor(GameColors.floor2Fg)
+        .withBackgroundColor(GameColors.floor2Bg)
+        .buildCharacterTile()
+
+    val floorMadness: CharacterTile = Tiles.newBuilder()
+        .withCharacter('~')
+        .withForegroundColor(GameColors.floorFgMadness)
+        .withBackgroundColor(GameColors.floorBgMadness)
+        .buildCharacterTile()
+
+    val wall1: CharacterTile = Tiles.newBuilder()
         .withCharacter('#')
-        .withForegroundColor(GameColors.WALL_FOREGROUND)
-        .withBackgroundColor(GameColors.WALL_BACKGROUND)
+        .withForegroundColor(GameColors.wall1Fg)
+        .withBackgroundColor(GameColors.wall1Bg)
         .buildCharacterTile()
 
-    val DOOR: CharacterTile = Tiles.newBuilder()
+    val wall2: CharacterTile = Tiles.newBuilder()
+        .withCharacter('+')
+        .withForegroundColor(GameColors.wall2Fg)
+        .withBackgroundColor(GameColors.wall2Bg)
+        .buildCharacterTile()
+
+
+    val wallMadness: CharacterTile = Tiles.newBuilder()
+        .withCharacter('#')
+        .withForegroundColor(GameColors.wallFgMadness)
+        .withBackgroundColor(GameColors.wallBgMadness)
+        .buildCharacterTile()
+
+    val door: CharacterTile = Tiles.newBuilder()
         .withCharacter('H')
-        .withForegroundColor(GameColors.ACCENT_COLOR_2)
-        .withBackgroundColor(GameColors.WALL_BACKGROUND)
+        .withForegroundColor(GameColors.doorFg)
+        .withBackgroundColor(GameColors.wall1Bg)
         .buildCharacterTile()
 
-    val PLAYER = Tiles.newBuilder()
-        .withCharacter('@')
-        .withBackgroundColor(GameColors.FLOOR_BACKGROUND)
-        .withForegroundColor(GameColors.ACCENT_COLOR)
+    val doorMadness: CharacterTile = Tiles.newBuilder()
+        .withCharacter('H')
+        .withForegroundColor(GameColors.doorFgMadness)
+        .withBackgroundColor(GameColors.wallBgMadness)
         .buildCharacterTile()
+
+    val altar: CharacterTile = Tiles.newBuilder()
+        .withCharacter('a')
+        .withForegroundColor(GameColors.altarFg)
+        .withBackgroundColor(GameColors.floor1Bg)
+        .buildCharacterTile()
+
+    val altarMadness: CharacterTile = Tiles.newBuilder()
+        .withCharacter('a')
+        .withForegroundColor(GameColors.altarFgMadness)
+        .withBackgroundColor(GameColors.floorBgMadness)
+        .buildCharacterTile()
+
+    val altarActivated: CharacterTile = Tiles.newBuilder()
+        .withCharacter('A')
+        .withForegroundColor(GameColors.altarFgActivated)
+        .withBackgroundColor(GameColors.floor1Bg)
+        .buildCharacterTile()
+
+    val portal: CharacterTile = Tiles.newBuilder()
+        .withCharacter('p')
+        .withForegroundColor(GameColors.altarFg)
+        .withBackgroundColor(GameColors.floor1Bg)
+        .buildCharacterTile()
+
+    val portalMadness: CharacterTile = Tiles.newBuilder()
+        .withCharacter('p')
+        .withForegroundColor(GameColors.altarFgMadness)
+        .withBackgroundColor(GameColors.floorBgMadness)
+        .buildCharacterTile()
+
+    val portalActivated: CharacterTile = Tiles.newBuilder()
+        .withCharacter('P')
+        .withForegroundColor(GameColors.altarFgActivated)
+        .withBackgroundColor(GameColors.floor1Bg)
+        .buildCharacterTile()
+
+    val player = Tiles.newBuilder()
+        .withCharacter('@')
+        .withForegroundColor(GameColors.doorFg)
+        .withBackgroundColor(GameColors.floor1Bg)
+        .buildCharacterTile()
+
+    val enemyZombie = Tiles.newBuilder()
+        .withCharacter('z')
+        .withBackgroundColor(GameColors.zombieBg)
+        .withForegroundColor(GameColors.zombieFg)
+        .buildCharacterTile()
+
+    val playerMadness = Tiles.newBuilder()
+        .withCharacter('@')
+        .withForegroundColor(GameColors.doorFgMadness)
+        .withBackgroundColor(GameColors.floorBgMadness)
+        .buildCharacterTile()
+
+    val torchItem = Tiles.newBuilder()
+        .withCharacter('t')
+        .withForegroundColor(GameColors.torchItemFg)
+        .withBackgroundColor(GameColors.floor1Bg)
+        .buildCharacterTile()
+
+    val torch = GameColors.torchFgColors.map {
+        Tiles.newBuilder()
+            .withCharacter('T')
+            .withForegroundColor(it)
+            .withBackgroundColor(GameColors.floor1Bg)
+            .buildCharacterTile()
+    }
+
 }
