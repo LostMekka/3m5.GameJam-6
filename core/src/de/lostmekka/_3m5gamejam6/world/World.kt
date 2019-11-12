@@ -95,8 +95,8 @@ class World(
     private fun checkPlayerMadness(block: GameBlock) {
         var madnessSum = 0
         if (block.hasMadness) player.health -= GameConfig.madnessHealthDecrease
-        for (x in player.position.x - 5 .. player.position.x + 5) {
-            for (y in player.position.y - 5 .. player.position.y + 5) {
+        for (x in player.position.x - 5..player.position.x + 5) {
+            for (y in player.position.y - 5..player.position.y + 5) {
                 if (this[Position3D.create(x, y, 0)]?.hasMadness == true) madnessSum += 1
             }
         }
@@ -142,39 +142,34 @@ class World(
         checkPlayerDeath()
     }
 
-    fun findVisiblePositionsFor(pos: Position, radius: Int): Iterable<Position> {
-        val boundary = EllipseFactory.buildEllipse(
-            fromPosition = pos,
-            toPosition = pos.withRelativeX(radius).withRelativeY(radius)
-        )
-        return boundary
-            .positions()
+    fun findVisiblePositionsFor(center: Position, radius: Int): Iterable<Position> {
+        return listOf(radius - 1, radius)
+            .flatMap {
+                EllipseFactory
+                    .buildEllipse(center, center.withRelativeX(it).withRelativeY(it))
+                    .positions()
+            }
+            .toSet()
             .flatMap { ringPos ->
                 val result = mutableSetOf<Position>()
-                val line1 = LineFactory.buildLine(pos, ringPos).toList()
-                // line2 is necessary since there are direction dependent rounding errors that produce unwanted blind spots
-                val line2 = line1.map { Position.create(it.x, 2 * pos.y - it.y) }
+                val line = LineFactory.buildLine(center, ringPos).toList()
 
-                fun trace(line: Iterable<Position>) {
-                    var persistence = 1
-                    var obstructed = false
-                    for (position in line) {
-                        if (obstructed) {
-                            persistence--
-                            if (persistence <= 0) break
-                        } else {
-                            val block = this[position]
-                            val transparent = block?.isTransparent ?: false
-                            val walkable = block?.isWalkable ?: false
-                            if (walkable && !transparent) persistence++
-                            if (!transparent) obstructed = position != line.first()
-                        }
-                        result += position
+                var persistence = 1
+                var obstructed = false
+                for (position in line) {
+                    if (obstructed) {
+                        persistence--
+                        if (persistence <= 0) break
+                    } else {
+                        val isFirst = position == center
+                        val block = this[position]
+                        val transparent = block?.isTransparent ?: false
+                        val walkable = block?.isWalkable ?: false
+                        if (walkable && !transparent && !isFirst) persistence++
+                        if (!transparent) obstructed = !isFirst
                     }
+                    result += position
                 }
-
-                trace(line1)
-                trace(line2)
                 result
             }
     }
