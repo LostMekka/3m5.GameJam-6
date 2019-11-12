@@ -41,7 +41,7 @@ object GameConfig {
     const val areaAltarCount = 5
 
     const val areaInitialEnemyZombieCount = 8
-    const val enemyViewDistance = 7
+    const val enemyViewDistance = 6
     const val enemyDamage = 4
     const val enemyRoamProbability = 0.3
     const val enemyChaseProbability = 0.75
