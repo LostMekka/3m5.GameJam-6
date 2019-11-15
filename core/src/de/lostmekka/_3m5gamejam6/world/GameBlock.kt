@@ -3,8 +3,10 @@ package de.lostmekka._3m5gamejam6.world
 import de.lostmekka._3m5gamejam6.GameTileRepository
 import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
+import de.lostmekka._3m5gamejam6.entity.EnemyZombie
 import de.lostmekka._3m5gamejam6.entity.GameEntity
 import de.lostmekka._3m5gamejam6.entity.OpenedPortal
+import de.lostmekka._3m5gamejam6.entity.Player
 import de.lostmekka._3m5gamejam6.entity.attribute.tile
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.zircon.api.data.BlockSide
@@ -27,12 +29,14 @@ class GameBlock(
         get() {
             if (!isLit && GameConfig.fogOfWarEnabled) return mutableListOf(GameTileRepository.shadow)
 
-            val entityTiles = currentEntities.map { it.tile }
+            val player = currentEntities.find { it.type is Player }
+            val enemy = currentEntities.find { it.type is EnemyZombie }
             val tile = when {
-                hasMadness && entityTiles.contains(GameTileRepository.player) -> GameTileRepository.playerMadness
-                entityTiles.contains(GameTileRepository.player) -> GameTileRepository.player
-                entityTiles.isNotEmpty() -> entityTiles.first()
+                hasMadness && player != null -> GameTileRepository.playerMadness
+                player != null -> GameTileRepository.player
+                enemy != null -> enemy.tile
                 hasMadness -> madnessTile
+                currentEntities.isNotEmpty() -> currentEntities.first().tile
                 else -> tile
             }
             return mutableListOf(tile)
