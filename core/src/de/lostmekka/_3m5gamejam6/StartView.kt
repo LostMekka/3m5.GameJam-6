@@ -1,6 +1,6 @@
 package de.lostmekka._3m5gamejam6
 
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.UIEventResponses
 import org.hexworks.zircon.api.component.ComponentAlignment
@@ -13,7 +13,7 @@ import org.hexworks.zircon.api.uievent.UIEventPhase
 
 class StartView : BaseView() {
 
-    override val theme = GameConfig.theme
+    override val theme = gameConfig.theme
 
     override fun onDock() {
         val msg = "Welcome to Darkness Follows."

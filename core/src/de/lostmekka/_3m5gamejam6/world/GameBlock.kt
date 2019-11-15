@@ -1,7 +1,7 @@
 package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.GameTileRepository
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
 import de.lostmekka._3m5gamejam6.entity.EnemyZombie
 import de.lostmekka._3m5gamejam6.entity.GameEntity
@@ -28,7 +28,7 @@ class GameBlock(
 ) : BlockBase<Tile>() {
     override val layers: MutableList<Tile>
         get() {
-            if (!isLit && GameConfig.fogOfWarEnabled) return mutableListOf(GameTileRepository.shadow)
+            if (!isLit && !gameConfig.debug.seeEverything) return mutableListOf(GameTileRepository.shadow)
 
             val entity = findEntity<Player>()
                 ?: findEntity<EnemyZombie>()
@@ -42,7 +42,7 @@ class GameBlock(
 
     val name: String
         get() {
-            if (!isLit && GameConfig.fogOfWarEnabled) return "Unknown"
+            if (!isLit && !gameConfig.debug.seeEverything) return "Unknown"
             val name = currentEntities.firstOrNull()?.name ?: tileName
             val modifier = when {
                 hasMadness -> " (Madness)"

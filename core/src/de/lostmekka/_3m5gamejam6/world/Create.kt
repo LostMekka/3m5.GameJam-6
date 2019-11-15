@@ -1,6 +1,6 @@
 package de.lostmekka._3m5gamejam6.world
 
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
 import de.lostmekka._3m5gamejam6.entity.EntityFactory
 import de.lostmekka._3m5gamejam6.entity.OpenedPortal
@@ -17,7 +17,7 @@ fun World.generateRooms() {
     for (x in 0 until w) {
         for (y in 0 until h) {
             val block = if (x == 0 || y == 0 || x == w-1 || y == h-1) GameBlock.wall1() else{
-                if (Random.nextBoolean(GameConfig.floor2prop)) GameBlock.floor2() else GameBlock.floor1()}
+                if (Random.nextBoolean(gameConfig.levelGeneration.alternateFloorChance)) GameBlock.floor2() else GameBlock.floor1()}
             gameArea.setBlockAt(Position3D.create(x, y, 0), block)
         }
     }
@@ -53,16 +53,16 @@ private fun World.generateRandomWalls(
             gameArea.setBlockAt(position, GameBlock.door())
             generateRandomWalls(_x = x, _y = y, doorNext = false, increase = increase, xDir = xDir)
         } else {
-            gameArea.setBlockAt(position, if(Random.nextBoolean(GameConfig.wall2prop)) GameBlock.wall2() else GameBlock.wall1())
+            gameArea.setBlockAt(position, if(Random.nextBoolean(gameConfig.levelGeneration.alternateWallChance)) GameBlock.wall2() else GameBlock.wall1())
             val succ1 = generateRandomWalls(_x = x, _y = y, xDir = !xDir, increase = increase * (-1))
             val succ2 = generateRandomWalls(_x = x, _y = y, xDir = !xDir, increase = increase)
             if (!(succ1 && succ2)) {
-                gameArea.setBlockAt(Position3D.create(if (xDir) x + increase else x, if (xDir) y else y + increase, 0),  if(Random.nextBoolean(GameConfig.wall2prop)) GameBlock.wall2() else GameBlock.wall1())
+                gameArea.setBlockAt(Position3D.create(if (xDir) x + increase else x, if (xDir) y else y + increase, 0),  if(Random.nextBoolean(gameConfig.levelGeneration.alternateWallChance)) GameBlock.wall2() else GameBlock.wall1())
             }
             return true
         }
     } else {
-        gameArea.setBlockAt(position, if(Random.nextBoolean(GameConfig.wall2prop)) GameBlock.wall2() else GameBlock.wall1())
+        gameArea.setBlockAt(position, if(Random.nextBoolean(gameConfig.levelGeneration.alternateWallChance)) GameBlock.wall2() else GameBlock.wall1())
         generateRandomWalls(_x = x, _y = y, prop = prop * 2, increase = increase, xDir = xDir, doorNext = doorNext)
     }
     return true
@@ -99,7 +99,7 @@ fun World.activateAltar(pos: Position3D): Boolean {
         engine.addEntity(it)
     }
     activatedAltarCount++
-    player.health += GameConfig.altarHealthBonus
+    player.health += gameConfig.player.altarHealthBonus
 
     if (activatedAltarCount >= altarCount) {
         val portalBlock = this[portalPosition]!!
@@ -114,7 +114,7 @@ fun World.activateAltar(pos: Position3D): Boolean {
 }
 
 fun World.generateEnemies() {
-    val count = GameConfig.areaInitialEnemyZombieCount + levelDepth
+    val count = gameConfig.levelGeneration.zombieCount + levelDepth
     for ((pos, block) in fetchRandomSpawnableBlocks(count)) {
         val newZombie = EntityFactory.newEnemyZombie()
         newZombie.position = pos
@@ -144,7 +144,7 @@ fun World.generateMadness() {
 }
 
 fun World.generateTorchItems() {
-    for ((pos, block) in fetchRandomSpawnableBlocks(GameConfig.areaInitialTorchCount)) {
+    for ((pos, block) in fetchRandomSpawnableBlocks(gameConfig.levelGeneration.torchCount)) {
         val newTorch = EntityFactory.newTorchItem()
         block.currentEntities += newTorch
         engine.addEntity(newTorch)
@@ -153,7 +153,7 @@ fun World.generateTorchItems() {
 }
 
 fun World.generateAltars() {
-    for ((pos, _) in fetchRandomSpawnableBlocks(GameConfig.areaAltarCount)) {
+    for ((pos, _) in fetchRandomSpawnableBlocks(gameConfig.levelGeneration.altarCount)) {
         this[pos] = GameBlock.altar()
         altarCount++
     }

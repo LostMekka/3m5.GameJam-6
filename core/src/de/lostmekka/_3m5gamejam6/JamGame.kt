@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.world.MadnessExpanse
 import de.lostmekka._3m5gamejam6.world.SoundEvent
 import de.lostmekka._3m5gamejam6.world.SoundEventType
@@ -33,8 +33,8 @@ class FakeScreen : KtxScreen {
     init {
         val config = AppConfigs.newConfig()
             .enableBetaFeatures()
-            .withDefaultTileset(GameConfig.tileSet)
-            .withSize(Sizes.create(GameConfig.windowWidth, GameConfig.windowHeight))
+            .withDefaultTileset(gameConfig.tileSet)
+            .withSize(Sizes.create(gameConfig.window.width, gameConfig.window.height))
             .build()
         application = SwingApplications.startApplication(config)
         application.dock(StartView())
@@ -43,13 +43,13 @@ class FakeScreen : KtxScreen {
         val backgroundMusic = music("sound/music.ogg")
         backgroundMusic.isLooping = true
         backgroundMusic.play()
-        backgroundMusic.volume = GameConfig.backgroundMusicVolume
+        backgroundMusic.volume = gameConfig.sound.backgroundMusicVolume
 
         // start madness whispering
         val madnessWhisper = music("sound/madness.ogg")
         madnessWhisper.isLooping = true
         madnessWhisper.play()
-        madnessWhisper.volume = GameConfig.whisperVolumeMin
+        madnessWhisper.volume = gameConfig.sound.whisperVolumeMin
 
         // add sound effects
         val doorSound = sound("sound/door.wav")
@@ -77,8 +77,8 @@ class FakeScreen : KtxScreen {
 
         // calculate madness whispering volume
         Zircon.eventBus.subscribe<MadnessExpanse> {
-            madnessWhisper.volume = GameConfig.whisperVolumeMin +
-                    ((it.percentage).toFloat() / 100 * (GameConfig.whisperVolumeMax - GameConfig.whisperVolumeMin))
+            madnessWhisper.volume = gameConfig.sound.whisperVolumeMin +
+                    ((it.percentage).toFloat() / 100 * (gameConfig.sound.whisperVolumeMax - gameConfig.sound.whisperVolumeMin))
         }
     }
 

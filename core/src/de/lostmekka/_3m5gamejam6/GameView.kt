@@ -1,6 +1,6 @@
 package de.lostmekka._3m5gamejam6
 
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.world.GameBlock
@@ -51,8 +51,8 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
         isActive = true
 
         val world = World(
-            GameConfig.worldSize,
-            GameConfig.worldSize,
+            gameConfig.worldSize,
+            gameConfig.worldSize,
             levelDepth
         )
         world.generateRooms()
@@ -66,7 +66,7 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
 
 
         val sidebar = Components.panel()
-            .withSize(GameConfig.sidebarWidth, GameConfig.windowHeight)
+            .withSize(gameConfig.window.sidebarWidth, gameConfig.window.height)
             .withAlignmentWithin(screen, ComponentAlignment.RIGHT_CENTER)
             .wrapWithBox()
             .withTitle("Game Info")
@@ -78,73 +78,68 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
             .withProjectionMode(ProjectionMode.TOP_DOWN)
             .withAlignmentWithin(screen, ComponentAlignment.TOP_LEFT)
             .build()
-
-
         var index = 2
 
         val txtLevel = Components.label()
-            .withSize(GameConfig.sidebarWidth, 1)
+            .withSize(gameConfig.window.sidebarWidth, 1)
             .withText( "Level 1")
             .withPosition(0, index)
             .build()
-
         index += 4
 
         val txtPosition = Components.label()
-            .withSize(GameConfig.sidebarWidth, 1)
+            .withSize(gameConfig.window.sidebarWidth, 1)
             .withPosition(0, index)
             .build()
-
         index += 2
 
         val txtPointingLabel = Components.label()
-            .withSize(GameConfig.sidebarWidth, 1)
+            .withSize(gameConfig.window.sidebarWidth, 1)
             .withPosition(0, index)
             .build()
         index += 2
 
         val txtPointingItem = Components.label()
-            .withSize(GameConfig.sidebarWidth, 1)
+            .withSize(gameConfig.window.sidebarWidth, 1)
             .withPosition(0, index)
             .build()
         index += 2
 
         val txtHealth = Components.label()
-            .withSize(GameConfig.sidebarWidth, 1)
+            .withSize(gameConfig.window.sidebarWidth, 1)
             .withPosition(0, index)
             .build()
         index += 2
 
         val txtTorches = Components.label()
-            .withSize(GameConfig.sidebarWidth, 1)
+            .withSize(gameConfig.window.sidebarWidth, 1)
             .withPosition(0, index)
             .build()
         index += 2
 
         val txtEquipment = Components.label()
-            .withSize(GameConfig.sidebarWidth, 1)
+            .withSize(gameConfig.window.sidebarWidth, 1)
             .withPosition(0, index)
             .withText("Equipped: Torch")
             .build()
         index += 2
 
         val txtTorchBuildProgress = Components.label()
-            .withSize(GameConfig.sidebarWidth, 1)
+            .withSize(gameConfig.window.sidebarWidth, 1)
             .withPosition(0, index)
             .build()
         index += 2
 
-        val txtTutotialInfo = Components.label()
-            .withSize(GameConfig.sidebarWidth, 1)
+        val txtTutorialInfo = Components.label()
+            .withSize(gameConfig.window.sidebarWidth, 1)
             .withPosition(0, sidebar.height - 5)
             .withText("Press esc => Pause")
             .build()
 
-
         val logArea = Components.logArea()
             .withTitle("Log")
             .wrapWithBox()
-            .withSize(GameConfig.windowWidth - GameConfig.sidebarWidth, GameConfig.logAreaHeight)
+            .withSize(gameConfig.window.width - gameConfig.window.sidebarWidth, gameConfig.window.logAreaHeight)
             .withAlignmentWithin(screen, BOTTOM_LEFT)
             .build()
 
@@ -156,12 +151,12 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
         sidebar.addComponent(txtTorches)
         sidebar.addComponent(txtEquipment)
         sidebar.addComponent(txtTorchBuildProgress)
-        sidebar.addComponent(txtTutotialInfo)
+        sidebar.addComponent(txtTutorialInfo)
 
         screen.addComponent(sidebar)
         screen.addComponent(mainArea)
 
-        if (GameConfig.enableDebugLogArea) {
+        if (gameConfig.debug.enableLogArea) {
             screen.addComponent(logArea)
         }
 
@@ -207,7 +202,7 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
         }
 
         mainArea.onMouseEvent(MouseEventType.MOUSE_CLICKED) { event: MouseEvent, _: UIEventPhase ->
-            if (GameConfig.enableDebugTorchPlacement) {
+            if (gameConfig.debug.enableTorchPlacement) {
                 if (event.button == 1) {
                     world.placeTorchItem(event.position.to3DPosition())
                 } else {
@@ -242,7 +237,7 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
         when (levelDepth) {
             0 -> screen.storyModal(
                 "Arrival",
-                "I have finally arived.",
+                "I have finally arrived.",
                 "As the heavy doors shut behind me, a cold shiver runs down my spine. I can already hear the whispers, trying to lure me into the madness.",
                 "But I have to do this. There is no other way. The altars of this place should be able to open the way ahead."
             )

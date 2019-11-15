@@ -1,7 +1,7 @@
 package de.lostmekka._3m5gamejam6.entity.behavior
 
 import de.lostmekka._3m5gamejam6.GameContext
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivateAltar
 import de.lostmekka._3m5gamejam6.entity.BuildTorch
 import de.lostmekka._3m5gamejam6.entity.EnemyZombie
@@ -82,7 +82,7 @@ private fun movePlayer(context: GameContext, target: Position3D): Response {
         if (context.player.inventory.holdsSword) {
             Zircon.eventBus.publish(SoundEvent(SoundEventType.ZombieHit))
             for (enemy in enemies) {
-                enemy.health -= Random.nextInt(GameConfig.SwordDamageMin, GameConfig.SwordDamageMax + 1)
+                enemy.health -= Random.nextInt(gameConfig.player.damageMin, gameConfig.player.damageMax + 1)
                 if (enemy.health <= 0) {
                     currentEntities -= enemy
                     context.world.engine.removeEntity(enemy)

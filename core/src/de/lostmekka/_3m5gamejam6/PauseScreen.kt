@@ -1,6 +1,6 @@
 package de.lostmekka._3m5gamejam6
 
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.builder.component.ModalBuilder
 import org.hexworks.zircon.api.component.ComponentAlignment
@@ -28,7 +28,7 @@ abstract class Dialog(
             .withCenteredDialog(true)
             .build().also {
                 container.addFragment(CloseButtonFragment(it, container))
-                container.applyColorTheme(GameConfig.theme)
+                container.applyColorTheme(gameConfig.theme)
             }
     }
 }

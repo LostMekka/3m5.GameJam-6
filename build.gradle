@@ -84,5 +84,8 @@ project(":core") {
         compile 'org.hexworks.zircon:zircon.core-jvm:2019.1.0-PREVIEW'
         compile 'org.hexworks.zircon:zircon.jvm.swing:2019.1.0-PREVIEW'
         compile 'org.hexworks.amethyst:amethyst.core-jvm:2019.0.4-PREVIEW'
+
+        implementation "com.sksamuel.hoplite:hoplite-core:1.1.2"
+        implementation "com.sksamuel.hoplite:hoplite-yaml:1.1.2"
     }
 }

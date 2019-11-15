@@ -1,7 +1,7 @@
 package de.lostmekka._3m5gamejam6.entity.facet
 
 import de.lostmekka._3m5gamejam6.GameContext
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivateAltar
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
 import de.lostmekka._3m5gamejam6.entity.BuildTorch
@@ -49,8 +49,8 @@ object TorchHandling : BaseFacet<GameContext>() {
                    val success = build(
                       context = context,
                       position = position,
-                      buildingCost = GameConfig.torchBuildingCost,
-                      buildingTime = GameConfig.torchBuildingTime,
+                      buildingCost = gameConfig.player.torchBuildingCost,
+                      buildingTime = gameConfig.player.torchBuildingTime,
                       buildingType = Torch,
                       buildOperation = { context.world.placeTorch(it) }
                   )
@@ -62,8 +62,8 @@ object TorchHandling : BaseFacet<GameContext>() {
                 val success = build(
                     context = context,
                     position = position,
-                    buildingCost = GameConfig.altarBuildingCost,
-                    buildingTime = GameConfig.altarBuildingTime,
+                    buildingCost = gameConfig.player.altarBuildingCost,
+                    buildingTime = gameConfig.player.altarBuildingTime,
                     buildingType = ActivatedAltar,
                     buildOperation = { context.world.activateAltar(it) }
                 )

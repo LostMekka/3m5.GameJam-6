@@ -1,7 +1,7 @@
 package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.GameContext
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.EntityFactory
 import de.lostmekka._3m5gamejam6.entity.GameEntity
 import de.lostmekka._3m5gamejam6.entity.attribute.health
@@ -96,7 +96,7 @@ class World(
     private fun checkPlayerMadness() {
         val block = this[player.position] ?: return
         if (block.hasMadness) {
-            player.health -= GameConfig.madnessHealthDecrease
+            player.health -= gameConfig.madness.damage
             if (player.health > 0) Zircon.eventBus.publish(SoundEvent(SoundEventType.PlayerHit))
             Zircon.eventBus.publish(SoundEvent(SoundEventType.MadnessHit))
         }
@@ -119,7 +119,7 @@ class World(
             Zircon.eventBus.publish(SoundEvent(SoundEventType.Door))
         } else if (this[player.position]?.portalIsOpen == true) {
             // go to next level
-            if (levelDepth + 1 < GameConfig.levelCount) {
+            if (levelDepth + 1 < gameConfig.game.levelCount) {
                 Zircon.eventBus.publish(SoundEvent(SoundEventType.NextLevel))
                 Zircon.eventBus.publish(NextLevel(levelDepth + 1))
             } else {
