@@ -7,6 +7,7 @@ import de.lostmekka._3m5gamejam6.entity.EnemyZombie
 import de.lostmekka._3m5gamejam6.entity.GameEntity
 import de.lostmekka._3m5gamejam6.entity.OpenedPortal
 import de.lostmekka._3m5gamejam6.entity.Player
+import de.lostmekka._3m5gamejam6.entity.attribute.madnessTile
 import de.lostmekka._3m5gamejam6.entity.attribute.tile
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.zircon.api.data.BlockSide
@@ -29,15 +30,12 @@ class GameBlock(
         get() {
             if (!isLit && GameConfig.fogOfWarEnabled) return mutableListOf(GameTileRepository.shadow)
 
-            val player = currentEntities.find { it.type is Player }
-            val enemy = currentEntities.find { it.type is EnemyZombie }
+            val entity = findEntity<Player>()
+                ?: findEntity<EnemyZombie>()
+                ?: firstEntity()
             val tile = when {
-                hasMadness && player != null -> GameTileRepository.playerMadness
-                player != null -> GameTileRepository.player
-                enemy != null -> enemy.tile
-                hasMadness -> madnessTile
-                currentEntities.isNotEmpty() -> currentEntities.first().tile
-                else -> tile
+                hasMadness -> entity?.madnessTile ?: madnessTile
+                else -> entity?.tile ?: tile
             }
             return mutableListOf(tile)
         }
@@ -61,6 +59,9 @@ class GameBlock(
     override fun fetchSide(side: BlockSide): Tile {
         return GameTileRepository.empty
     }
+
+    inline fun <reified T : EntityType> findEntity() = currentEntities.find { it.type is T }
+    fun firstEntity() = currentEntities.firstOrNull()
 
     companion object {
         fun floor1() = GameBlock(

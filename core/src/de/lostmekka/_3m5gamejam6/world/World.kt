@@ -142,33 +142,35 @@ class World(
         checkPlayerDeath()
     }
 
-    fun findVisiblePositionsFor(center: Position, radius: Int): Iterable<Position> {
+    fun findVisiblePositionsFor(center: Position3D, radius: Int): Iterable<Position3D> {
+        val center2D = center.to2DPosition()
         return listOf(radius - 1, radius)
             .flatMap {
                 EllipseFactory
-                    .buildEllipse(center, center.withRelativeX(it).withRelativeY(it))
+                    .buildEllipse(center2D, center2D.withRelativeX(it).withRelativeY(it))
                     .positions()
             }
             .toSet()
             .flatMap { ringPos ->
-                val result = mutableSetOf<Position>()
-                val line = LineFactory.buildLine(center, ringPos).toList()
+                val result = mutableSetOf<Position3D>()
+                val line = LineFactory.buildLine(center2D, ringPos).toList()
 
                 var persistence = 1
                 var obstructed = false
-                for (position in line) {
+                for (linePos in line) {
+                    val worldPos = linePos.toPosition3D(center.z)
                     if (obstructed) {
                         persistence--
                         if (persistence <= 0) break
                     } else {
-                        val isFirst = position == center
-                        val block = this[position]
+                        val isFirst = linePos == center2D
+                        val block = this[worldPos]
                         val transparent = block?.isTransparent ?: false
                         val walkable = block?.isWalkable ?: false
                         if (walkable && !transparent && !isFirst) persistence++
                         if (!transparent) obstructed = !isFirst
                     }
-                    result += position
+                    result += worldPos
                 }
                 result
             }

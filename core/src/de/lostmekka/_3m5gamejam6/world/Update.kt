@@ -34,8 +34,8 @@ fun World.updateEnemyZombies() {
 
 fun World.updateEnemyZombie(entity: AnyGameEntity) {
     val currentPos = entity.position
-    val playerFound = findVisiblePositionsFor(currentPos.to2DPosition(), GameConfig.enemyViewDistance)
-        .any { player.position2D == it }
+    val playerFound = findVisiblePositionsFor(currentPos, GameConfig.enemyViewDistance)
+        .any { player.position == it }
     if (playerFound) {
         if (!Random.nextBoolean(GameConfig.enemyChaseProbability)) return
 
@@ -139,17 +139,16 @@ fun World.updateLighting() {
     }
 
     // light around player if not holding sword and torches available
+    this[player.position]?.isLit = true
     if (!player.inventory.holdsSword && player.inventory.torches > 0) {
-        floodLight(player.position.to2DPosition(), GameConfig.torchLightRadius)
-    } else {
-        this[player.position.to2DPosition()]?.isLit = true
+        floodLight(player.position, GameConfig.torchLightRadius)
     }
 
-    torches.forEach { floodLight(it.position.to2DPosition(), GameConfig.torchLightRadius) }
-
-    altars.forEach { floodLight(it.position.to2DPosition(), GameConfig.altarLightRadius) }
+    torches.forEach { floodLight(it.position, GameConfig.torchLightRadius) }
+    altars.forEach { floodLight(it.position, GameConfig.altarLightRadius) }
 }
 
-private fun World.floodLight(pos: Position, radius: Int) {
+private fun World.floodLight(pos: Position3D, radius: Int) {
+    if (this[pos]?.hasMadness != false) return
     findVisiblePositionsFor(pos, radius).forEach { this[it]?.isLit = true }
 }
