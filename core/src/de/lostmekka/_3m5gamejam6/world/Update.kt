@@ -46,8 +46,8 @@ fun World.updateEnemyZombie(entity: AnyGameEntity) {
 
         if (adx + ady <= 1) {
             // attack
-            Zircon.eventBus.publish(SoundEvent("Hit"))
             player.health -= GameConfig.enemyDamage
+            if (player.health > 0) Zircon.eventBus.publish(SoundEvent(SoundEventType.PlayerHit))
         } else {
             // chase
             val moveX = when {
@@ -152,3 +152,14 @@ private fun World.floodLight(pos: Position3D, radius: Int) {
     if (this[pos]?.hasMadness != false) return
     findVisiblePositionsFor(pos, radius).forEach { this[it]?.isLit = true }
 }
+
+fun World.updateMadnessSoundVolume() {
+    var madnessSum = 0
+    for (x in player.position.x - 5..player.position.x + 5) {
+        for (y in player.position.y - 5..player.position.y + 5) {
+            if (this[Position3D.create(x, y, 0)]?.hasMadness == true) madnessSum += 1
+        }
+    }
+    Zircon.eventBus.publish(MadnessExpanse(madnessSum))
+}
+

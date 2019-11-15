@@ -13,6 +13,8 @@ import de.lostmekka._3m5gamejam6.entity.MoveTo
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.entity.attribute.position
+import de.lostmekka._3m5gamejam6.world.SoundEvent
+import de.lostmekka._3m5gamejam6.world.SoundEventType
 import de.lostmekka._3m5gamejam6.world.ValidInput
 import org.hexworks.amethyst.api.Consumed
 import org.hexworks.amethyst.api.Pass
@@ -78,6 +80,7 @@ private fun movePlayer(context: GameContext, target: Position3D): Response {
         context.player.executeCommand(MoveTo(context, context.player, target))
     } else {
         if (context.player.inventory.holdsSword) {
+            Zircon.eventBus.publish(SoundEvent(SoundEventType.ZombieHit))
             for (enemy in enemies) {
                 enemy.health -= Random.nextInt(GameConfig.SwordDamageMin, GameConfig.SwordDamageMax + 1)
                 if (enemy.health <= 0) {

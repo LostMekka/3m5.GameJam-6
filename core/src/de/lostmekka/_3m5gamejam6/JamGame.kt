@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import de.lostmekka._3m5gamejam6.config.GameConfig
 import de.lostmekka._3m5gamejam6.world.MadnessExpanse
 import de.lostmekka._3m5gamejam6.world.SoundEvent
+import de.lostmekka._3m5gamejam6.world.SoundEventType
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import org.hexworks.cobalt.events.api.subscribe
@@ -15,6 +16,7 @@ import org.hexworks.zircon.api.Sizes
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.application.Application
 import org.hexworks.zircon.internal.Zircon
+import kotlin.random.Random
 
 
 class JamGame : KtxGame<Screen>() {
@@ -26,7 +28,6 @@ class JamGame : KtxGame<Screen>() {
 
 class FakeScreen : KtxScreen {
     private var batch = SpriteBatch()
-    //    private var img = Texture("badlogic.jpg")
     private val application: Application
 
     init {
@@ -39,32 +40,38 @@ class FakeScreen : KtxScreen {
         application.dock(StartView())
 
         // start background music
-        var backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/music.ogg"))
+        val backgroundMusic = music("sound/music.ogg")
         backgroundMusic.isLooping = true
         backgroundMusic.play()
         backgroundMusic.volume = GameConfig.backgroundMusicVolume
 
         // start madness whispering
-        var madnessWhisper = Gdx.audio.newMusic(Gdx.files.internal("sound/madness.ogg"))
+        val madnessWhisper = music("sound/madness.ogg")
         madnessWhisper.isLooping = true
         madnessWhisper.play()
         madnessWhisper.volume = GameConfig.whisperVolumeMin
 
         // add sound effects
-        val doorSound = Gdx.audio.newSound(Gdx.files.internal("sound/door.wav"))
-        val stepSound = Gdx.audio.newSound(Gdx.files.internal("sound/step.wav"))
-        val nextLevelSound = Gdx.audio.newSound(Gdx.files.internal("sound/nextLevel.wav"))
-        val hitSound = Gdx.audio.newSound(Gdx.files.internal("sound/hit.wav"))
-        val buildProgressSound = Gdx.audio.newSound(Gdx.files.internal("sound/build_progress.wav"))
-        val buildFinishedSound = Gdx.audio.newSound(Gdx.files.internal("sound/basedrum.wav"))
+        val doorSound = sound("sound/door.wav")
+        val stepSound = sound("sound/step.wav")
+        val nextLevelSound = sound("sound/nextLevel.wav")
+        val hitSound = sound("sound/hit.wav")
+        val madnessHitSound = sound("sound/madnessHit.wav")
+        val pain1Sound = sound("sound/pain1.wav")
+        val pain2Sound = sound("sound/pain2.wav")
+        val buildProgressSound = sound("sound/build_progress.wav")
+        val buildFinishedSound = sound("sound/basedrum.wav")
         Zircon.eventBus.subscribe<SoundEvent> {
-            when(it.cause) {
-                "Door" -> doorSound.play()
-                "Step" -> stepSound.play(0.5f)
-                "NextLevel" -> nextLevelSound.play()
-                "Hit" -> hitSound.play()
-                "BuildProgress" -> buildProgressSound.play()
-                "BuildFinished" -> buildFinishedSound.play()
+            when (it.cause) {
+                SoundEventType.Door -> doorSound.play()
+                SoundEventType.Step -> stepSound.play(0.5f)
+                SoundEventType.NextLevel -> nextLevelSound.play()
+                SoundEventType.ZombieHit -> hitSound.play()
+                SoundEventType.PlayerHit -> pain1Sound.play()
+                SoundEventType.PlayerDeath -> pain2Sound.play()
+                SoundEventType.MadnessHit -> madnessHitSound.play(0.9f, 1 + 0.25f * (2 * Random.nextFloat() - 1), 0f)
+                SoundEventType.BuildProgress -> buildProgressSound.play()
+                SoundEventType.BuildFinished -> buildFinishedSound.play()
             }
         }
 
@@ -75,16 +82,17 @@ class FakeScreen : KtxScreen {
         }
     }
 
+    private fun music(path: String) = Gdx.audio.newMusic(Gdx.files.internal(path))
+    private fun sound(path: String) = Gdx.audio.newSound(Gdx.files.internal(path))
+
     override fun render(delta: Float) {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         batch.begin()
-//        batch.draw(img, 0f, 0f)
         batch.end()
     }
 
     override fun dispose() {
         batch.dispose()
-//        img.dispose()
     }
 }

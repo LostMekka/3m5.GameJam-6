@@ -88,19 +88,18 @@ class World(
 
     private fun checkPlayerDeath() {
         if (player.health <= 0) {
+            Zircon.eventBus.publish(SoundEvent(SoundEventType.PlayerDeath))
             Zircon.eventBus.publish(PlayerDied("You died because of madness!"))
         }
     }
 
-    private fun checkPlayerMadness(block: GameBlock) {
-        var madnessSum = 0
-        if (block.hasMadness) player.health -= GameConfig.madnessHealthDecrease
-        for (x in player.position.x - 5..player.position.x + 5) {
-            for (y in player.position.y - 5..player.position.y + 5) {
-                if (this[Position3D.create(x, y, 0)]?.hasMadness == true) madnessSum += 1
-            }
+    private fun checkPlayerMadness() {
+        val block = this[player.position] ?: return
+        if (block.hasMadness) {
+            player.health -= GameConfig.madnessHealthDecrease
+            if (player.health > 0) Zircon.eventBus.publish(SoundEvent(SoundEventType.PlayerHit))
+            Zircon.eventBus.publish(SoundEvent(SoundEventType.MadnessHit))
         }
-        Zircon.eventBus.publish(MadnessExpanse(madnessSum))
     }
 
     fun onKeyInput(screen: Screen, uiEvent: UIEvent) {
@@ -117,28 +116,27 @@ class World(
     private fun onPlayerMoved() {
         player.inventory.buildingProgress = 0
         if (this[player.position]?.isDoor == true) {
-            Zircon.eventBus.publish(SoundEvent("Door"))
+            Zircon.eventBus.publish(SoundEvent(SoundEventType.Door))
         } else if (this[player.position]?.portalIsOpen == true) {
             // go to next level
             if (levelDepth + 1 < GameConfig.levelCount) {
-                Zircon.eventBus.publish(SoundEvent("NextLevel"))
+                Zircon.eventBus.publish(SoundEvent(SoundEventType.NextLevel))
                 Zircon.eventBus.publish(NextLevel(levelDepth + 1))
             } else {
-                Zircon.eventBus.publish(SoundEvent("YouWon"))
                 Zircon.eventBus.publish(WON)
             }
         } else {
-            Zircon.eventBus.publish(SoundEvent("Step"))
+            Zircon.eventBus.publish(SoundEvent(SoundEventType.Step))
         }
-
     }
 
     fun tick() {
         updateTorches()
-        updateLighting()
         updateMadness()
+        updateMadnessSoundVolume()
         updateEnemyZombies()
-        checkPlayerMadness(gameArea.fetchBlockAt(player.position).get())
+        updateLighting()
+        checkPlayerMadness()
         checkPlayerDeath()
     }
 

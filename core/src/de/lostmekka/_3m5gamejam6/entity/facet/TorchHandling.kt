@@ -12,6 +12,7 @@ import de.lostmekka._3m5gamejam6.entity.Torch
 import de.lostmekka._3m5gamejam6.entity.TorchItem
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.world.SoundEvent
+import de.lostmekka._3m5gamejam6.world.SoundEventType
 import de.lostmekka._3m5gamejam6.world.activateAltar
 import de.lostmekka._3m5gamejam6.world.placeTorch
 import de.lostmekka._3m5gamejam6.world.updateLighting
@@ -105,14 +106,14 @@ object TorchHandling : BaseFacet<GameContext>() {
             }
             !buildingDone -> {
                 inventory.buildingProgress += 1
-                Zircon.eventBus.publish(SoundEvent("BuildProgress"))
+                Zircon.eventBus.publish(SoundEvent(SoundEventType.BuildProgress))
             }
             buildOperation(position) -> {
                 inventory.torches -= buildingCost
                 inventory.buildingProgress = 0
                 inventory.maxBuildingProgress = 0
                 inventory.buildingType = null
-                Zircon.eventBus.publish(SoundEvent("BuildFinished"))
+                Zircon.eventBus.publish(SoundEvent(SoundEventType.BuildFinished))
             }
         }
         return true
