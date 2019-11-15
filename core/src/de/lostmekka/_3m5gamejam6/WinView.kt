@@ -1,6 +1,6 @@
 package de.lostmekka._3m5gamejam6
 
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.UIEventResponses
 import org.hexworks.zircon.api.component.ComponentAlignment
@@ -14,12 +14,12 @@ import kotlin.system.exitProcess
 
 class WinView : BaseView() {
 
-    override val theme = GameConfig.theme
+    override val theme = gameConfig.theme
 
     override fun onDock() {
         val msg = "You won!"
         val header = Components.textBox()
-            .withContentWidth(GameConfig.windowWidth / 2)
+            .withContentWidth(gameConfig.window.width / 2)
             .addHeader(msg)
             .addNewLine()
             .addParagraph("Congratulations! You have escaped from the Madness!", withNewLine = false)

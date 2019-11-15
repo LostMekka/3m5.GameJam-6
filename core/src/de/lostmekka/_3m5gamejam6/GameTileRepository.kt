@@ -20,7 +20,6 @@ object GameTileRepository {
         .withBackgroundColor(GameColors.floor1Bg)
         .buildCharacterTile()
 
-
     val floor2: CharacterTile = Tiles.newBuilder()
         .withCharacter(',')
         .withForegroundColor(GameColors.floor2Fg)
@@ -44,7 +43,6 @@ object GameTileRepository {
         .withForegroundColor(GameColors.wall2Fg)
         .withBackgroundColor(GameColors.wall2Bg)
         .buildCharacterTile()
-
 
     val wallMadness: CharacterTile = Tiles.newBuilder()
         .withCharacter('#')
@@ -106,14 +104,20 @@ object GameTileRepository {
         .withBackgroundColor(GameColors.floor1Bg)
         .buildCharacterTile()
 
-    val enemyZombie = Tiles.newBuilder()
-        .withCharacter('z')
-        .withBackgroundColor(GameColors.zombieBg)
-        .withForegroundColor(GameColors.zombieFg)
-        .buildCharacterTile()
-
     val playerMadness = Tiles.newBuilder()
         .withCharacter('@')
+        .withForegroundColor(GameColors.doorFgMadness)
+        .withBackgroundColor(GameColors.floorBgMadness)
+        .buildCharacterTile()
+
+    val zombie = Tiles.newBuilder()
+        .withCharacter('z')
+        .withForegroundColor(GameColors.zombieFg)
+        .withBackgroundColor(GameColors.zombieBg)
+        .buildCharacterTile()
+
+    val zombieMadness = Tiles.newBuilder()
+        .withCharacter('z')
         .withForegroundColor(GameColors.doorFgMadness)
         .withBackgroundColor(GameColors.floorBgMadness)
         .buildCharacterTile()
@@ -131,5 +135,11 @@ object GameTileRepository {
             .withBackgroundColor(GameColors.floor1Bg)
             .buildCharacterTile()
     }
+
+    val torchMadness = Tiles.newBuilder()
+        .withCharacter('T')
+        .withForegroundColor(GameColors.doorFgMadness)
+        .withBackgroundColor(GameColors.floorBgMadness)
+        .buildCharacterTile()
 
 }

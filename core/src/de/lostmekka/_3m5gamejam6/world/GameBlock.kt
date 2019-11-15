@@ -1,10 +1,13 @@
 package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.GameTileRepository
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
+import de.lostmekka._3m5gamejam6.entity.EnemyZombie
 import de.lostmekka._3m5gamejam6.entity.GameEntity
 import de.lostmekka._3m5gamejam6.entity.OpenedPortal
+import de.lostmekka._3m5gamejam6.entity.Player
+import de.lostmekka._3m5gamejam6.entity.attribute.madnessTile
 import de.lostmekka._3m5gamejam6.entity.attribute.tile
 import org.hexworks.amethyst.api.entity.EntityType
 import org.hexworks.zircon.api.data.BlockSide
@@ -25,22 +28,21 @@ class GameBlock(
 ) : BlockBase<Tile>() {
     override val layers: MutableList<Tile>
         get() {
-            if (!isLit && GameConfig.fogOfWarEnabled) return mutableListOf(GameTileRepository.shadow)
+            if (!isLit && !gameConfig.debug.seeEverything) return mutableListOf(GameTileRepository.shadow)
 
-            val entityTiles = currentEntities.map { it.tile }
+            val entity = findEntity<Player>()
+                ?: findEntity<EnemyZombie>()
+                ?: firstEntity()
             val tile = when {
-                hasMadness && entityTiles.contains(GameTileRepository.player) -> GameTileRepository.playerMadness
-                entityTiles.contains(GameTileRepository.player) -> GameTileRepository.player
-                entityTiles.isNotEmpty() -> entityTiles.first()
-                hasMadness -> madnessTile
-                else -> tile
+                hasMadness -> entity?.madnessTile ?: madnessTile
+                else -> entity?.tile ?: tile
             }
             return mutableListOf(tile)
         }
 
     val name: String
         get() {
-            if (!isLit && GameConfig.fogOfWarEnabled) return "Unknown"
+            if (!isLit && !gameConfig.debug.seeEverything) return "Unknown"
             val name = currentEntities.firstOrNull()?.name ?: tileName
             val modifier = when {
                 hasMadness -> " (Madness)"
@@ -57,6 +59,9 @@ class GameBlock(
     override fun fetchSide(side: BlockSide): Tile {
         return GameTileRepository.empty
     }
+
+    inline fun <reified T : EntityType> findEntity() = currentEntities.find { it.type is T }
+    fun firstEntity() = currentEntities.firstOrNull()
 
     companion object {
         fun floor1() = GameBlock(

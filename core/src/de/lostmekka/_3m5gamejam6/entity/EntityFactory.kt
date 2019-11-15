@@ -24,7 +24,10 @@ object EntityFactory {
     fun newPlayer() = newGameEntityOfType(Player) {
         attributes(
             EntityPosition(),
-            EntityTileAnimation(GameTileRepository.player),
+            EntityTileAnimation(
+                tile = GameTileRepository.player,
+                madnessTile = GameTileRepository.playerMadness
+            ),
             EntityHealth(),
             EntityInventory()
         )
@@ -35,10 +38,12 @@ object EntityFactory {
     fun newEnemyZombie() = newGameEntityOfType(EnemyZombie) {
         attributes(
             EntityPosition(),
-            EntityTileAnimation(GameTileRepository.enemyZombie),
+            EntityTileAnimation(
+                tile = GameTileRepository.zombie,
+                madnessTile = GameTileRepository.zombieMadness
+            ),
             EntityHealth()
         )
-        //behaviors(EnemyAI)
         facets(Movable)
     }
 
@@ -53,7 +58,11 @@ object EntityFactory {
     fun newTorch(frame: Int = Random.nextInt()) = newGameEntityOfType(Torch) {
         attributes(
             EntityPosition(),
-            EntityTileAnimation(GameTileRepository.torch, frame)
+            EntityTileAnimation(
+                frames = GameTileRepository.torch,
+                currentIndex = frame,
+                madnessFrames = listOf(GameTileRepository.torchMadness)
+            )
         )
     }
 }

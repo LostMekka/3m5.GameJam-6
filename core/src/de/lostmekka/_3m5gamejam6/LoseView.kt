@@ -1,19 +1,17 @@
 package de.lostmekka._3m5gamejam6
 
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.UIEventResponses
 import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.extensions.onMouseEvent
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.mvc.base.BaseView
-import org.hexworks.zircon.api.uievent.MouseEvent
 import org.hexworks.zircon.api.uievent.MouseEventType
-import org.hexworks.zircon.api.uievent.UIEventPhase
 import kotlin.system.exitProcess
 
 class LoseView(private val causeOfDeath: String) : BaseView() {
-    override val theme = GameConfig.theme
+    override val theme = gameConfig.theme
 
     override fun onDock() {
         val msg = "Game Over"
@@ -37,12 +35,12 @@ class LoseView(private val causeOfDeath: String) : BaseView() {
             .withBoxType(BoxType.SINGLE)
             .build()
 
-        restartButton.onMouseEvent(MouseEventType.MOUSE_RELEASED) { _: MouseEvent, _: UIEventPhase ->
+        restartButton.onMouseEvent(MouseEventType.MOUSE_RELEASED) { _, _ ->
             replaceWith(GameView())
             UIEventResponses.processed()
         }
 
-        exitButton.onMouseEvent(MouseEventType.MOUSE_RELEASED) {event: MouseEvent, _: UIEventPhase ->
+        exitButton.onMouseEvent(MouseEventType.MOUSE_RELEASED) { _, _ ->
             exitProcess(0)
         }
 

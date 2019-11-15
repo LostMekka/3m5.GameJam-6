@@ -1,7 +1,7 @@
 package de.lostmekka._3m5gamejam6.entity.facet
 
 import de.lostmekka._3m5gamejam6.GameContext
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivateAltar
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
 import de.lostmekka._3m5gamejam6.entity.BuildTorch
@@ -12,6 +12,7 @@ import de.lostmekka._3m5gamejam6.entity.Torch
 import de.lostmekka._3m5gamejam6.entity.TorchItem
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.world.SoundEvent
+import de.lostmekka._3m5gamejam6.world.SoundEventType
 import de.lostmekka._3m5gamejam6.world.activateAltar
 import de.lostmekka._3m5gamejam6.world.placeTorch
 import de.lostmekka._3m5gamejam6.world.updateLighting
@@ -48,8 +49,8 @@ object TorchHandling : BaseFacet<GameContext>() {
                    val success = build(
                       context = context,
                       position = position,
-                      buildingCost = GameConfig.torchBuildingCost,
-                      buildingTime = GameConfig.torchBuildingTime,
+                      buildingCost = gameConfig.player.torchBuildingCost,
+                      buildingTime = gameConfig.player.torchBuildingTime,
                       buildingType = Torch,
                       buildOperation = { context.world.placeTorch(it) }
                   )
@@ -61,8 +62,8 @@ object TorchHandling : BaseFacet<GameContext>() {
                 val success = build(
                     context = context,
                     position = position,
-                    buildingCost = GameConfig.altarBuildingCost,
-                    buildingTime = GameConfig.altarBuildingTime,
+                    buildingCost = gameConfig.player.altarBuildingCost,
+                    buildingTime = gameConfig.player.altarBuildingTime,
                     buildingType = ActivatedAltar,
                     buildOperation = { context.world.activateAltar(it) }
                 )
@@ -105,14 +106,14 @@ object TorchHandling : BaseFacet<GameContext>() {
             }
             !buildingDone -> {
                 inventory.buildingProgress += 1
-                Zircon.eventBus.publish(SoundEvent("BuildProgress"))
+                Zircon.eventBus.publish(SoundEvent(SoundEventType.BuildProgress))
             }
             buildOperation(position) -> {
                 inventory.torches -= buildingCost
                 inventory.buildingProgress = 0
                 inventory.maxBuildingProgress = 0
                 inventory.buildingType = null
-                Zircon.eventBus.publish(SoundEvent("BuildFinished"))
+                Zircon.eventBus.publish(SoundEvent(SoundEventType.BuildFinished))
             }
         }
         return true

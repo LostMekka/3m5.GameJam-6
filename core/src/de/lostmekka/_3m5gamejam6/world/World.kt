@@ -1,7 +1,7 @@
 package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.GameContext
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.EntityFactory
 import de.lostmekka._3m5gamejam6.entity.GameEntity
 import de.lostmekka._3m5gamejam6.entity.attribute.health
@@ -88,19 +88,18 @@ class World(
 
     private fun checkPlayerDeath() {
         if (player.health <= 0) {
+            Zircon.eventBus.publish(SoundEvent(SoundEventType.PlayerDeath))
             Zircon.eventBus.publish(PlayerDied("You died because of madness!"))
         }
     }
 
-    private fun checkPlayerMadness(block: GameBlock) {
-        var madnessSum = 0
-        if (block.hasMadness) player.health -= GameConfig.madnessHealthDecrease
-        for (x in player.position.x - 5 .. player.position.x + 5) {
-            for (y in player.position.y - 5 .. player.position.y + 5) {
-                if (this[Position3D.create(x, y, 0)]?.hasMadness == true) madnessSum += 1
-            }
+    private fun checkPlayerMadness() {
+        val block = this[player.position] ?: return
+        if (block.hasMadness) {
+            player.health -= gameConfig.madness.damage
+            if (player.health > 0) Zircon.eventBus.publish(SoundEvent(SoundEventType.PlayerHit))
+            Zircon.eventBus.publish(SoundEvent(SoundEventType.MadnessHit))
         }
-        Zircon.eventBus.publish(MadnessExpanse(madnessSum))
     }
 
     fun onKeyInput(screen: Screen, uiEvent: UIEvent) {
@@ -117,64 +116,60 @@ class World(
     private fun onPlayerMoved() {
         player.inventory.buildingProgress = 0
         if (this[player.position]?.isDoor == true) {
-            Zircon.eventBus.publish(SoundEvent("Door"))
+            Zircon.eventBus.publish(SoundEvent(SoundEventType.Door))
         } else if (this[player.position]?.portalIsOpen == true) {
             // go to next level
-            if (levelDepth + 1 < GameConfig.levelCount) {
-                Zircon.eventBus.publish(SoundEvent("NextLevel"))
+            if (levelDepth + 1 < gameConfig.game.levelCount) {
+                Zircon.eventBus.publish(SoundEvent(SoundEventType.NextLevel))
                 Zircon.eventBus.publish(NextLevel(levelDepth + 1))
             } else {
-                Zircon.eventBus.publish(SoundEvent("YouWon"))
                 Zircon.eventBus.publish(WON)
             }
         } else {
-            Zircon.eventBus.publish(SoundEvent("Step"))
+            Zircon.eventBus.publish(SoundEvent(SoundEventType.Step))
         }
-
     }
 
     fun tick() {
         updateTorches()
-        updateLighting()
         updateMadness()
+        updateMadnessSoundVolume()
         updateEnemyZombies()
-        checkPlayerMadness(gameArea.fetchBlockAt(player.position).get())
+        updateLighting()
+        checkPlayerMadness()
         checkPlayerDeath()
     }
 
-    fun findVisiblePositionsFor(pos: Position, radius: Int): Iterable<Position> {
-        val boundary = EllipseFactory.buildEllipse(
-            fromPosition = pos,
-            toPosition = pos.withRelativeX(radius).withRelativeY(radius)
-        )
-        return boundary
-            .positions()
+    fun findVisiblePositionsFor(center: Position3D, radius: Int): Iterable<Position3D> {
+        val center2D = center.to2DPosition()
+        return listOf(radius - 1, radius)
+            .flatMap {
+                EllipseFactory
+                    .buildEllipse(center2D, center2D.withRelativeX(it).withRelativeY(it))
+                    .positions()
+            }
+            .toSet()
             .flatMap { ringPos ->
-                val result = mutableSetOf<Position>()
-                val line1 = LineFactory.buildLine(pos, ringPos).toList()
-                // line2 is necessary since there are direction dependent rounding errors that produce unwanted blind spots
-                val line2 = line1.map { Position.create(it.x, 2 * pos.y - it.y) }
+                val result = mutableSetOf<Position3D>()
+                val line = LineFactory.buildLine(center2D, ringPos).toList()
 
-                fun trace(line: Iterable<Position>) {
-                    var persistence = 1
-                    var obstructed = false
-                    for (position in line) {
-                        if (obstructed) {
-                            persistence--
-                            if (persistence <= 0) break
-                        } else {
-                            val block = this[position]
-                            val transparent = block?.isTransparent ?: false
-                            val walkable = block?.isWalkable ?: false
-                            if (walkable && !transparent) persistence++
-                            if (!transparent) obstructed = position != line.first()
-                        }
-                        result += position
+                var persistence = 1
+                var obstructed = false
+                for (linePos in line) {
+                    val worldPos = linePos.toPosition3D(center.z)
+                    if (obstructed) {
+                        persistence--
+                        if (persistence <= 0) break
+                    } else {
+                        val isFirst = linePos == center2D
+                        val block = this[worldPos]
+                        val transparent = block?.isTransparent ?: false
+                        val walkable = block?.isWalkable ?: false
+                        if (walkable && !transparent && !isFirst) persistence++
+                        if (!transparent) obstructed = !isFirst
                     }
+                    result += worldPos
                 }
-
-                trace(line1)
-                trace(line2)
                 result
             }
     }

@@ -1,6 +1,6 @@
 package de.lostmekka._3m5gamejam6.world
 
-import de.lostmekka._3m5gamejam6.config.GameConfig
+import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
 import de.lostmekka._3m5gamejam6.entity.AnyGameEntity
 import de.lostmekka._3m5gamejam6.entity.EnemyZombie
@@ -34,10 +34,10 @@ fun World.updateEnemyZombies() {
 
 fun World.updateEnemyZombie(entity: AnyGameEntity) {
     val currentPos = entity.position
-    val playerFound = findVisiblePositionsFor(currentPos.to2DPosition(), GameConfig.enemyViewDistance)
-        .any { player.position2D == it }
+    val playerFound = findVisiblePositionsFor(currentPos, gameConfig.enemies.zombie.viewDistance)
+        .any { player.position == it }
     if (playerFound) {
-        if (!Random.nextBoolean(GameConfig.enemyChaseProbability)) return
+        if (!Random.nextBoolean(gameConfig.enemies.zombie.chaseChance)) return
 
         val dx = player.position2D.x - entity.position2D.x
         val dy = player.position2D.y - entity.position2D.y
@@ -46,8 +46,8 @@ fun World.updateEnemyZombie(entity: AnyGameEntity) {
 
         if (adx + ady <= 1) {
             // attack
-            Zircon.eventBus.publish(SoundEvent("Hit"))
-            player.health -= GameConfig.enemyDamage
+            player.health -= gameConfig.enemies.zombie.damage
+            if (player.health > 0) Zircon.eventBus.publish(SoundEvent(SoundEventType.PlayerHit))
         } else {
             // chase
             val moveX = when {
@@ -64,7 +64,7 @@ fun World.updateEnemyZombie(entity: AnyGameEntity) {
         }
     } else {
         // no player >> Do some random movement
-        if (!Random.nextBoolean(GameConfig.enemyRoamProbability)) return
+        if (!Random.nextBoolean(gameConfig.enemies.zombie.roamChance)) return
 
         val amount = Random.nextInt(2) * 2 - 1
         val target = if (Random.nextBoolean()) {
@@ -103,14 +103,14 @@ fun World.updateMadness() {
     for ((pos, block) in blocks) {
         when {
             block.hasMadness && block.isLit -> {
-                val baseProbability = GameConfig.madnessRetreatProbability
+                val baseProbability = gameConfig.madness.retreatChance
                 val probability = baseProbability * (1.0 - 0.5 * block.averageSurroundingMadness)
                 if (Random.nextBoolean(probability)) {
                     block.hasMadness = false
                 }
             }
             !block.hasMadness -> {
-                val baseProbability = GameConfig.madnessGrowthProbability
+                val baseProbability = gameConfig.madness.growthChance
                 val probability = baseProbability * (1.0 - 0.5 * block.averageSurroundingMadness)
                 if (Random.nextBoolean(probability) && hasMadnessNeighbor(pos)) {
                     block.hasMadness = true
@@ -139,17 +139,27 @@ fun World.updateLighting() {
     }
 
     // light around player if not holding sword and torches available
+    this[player.position]?.isLit = true
     if (!player.inventory.holdsSword && player.inventory.torches > 0) {
-        floodLight(player.position.to2DPosition(), GameConfig.torchLightRadius)
-    } else {
-        this[player.position.to2DPosition()]?.isLit = true
+        floodLight(player.position, gameConfig.light.torchLightRadius)
     }
 
-    torches.forEach { floodLight(it.position.to2DPosition(), GameConfig.torchLightRadius) }
-
-    altars.forEach { floodLight(it.position.to2DPosition(), GameConfig.altarLightRadius) }
+    torches.forEach { floodLight(it.position, gameConfig.light.torchLightRadius) }
+    altars.forEach { floodLight(it.position, gameConfig.light.altarLightRadius) }
 }
 
-private fun World.floodLight(pos: Position, radius: Int) {
+private fun World.floodLight(pos: Position3D, radius: Int) {
+    if (this[pos]?.hasMadness != false) return
     findVisiblePositionsFor(pos, radius).forEach { this[it]?.isLit = true }
 }
+
+fun World.updateMadnessSoundVolume() {
+    var madnessSum = 0
+    for (x in player.position.x - 5..player.position.x + 5) {
+        for (y in player.position.y - 5..player.position.y + 5) {
+            if (this[Position3D.create(x, y, 0)]?.hasMadness == true) madnessSum += 1
+        }
+    }
+    Zircon.eventBus.publish(MadnessExpanse(madnessSum))
+}
+

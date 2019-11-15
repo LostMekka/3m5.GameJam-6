@@ -1,55 +1,166 @@
 package de.lostmekka._3m5gamejam6.config
 
+import com.sksamuel.hoplite.ConfigFilePropertySource
+import com.sksamuel.hoplite.ConfigLoader
+import com.sksamuel.hoplite.FileSource
+import com.sksamuel.hoplite.parsers.defaultParserRegistry
 import org.hexworks.zircon.api.CP437TilesetResources
 import org.hexworks.zircon.api.ColorThemes
 import org.hexworks.zircon.api.data.impl.Size3D
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.Yaml
+import java.beans.Transient
+import java.io.File
+import java.nio.file.Paths
+import kotlin.reflect.KClass
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.declaredMemberProperties
 
-object GameConfig {
+private const val configFileName = "config.yaml"
+private const val defaultsFileName = "config.defaults.yaml"
+private val defaultsFileComment = """
+    # To configure the game:
+    # Create a file named $configFileName, copy the config fields you want to change into it and change them there.
+    # This file will be overwritten with the default values every time the game is started.
+""".trimIndent()
 
-    const val floor2prop = 0.15
-    const val wall2prop = 0.20
+val gameConfig = loadConfig()
 
-    const val logAreaHeight = 20
-    const val sidebarWidth = 25
-    const val windowWidth = 90
-    const val windowHeight = 50
+data class GameConfig(
+    val game: Game = Game(),
+    val player: Player = Player(),
+    val levelGeneration: LevelGeneration = LevelGeneration(),
+    val window: Window = Window(),
+    val light: Light = Light(),
+    val enemies: Enemies = Enemies(),
+    val madness: Madness = Madness(),
+    val sound: Sound = Sound(),
+    val debug: Debug = Debug()
+) : PropertyHolder {
+    data class Game(
+        val levelCount: Int = 5
+    ) : PropertyHolder
 
-    val worldSize = Size3D.create(windowWidth - sidebarWidth, windowHeight, 1)
-    val levelCount = 5
-    val tileSet = CP437TilesetResources.rogueYun16x16()
-    val theme = ColorThemes.zenburnVanilla()
+    data class Player(
+        val torchBuildingTime: Int = 4,
+        val torchBuildingCost: Int = 1,
+        val altarBuildingTime: Int = 6,
+        val altarBuildingCost: Int = 3,
+        val altarHealthBonus: Int = 10,
+        val initialTorchCount: Int = 10,
+        val damageMin: Int = 30,
+        val damageMax: Int = 40
+    ) : PropertyHolder
 
-    const val enableDebugLogArea = false
-    const val enableDebugTorchPlacement = false
+    data class Enemies(
+        val zombie: Zombie = Zombie()
+    ) : PropertyHolder {
+        data class Zombie(
+            val hp: Int = 100,
+            val damage: Int = 4,
+            val viewDistance: Int = 6,
+            val roamChance: Double = 0.3,
+            val chaseChance: Double = 0.75
+        ) : PropertyHolder
+    }
 
-    const val madnessGrowthProbability = 0.02
-    const val madnessRetreatProbability = 0.6
-    const val madnessHealthDecrease = 10
+    data class Madness(
+        val growthChance: Double = 0.02,
+        val retreatChance: Double = 0.6,
+        val damage: Int = 10
+    ) : PropertyHolder
 
-    const val fogOfWarEnabled = true
-    const val torchLightRadius = 6
-    const val altarLightRadius = 8
+    data class LevelGeneration(
+        val alternateFloorChance: Double = 0.15,
+        val alternateWallChance: Double = 0.20,
+        val torchCount: Int = 60,
+        val altarCount: Int = 5,
+        val zombieCount: Int = 8
+    ) : PropertyHolder
 
-    const val torchBuildingTime = 4
-    const val torchBuildingCost = 1
-    const val altarBuildingTime = 6
-    const val altarBuildingCost = 3
-    const val altarHealthBonus = 10
+    data class Window(
+        val width: Int = 90,
+        val height: Int = 50,
+        val sidebarWidth: Int = 25,
+        val logAreaHeight: Int = 20
+    ) : PropertyHolder
 
-    const val playerInitialTorchCount = 10
-    const val areaInitialTorchCount = 60
-    const val areaAltarCount = 5
+    data class Light(
+        val torchLightRadius: Int = 6,
+        val altarLightRadius: Int = 8
+    ) : PropertyHolder
 
-    const val areaInitialEnemyZombieCount = 8
-    const val enemyViewDistance = 7
-    const val enemyDamage = 4
-    const val enemyRoamProbability = 0.3
-    const val enemyChaseProbability = 0.75
+    data class Sound(
+        val whisperVolumeMin: Float = 0.1f,
+        val whisperVolumeMax: Float = 1f,
+        val backgroundMusicVolume: Float = 0.5f
+    ) : PropertyHolder
 
-    const val SwordDamageMin = 30
-    const val SwordDamageMax = 40
+    data class Debug(
+        val enableLogArea: Boolean = false,
+        val enableTorchPlacement: Boolean = false,
+        val seeEverything: Boolean = false
+    ) : PropertyHolder
 
-    const val whisperVolumeMin = 0.1f
-    const val whisperVolumeMax = 1f
-    const val backgroundMusicVolume = 0.5f
+    val worldSize
+        @Transient
+        get() = Size3D.create(window.width - window.sidebarWidth, window.height, 1)
+
+    val tileSet
+        @Transient
+        get() = CP437TilesetResources.rogueYun16x16()
+
+    val theme
+        @Transient
+        get() = ColorThemes.zenburnVanilla()
+}
+
+private fun loadConfig(): GameConfig {
+    val configFile = File(configFileName)
+    val defaultsFile = File(defaultsFileName)
+    val configWasMissing = !configFile.exists()
+
+    if (configWasMissing) {
+        // this initial dummy config file is actually needed.
+        // hoplite can fill the config objects with default values,
+        // but it will crash if the file does not exist or is empty...
+        configFile.writeText("hopliteIsDrunk: true")
+    }
+    val config = try {
+        ConfigLoader()
+            .withPropertySource(
+                ConfigFilePropertySource(
+                    file = FileSource.PathSource(Paths.get(configFileName)),
+                    parserRegistry = defaultParserRegistry()
+                )
+            )
+            .loadConfigOrThrow<GameConfig>()
+    } finally {
+        if (configWasMissing) configFile.delete()
+    }
+
+    val dumperOptions = DumperOptions().apply {
+        isPrettyFlow = true
+        defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+    }
+    val defaultValues = Yaml(dumperOptions).dump(GameConfig().toMap())
+    defaultsFile.writeText("$defaultsFileComment\n$defaultValues")
+
+    return config
+}
+
+private interface PropertyHolder {
+    // :scream: :facepalm: :scream:
+    // yes, reflection. because hoplite needs data classes, but snakeyaml cannot handle data classes.
+    @Suppress("UNCHECKED_CAST")
+    fun toMap(): MutableMap<String, Any> {
+        val map = mutableMapOf<String, Any>()
+        val kClass: KClass<*> = this::class
+        for (property in kClass.declaredMemberProperties) {
+            if (property.getter.annotations.any { it is Transient }) continue
+            val value = (property as KProperty1<Any, Any>).get(this)
+            map[property.name] = if (value is PropertyHolder) value.toMap() else value
+        }
+        return map
+    }
 }

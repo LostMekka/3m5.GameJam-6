@@ -10,6 +10,18 @@ object WON : Event
 
 object ValidInput : Event
 
-data class SoundEvent(val cause: String) : Event
+data class SoundEvent(val cause: SoundEventType) : Event
+
+enum class SoundEventType {
+    Door,
+    Step,
+    NextLevel,
+    ZombieHit,
+    PlayerHit,
+    PlayerDeath,
+    MadnessHit,
+    BuildProgress,
+    BuildFinished,
+}
 
 data class MadnessExpanse(val percentage: Int) : Event
