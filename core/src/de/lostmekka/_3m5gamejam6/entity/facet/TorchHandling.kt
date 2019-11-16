@@ -96,7 +96,6 @@ object TorchHandling : BaseFacet<GameContext>() {
 
         val hasResources = inventory.torches >= buildingCost
         val buildingDone = inventory.buildingProgress >= buildingTime
-        println("${inventory.buildingProgress} / $buildingTime")
 
         when {
             !hasResources -> {

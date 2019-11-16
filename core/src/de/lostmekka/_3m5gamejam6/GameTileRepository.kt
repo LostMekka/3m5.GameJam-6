@@ -122,6 +122,18 @@ object GameTileRepository {
         .withBackgroundColor(GameColors.floorBgMadness)
         .buildCharacterTile()
 
+    val summoner = Tiles.newBuilder()
+        .withCharacter('S')
+        .withForegroundColor(GameColors.zombieFg)
+        .withBackgroundColor(GameColors.zombieBg)
+        .buildCharacterTile()
+
+    val summonerMadness = Tiles.newBuilder()
+        .withCharacter('S')
+        .withForegroundColor(GameColors.doorFgMadness)
+        .withBackgroundColor(GameColors.floorBgMadness)
+        .buildCharacterTile()
+
     val torchItem = Tiles.newBuilder()
         .withCharacter('t')
         .withForegroundColor(GameColors.torchItemFg)

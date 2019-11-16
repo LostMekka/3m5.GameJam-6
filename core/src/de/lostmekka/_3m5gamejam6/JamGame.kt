@@ -66,7 +66,7 @@ class FakeScreen : KtxScreen {
                 SoundEventType.Door -> doorSound.play()
                 SoundEventType.Step -> stepSound.play(0.5f)
                 SoundEventType.NextLevel -> nextLevelSound.play()
-                SoundEventType.ZombieHit -> hitSound.play()
+                SoundEventType.EnemyHit -> hitSound.play()
                 SoundEventType.PlayerHit -> pain1Sound.play()
                 SoundEventType.PlayerDeath -> pain2Sound.play()
                 SoundEventType.MadnessHit -> madnessHitSound.play(0.9f, 1 + 0.25f * (2 * Random.nextFloat() - 1), 0f)

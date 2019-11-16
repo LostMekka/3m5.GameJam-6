@@ -2,11 +2,13 @@ package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
-import de.lostmekka._3m5gamejam6.entity.Zombie
+import de.lostmekka._3m5gamejam6.entity.AnyGameEntity
 import de.lostmekka._3m5gamejam6.entity.OpenedPortal
 import de.lostmekka._3m5gamejam6.entity.Player
+import de.lostmekka._3m5gamejam6.entity.Summoner
 import de.lostmekka._3m5gamejam6.entity.Torch
 import de.lostmekka._3m5gamejam6.entity.TorchItem
+import de.lostmekka._3m5gamejam6.entity.Zombie
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.position
 import de.lostmekka._3m5gamejam6.nextBoolean
@@ -88,60 +90,47 @@ private fun World.checkBlockForFloor(position: Position3D) =
 fun World.placeTorch(pos: Position3D): Boolean {
     val block = this[pos] ?: return false
     if (block.isAltar || block.currentEntities.any { it.type !is Player }) return false
-    val newTorch = Torch.create()
-    newTorch.position = pos
-    block.currentEntities += newTorch
-    engine.addEntity(newTorch)
+    placeEntity(pos, Torch.create())
     updateLighting()
     return true
 }
 
 fun World.placeTorchItem(pos: Position3D) {
-    val block = this[pos] ?: return
-    val newTorch = TorchItem.create()
-    block.currentEntities += newTorch
-    engine.addEntity(newTorch)
-    newTorch.position = pos
+    placeEntity(pos, TorchItem.create())
 }
 
 fun World.activateAltar(pos: Position3D): Boolean {
     val block = this[pos] ?: return false
     if (!block.isAltar || block.currentEntities.any { it.type !is Player }) return false
-    ActivatedAltar.create().also {
-        it.position = pos
-        block.currentEntities += it
-        engine.addEntity(it)
-    }
+    placeEntity(pos, ActivatedAltar.create())
     activatedAltarCount++
     player.health += gameConfig.player.altarHealthBonus
 
     if (activatedAltarCount >= altarCount) {
-        val portalBlock = this[portalPosition]!!
-        OpenedPortal.create().also {
-            it.position = portalPosition
-            portalBlock.currentEntities += it
-            engine.addEntity(it)
-        }
+        placeEntity(portalPosition, OpenedPortal.create())
     }
 
     return true
 }
 
 fun World.generateEnemies() {
-    val count = gameConfig.levelGeneration.zombieCount + levelDepth
-    for ((pos, block) in fetchRandomSpawnableBlocks(count)) {
-        val newZombie = Zombie.create()
-        newZombie.position = pos
-        block.currentEntities += newZombie
-        engine.addEntity(newZombie)
-    }
+    val gen = gameConfig.levelGeneration
+    val zombieCount = gen.zombieCount + levelDepth * gen.zombieCountPerLevel
+    for ((pos, _) in fetchRandomSpawnableBlocks(zombieCount)) placeEntity(pos, Zombie.create())
+    val summonerCount = gen.summonerCount + levelDepth * gen.summonerCountPerLevel
+    for ((pos, _) in fetchRandomSpawnableBlocks(summonerCount)) placeEntity(pos, Summoner.create())
 }
 
 fun World.placePlayer() {
-    val (pos, block) = fetchSpawnableBlocks().random()
-    player.position = pos
-    block.currentEntities += player
-    engine.addEntity(player)
+    val (pos, _) = fetchSpawnableBlocks().random()
+    placeEntity(pos, player)
+}
+
+fun World.placeEntity(position: Position3D, entity: AnyGameEntity) {
+    val block = this[position] ?: throw Exception("cannot place entity: block does not exist")
+    entity.position = position
+    block.currentEntities += entity
+    engine.addEntity(entity)
 }
 
 fun World.placePortal() {
@@ -158,11 +147,8 @@ fun World.generateMadness() {
 }
 
 fun World.generateTorchItems() {
-    for ((pos, block) in fetchRandomSpawnableBlocks(gameConfig.levelGeneration.torchCount)) {
-        val newTorch = TorchItem.create()
-        block.currentEntities += newTorch
-        engine.addEntity(newTorch)
-        newTorch.position = pos
+    for ((pos, _) in fetchRandomSpawnableBlocks(gameConfig.levelGeneration.torchCount)) {
+        placeEntity(pos, TorchItem.create())
     }
 }
 

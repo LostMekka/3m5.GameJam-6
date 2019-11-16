@@ -3,7 +3,7 @@ package de.lostmekka._3m5gamejam6.world
 import de.lostmekka._3m5gamejam6.GameTileRepository
 import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
-import de.lostmekka._3m5gamejam6.entity.Zombie
+import de.lostmekka._3m5gamejam6.entity.Enemy
 import de.lostmekka._3m5gamejam6.entity.GameEntity
 import de.lostmekka._3m5gamejam6.entity.OpenedPortal
 import de.lostmekka._3m5gamejam6.entity.Player
@@ -26,13 +26,15 @@ class GameBlock(
     val isPortal: Boolean = false,
     val currentEntities: MutableList<GameEntity<EntityType>> = mutableListOf()
 ) : BlockBase<Tile>() {
+    val topmostEntity get() = findEntity<Player>()
+        ?: findEntity<Enemy>()
+        ?: firstEntity()
+
     override val layers: MutableList<Tile>
         get() {
             if (!isLit && !gameConfig.debug.seeEverything) return mutableListOf(GameTileRepository.shadow)
 
-            val entity = findEntity<Player>()
-                ?: findEntity<Zombie>()
-                ?: firstEntity()
+            val entity = topmostEntity
             val tile = when {
                 hasMadness -> entity?.madnessTile ?: madnessTile
                 else -> entity?.tile ?: tile
@@ -43,7 +45,8 @@ class GameBlock(
     val name: String
         get() {
             if (!isLit && !gameConfig.debug.seeEverything) return "Unknown"
-            val name = currentEntities.firstOrNull()?.name ?: tileName
+            val entity = topmostEntity
+            val name = entity?.takeIf { it.madnessTile != null }?.name ?: tileName
             val modifier = when {
                 hasMadness -> " (Madness)"
                 else -> ""
@@ -52,7 +55,9 @@ class GameBlock(
         }
 
     var isLit = false
-    var averageSurroundingMadness = 0.0
+    var averageMadnessSmallRadius = 0.0
+    var averageMadnessMediumRadius = 0.0
+    var averageMadnessBigRadius = 0.0
     val altarIsActive get() = currentEntities.any { it.type is ActivatedAltar }
     val portalIsOpen get() = currentEntities.any { it.type is OpenedPortal }
 
@@ -71,6 +76,7 @@ class GameBlock(
             isWalkable = true,
             isTransparent = true
         )
+
         fun floor2() = GameBlock(
             tile = GameTileRepository.floor2,
             madnessTile = GameTileRepository.floorMadness,

@@ -42,6 +42,7 @@ data class GameConfig(
     ) : PropertyHolder
 
     data class Player(
+        val hp: Int = 100,
         val torchBuildingTime: Int = 4,
         val torchBuildingCost: Int = 1,
         val altarBuildingTime: Int = 6,
@@ -53,7 +54,8 @@ data class GameConfig(
     ) : PropertyHolder
 
     data class Enemies(
-        val zombie: Zombie = Zombie()
+        val zombie: Zombie = Zombie(),
+        val summoner: Summoner = Summoner()
     ) : PropertyHolder {
         data class Zombie(
             val hp: Int = 100,
@@ -62,11 +64,17 @@ data class GameConfig(
             val roamChance: Double = 0.3,
             val chaseChance: Double = 0.75
         ) : PropertyHolder
+
+        data class Summoner(
+            val hp: Int = 100,
+            val viewDistance: Int = 4
+            // TODO: add other constants
+        ) : PropertyHolder
     }
 
     data class Madness(
-        val growthChance: Double = 0.02,
-        val retreatChance: Double = 0.6,
+        val growthChance: Double = 0.01,
+        val retreatChance: Double = 0.25,
         val damage: Int = 10
     ) : PropertyHolder
 
@@ -75,7 +83,10 @@ data class GameConfig(
         val alternateWallChance: Double = 0.20,
         val torchCount: Int = 60,
         val altarCount: Int = 5,
-        val zombieCount: Int = 8
+        val zombieCount: Int = 8,
+        val zombieCountPerLevel: Int = 1,
+        val summonerCount: Int = 0,
+        val summonerCountPerLevel: Int = 2
     ) : PropertyHolder
 
     data class Window(
@@ -87,7 +98,8 @@ data class GameConfig(
 
     data class Light(
         val torchLightRadius: Int = 6,
-        val altarLightRadius: Int = 8
+        val altarLightRadius: Int = 8,
+        val portalLightRadius: Int = 2
     ) : PropertyHolder
 
     data class Sound(
