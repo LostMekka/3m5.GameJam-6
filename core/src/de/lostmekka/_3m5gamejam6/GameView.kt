@@ -82,7 +82,7 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
 
         val txtLevel = Components.label()
             .withSize(gameConfig.window.sidebarWidth, 1)
-            .withText( "Level 1")
+            .withText("Level ${levelDepth + 1}")
             .withPosition(0, index)
             .build()
         index += 4
@@ -269,7 +269,7 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
     }
 
     private fun getTorchBuildingProgressBar(world: World): String {
-        return (0 until world.player.inventory.maxBuildingProgress)
+        return (0..world.player.inventory.maxBuildingProgress)
             .joinToString(
                 prefix = "[",
                 postfix = "]",
