@@ -16,7 +16,7 @@ enum class SoundEventType {
     Door,
     Step,
     NextLevel,
-    ZombieHit,
+    EnemyHit,
     PlayerHit,
     PlayerDeath,
     MadnessHit,

@@ -4,7 +4,8 @@ import de.lostmekka._3m5gamejam6.GameContext
 import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivateAltar
 import de.lostmekka._3m5gamejam6.entity.BuildTorch
-import de.lostmekka._3m5gamejam6.entity.EnemyZombie
+import de.lostmekka._3m5gamejam6.entity.Enemy
+import de.lostmekka._3m5gamejam6.entity.Zombie
 import de.lostmekka._3m5gamejam6.entity.EquipSword
 import de.lostmekka._3m5gamejam6.entity.EquipTorch
 import de.lostmekka._3m5gamejam6.entity.GameEntity
@@ -74,13 +75,13 @@ private fun movePlayer(context: GameContext, target: Position3D): Response {
         ?.currentEntities
         ?: mutableListOf()
     val enemies = currentEntities
-        .filter { it.type is EnemyZombie }
+        .filter { it.type is Enemy }
 
     return if (enemies.isEmpty()) {
         context.player.executeCommand(MoveTo(context, context.player, target))
     } else {
         if (context.player.inventory.holdsSword) {
-            Zircon.eventBus.publish(SoundEvent(SoundEventType.ZombieHit))
+            Zircon.eventBus.publish(SoundEvent(SoundEventType.EnemyHit))
             for (enemy in enemies) {
                 enemy.health -= Random.nextInt(gameConfig.player.damageMin, gameConfig.player.damageMax + 1)
                 if (enemy.health <= 0) {

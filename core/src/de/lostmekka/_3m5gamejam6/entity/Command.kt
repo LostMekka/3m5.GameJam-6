@@ -13,7 +13,7 @@ data class MoveTo(
 
 data class AIAction(
     val world: World,
-    val entity: GameEntity<EnemyZombie>
+    val entity: GameEntity<Zombie>
 )
 
 data class GrabTorchItem(

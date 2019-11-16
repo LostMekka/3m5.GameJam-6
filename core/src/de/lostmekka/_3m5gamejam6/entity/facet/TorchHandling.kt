@@ -85,6 +85,8 @@ object TorchHandling : BaseFacet<GameContext>() {
     ): Boolean {
         val block = context.world[position] ?: return false
         if (block.currentEntities.any { it.type !is Player }) return false
+        if (buildingType is ActivatedAltar && !block.isAltar) return false
+        if (buildingType is Torch && (block.isAltar || block.isPortal)) return false
         // check progress of build
         val inventory = context.world.player.inventory
 
@@ -96,7 +98,6 @@ object TorchHandling : BaseFacet<GameContext>() {
 
         val hasResources = inventory.torches >= buildingCost
         val buildingDone = inventory.buildingProgress >= buildingTime
-        println("${inventory.buildingProgress} / $buildingTime")
 
         when {
             !hasResources -> {

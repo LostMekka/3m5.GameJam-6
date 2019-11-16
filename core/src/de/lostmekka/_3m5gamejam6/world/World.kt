@@ -2,11 +2,13 @@ package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.GameContext
 import de.lostmekka._3m5gamejam6.config.gameConfig
-import de.lostmekka._3m5gamejam6.entity.EntityFactory
 import de.lostmekka._3m5gamejam6.entity.GameEntity
+import de.lostmekka._3m5gamejam6.entity.Player
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.entity.attribute.position
+import de.lostmekka._3m5gamejam6.squared
+import de.lostmekka._3m5gamejam6.squaredDistanceTo
 import de.lostmekka._3m5gamejam6.to3DPosition
 import org.hexworks.amethyst.api.Engine
 import org.hexworks.amethyst.api.Engines
@@ -17,6 +19,7 @@ import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.impl.Position3D
 import org.hexworks.zircon.api.data.impl.Size3D
+import org.hexworks.zircon.api.game.Cell3D
 import org.hexworks.zircon.api.screen.Screen
 import org.hexworks.zircon.api.shape.EllipseFactory
 import org.hexworks.zircon.api.shape.LineFactory
@@ -35,7 +38,7 @@ class World(
         .withLayersPerBlock(1)
         .build()
 
-    val player = EntityFactory.newPlayer()
+    val player = Player.create()
 
     val engine: Engine<GameContext> = Engines.newEngine()
 
@@ -134,7 +137,7 @@ class World(
         updateTorches()
         updateMadness()
         updateMadnessSoundVolume()
-        updateEnemyZombies()
+        updateEnemies()
         updateLighting()
         checkPlayerMadness()
         checkPlayerDeath()
@@ -150,28 +153,39 @@ class World(
             }
             .toSet()
             .flatMap { ringPos ->
-                val result = mutableSetOf<Position3D>()
-                val line = LineFactory.buildLine(center2D, ringPos).toList()
-
-                var persistence = 1
-                var obstructed = false
-                for (linePos in line) {
-                    val worldPos = linePos.toPosition3D(center.z)
-                    if (obstructed) {
-                        persistence--
-                        if (persistence <= 0) break
-                    } else {
-                        val isFirst = linePos == center2D
-                        val block = this[worldPos]
-                        val transparent = block?.isTransparent ?: false
-                        val walkable = block?.isWalkable ?: false
-                        if (walkable && !transparent && !isFirst) persistence++
-                        if (!transparent) obstructed = !isFirst
-                    }
-                    result += worldPos
-                }
-                result
+                val line = LineFactory.buildLine(center2D, ringPos)
+                visiblePositionsOnLine(line, center.z)
             }
+            .toSet()
+    }
+
+    private fun visiblePositionsOnLine(line: Iterable<Position>, z: Int): List<Position3D> {
+        val start = line.firstOrNull() ?: return listOf()
+        val result = mutableListOf<Position3D>()
+        var persistence = 1
+        var obstructed = false
+        for (linePos in line) {
+            val worldPos = linePos.toPosition3D(z)
+            if (obstructed) {
+                persistence--
+                if (persistence <= 0) break
+            } else {
+                val isFirst = linePos == start
+                val block = this[worldPos]
+                val transparent = block?.isTransparent ?: false
+                val walkable = block?.isWalkable ?: false
+                if (walkable && !transparent && !isFirst) persistence++
+                if (!transparent) obstructed = !isFirst
+            }
+            result += worldPos
+        }
+        return result
+    }
+
+    fun hasSightConnection(from: Position3D, to: Position3D, sightRadius: Int): Boolean {
+        if (from.z != to.z || from squaredDistanceTo to > sightRadius.squared) return false
+        val line = LineFactory.buildLine(from.to2DPosition(), to.to2DPosition())
+        return to in visiblePositionsOnLine(line, from.z)
     }
 
     private fun neighboursOf(position: Position3D): List<GameBlock> {
@@ -192,6 +206,17 @@ class World(
         }
 
     fun fetchRandomSpawnableBlocks(count: Int) = fetchSpawnableBlocks()
+        .shuffled()
+        .take(count)
+
+    fun fetchBlocks(filter: (Cell3D<Tile, GameBlock>) -> Boolean) = gameArea.fetchBlocks()
+        .filter(filter)
+        .filter {
+            val neighbours = neighboursOf(it.position)
+            neighbours.size == 9 && neighbours.all { it.isTransparent && it.isWalkable }
+        }
+
+    fun fetchRandomBlocks(count: Int, filter: (Cell3D<Tile, GameBlock>) -> Boolean) = fetchBlocks(filter)
         .shuffled()
         .take(count)
 
