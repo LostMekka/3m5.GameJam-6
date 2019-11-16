@@ -46,7 +46,7 @@ class GameBlock(
         get() {
             if (!isLit && !gameConfig.debug.seeEverything) return "Unknown"
             val entity = topmostEntity
-            val name = entity?.takeIf { it.madnessTile != null }?.name ?: tileName
+            val name = entity?.takeIf { !hasMadness || it.madnessTile != null }?.name ?: tileName
             val modifier = when {
                 hasMadness -> " (Madness)"
                 else -> ""

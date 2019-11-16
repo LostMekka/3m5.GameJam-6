@@ -1,6 +1,7 @@
 package de.lostmekka._3m5gamejam6
 
 import de.lostmekka._3m5gamejam6.config.gameConfig
+import de.lostmekka._3m5gamejam6.entity.Enemy
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.world.GameBlock
@@ -25,7 +26,9 @@ import org.hexworks.zircon.api.GameComponents
 import org.hexworks.zircon.api.UIEventResponses
 import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.component.ComponentAlignment.BOTTOM_LEFT
-import org.hexworks.zircon.api.component.Visibility
+import org.hexworks.zircon.api.component.Label
+import org.hexworks.zircon.api.component.Panel
+import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.extensions.onKeyboardEvent
 import org.hexworks.zircon.api.extensions.onMouseEvent
@@ -42,6 +45,10 @@ import org.hexworks.zircon.internal.Zircon
 class GameView(private val levelDepth: Int = 0) : BaseView() {
 
     private var isActive = false
+    private lateinit var sidebar: Panel
+    private var nextLabelY = 2
+    private val sidebarLabelUpdaters = mutableMapOf<Label, () -> String>()
+    private var lastMousePos = Position.create(-1, -1)
 
     override fun onUndock() {
         isActive = false
@@ -64,8 +71,7 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
         world.generateMadness()
         world.updateLighting()
 
-
-        val sidebar = Components.panel()
+        sidebar = Components.panel()
             .withSize(gameConfig.window.sidebarWidth, gameConfig.window.height)
             .withAlignmentWithin(screen, ComponentAlignment.RIGHT_CENTER)
             .wrapWithBox()
@@ -78,63 +84,44 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
             .withProjectionMode(ProjectionMode.TOP_DOWN)
             .withAlignmentWithin(screen, ComponentAlignment.TOP_LEFT)
             .build()
-        var index = 2
 
-        val txtLevel = Components.label()
-            .withSize(gameConfig.window.sidebarWidth, 1)
-            .withText("Level ${levelDepth + 1}")
-            .withPosition(0, index)
-            .build()
-        index += 4
+        addSidebarLabel { "Level ${levelDepth + 1}" }
+        addSidebarLabel { "${world.activatedAltarCount}/${world.altarCount} Altars" }
+        addSidebarBlankLine()
 
-        val txtPosition = Components.label()
-            .withSize(gameConfig.window.sidebarWidth, 1)
-            .withPosition(0, index)
-            .build()
-        index += 2
+        addSidebarLabel { "HP: ${world.player.health}" }
+        addSidebarLabel { "Torches: ${world.player.inventory.torches}" }
+        addSidebarLabel { if (world.player.inventory.holdsSword) "Equipped: Sword" else "Equipped: Torch" }
+        addSidebarLabel {
+            if (world.player.inventory.buildingProgress > 0) {
+                "Build: ${getTorchBuildingProgressBar(world)}"
+            } else {
+                ""
+            }
+        }
+        addSidebarBlankLine()
 
-        val txtPointingLabel = Components.label()
-            .withSize(gameConfig.window.sidebarWidth, 1)
-            .withPosition(0, index)
-            .build()
-        index += 2
+        addSidebarLabel { "Pointing at:" }
+        addSidebarLabel { world[lastMousePos]?.name ?: "????" }
+        addSidebarLabel {
+            val block = world[lastMousePos]
+            if (block == null) {
+                "????"
+            } else {
+                block.firstEntity()
+                    ?.takeIf { it.type is Enemy }
+                    ?.let { "  HP: ${it.health}" }
+                    ?: ""
+            }
+        }
+        addSidebarBlankLine()
 
-        val txtPointingItem = Components.label()
-            .withSize(gameConfig.window.sidebarWidth, 1)
-            .withPosition(0, index)
-            .build()
-        index += 2
-
-        val txtHealth = Components.label()
-            .withSize(gameConfig.window.sidebarWidth, 1)
-            .withPosition(0, index)
-            .build()
-        index += 2
-
-        val txtTorches = Components.label()
-            .withSize(gameConfig.window.sidebarWidth, 1)
-            .withPosition(0, index)
-            .build()
-        index += 2
-
-        val txtEquipment = Components.label()
-            .withSize(gameConfig.window.sidebarWidth, 1)
-            .withPosition(0, index)
-            .withText("Equipped: Torch")
-            .build()
-        index += 2
-
-        val txtTorchBuildProgress = Components.label()
-            .withSize(gameConfig.window.sidebarWidth, 1)
-            .withPosition(0, index)
-            .build()
-        index += 2
-
-        val txtTutorialInfo = Components.label()
+        Components.label()
             .withSize(gameConfig.window.sidebarWidth, 1)
             .withPosition(0, sidebar.height - 5)
             .withText("Press esc => Pause")
             .build()
+            .also { sidebar.addComponent(it) }
 
         val logArea = Components.logArea()
             .withTitle("Log")
@@ -143,22 +130,9 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
             .withAlignmentWithin(screen, BOTTOM_LEFT)
             .build()
 
-        sidebar.addComponent(txtLevel)
-        sidebar.addComponent(txtPosition)
-        sidebar.addComponent(txtPointingLabel)
-        sidebar.addComponent(txtPointingItem)
-        sidebar.addComponent(txtHealth)
-        sidebar.addComponent(txtTorches)
-        sidebar.addComponent(txtEquipment)
-        sidebar.addComponent(txtTorchBuildProgress)
-        sidebar.addComponent(txtTutorialInfo)
-
         screen.addComponent(sidebar)
         screen.addComponent(mainArea)
-
-        if (gameConfig.debug.enableLogArea) {
-            screen.addComponent(logArea)
-        }
+        if (gameConfig.debug.enableLogArea) screen.addComponent(logArea)
 
         Zircon.eventBus.subscribe<PlayerDied> {
             if (isActive) {
@@ -173,7 +147,6 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
 
         Zircon.eventBus.subscribe<NextLevel> {
             if (isActive) {
-                txtLevel.text = "Level " + it.depth + 1
                 replaceWith(GameView(levelDepth = it.depth))
                 close()
             }
@@ -187,17 +160,8 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
         }
 
         mainArea.onMouseEvent(MouseEventType.MOUSE_MOVED) { event: MouseEvent, _: UIEventPhase ->
-            txtPosition.text = "Mouse: ${event.position.x} | ${event.position.y}"
-
-            val item = world[event.position]?.name ?: "????"
-            txtPointingLabel.text = "Looking at: "
-            if (item.length < 10) {
-                txtPointingLabel.text += item
-                txtPointingItem.text = " "
-            } else {
-                txtPointingItem.text = "  $item"
-            }
-
+            lastMousePos = event.position
+            updateLabelTexts()
             UIEventResponses.processed()
         }
 
@@ -217,19 +181,7 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
                 screen.openModal(PauseDialog(screen))
             } else {
                 world.onKeyInput(screen, event)
-                txtHealth.text = "HP: " + world.player.health
-                txtTorches.text = "Torches: " + world.player.inventory.torches
-
-                if (world.player.inventory.holdsSword)
-                    txtEquipment.text = "Equipped: Sword"
-                else txtEquipment.text = "Equipped: Torch"
-
-                if (world.player.inventory.buildingProgress > 0) {
-                    txtTorchBuildProgress.isVisible = Visibility.Visible
-                    txtTorchBuildProgress.text = "Build: " + getTorchBuildingProgressBar(world)
-                } else {
-                    txtTorchBuildProgress.isVisible = Visibility.Hidden
-                }
+                updateLabelTexts()
             }
             Processed
         }
@@ -266,6 +218,24 @@ class GameView(private val levelDepth: Int = 0) : BaseView() {
                 "The twisted architecture of this place is getting ever more grotesque. The final portal is near..."
             )
         }
+    }
+
+    private fun updateLabelTexts() {
+        for ((label, textProvider) in sidebarLabelUpdaters) label.text = textProvider()
+    }
+
+    private fun addSidebarLabel(textProvider: (() -> String)? = null): Label = Components.label()
+        .withSize(gameConfig.window.sidebarWidth, 1)
+        .withPosition(0, nextLabelY++)
+        .withText(textProvider?.invoke() ?: "")
+        .build()
+        .also {
+            sidebar.addComponent(it)
+            if (textProvider != null) sidebarLabelUpdaters[it] = textProvider
+        }
+
+    private fun addSidebarBlankLine(count: Int = 1) {
+        nextLabelY += count
     }
 
     private fun getTorchBuildingProgressBar(world: World): String {
