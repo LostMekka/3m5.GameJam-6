@@ -134,7 +134,7 @@ class World(
         updateTorches()
         updateMadness()
         updateMadnessSoundVolume()
-        updateEnemyZombies()
+        updateEnemies()
         updateLighting()
         checkPlayerMadness()
         checkPlayerDeath()

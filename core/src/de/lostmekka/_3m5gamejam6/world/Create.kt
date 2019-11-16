@@ -2,7 +2,7 @@ package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
-import de.lostmekka._3m5gamejam6.entity.EnemyZombie
+import de.lostmekka._3m5gamejam6.entity.Zombie
 import de.lostmekka._3m5gamejam6.entity.OpenedPortal
 import de.lostmekka._3m5gamejam6.entity.Player
 import de.lostmekka._3m5gamejam6.entity.Torch
@@ -130,7 +130,7 @@ fun World.activateAltar(pos: Position3D): Boolean {
 fun World.generateEnemies() {
     val count = gameConfig.levelGeneration.zombieCount + levelDepth
     for ((pos, block) in fetchRandomSpawnableBlocks(count)) {
-        val newZombie = EnemyZombie.create()
+        val newZombie = Zombie.create()
         newZombie.position = pos
         block.currentEntities += newZombie
         engine.addEntity(newZombie)

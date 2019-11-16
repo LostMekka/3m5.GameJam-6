@@ -4,7 +4,7 @@ import de.lostmekka._3m5gamejam6.GameContext
 import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivateAltar
 import de.lostmekka._3m5gamejam6.entity.BuildTorch
-import de.lostmekka._3m5gamejam6.entity.EnemyZombie
+import de.lostmekka._3m5gamejam6.entity.Zombie
 import de.lostmekka._3m5gamejam6.entity.EquipSword
 import de.lostmekka._3m5gamejam6.entity.EquipTorch
 import de.lostmekka._3m5gamejam6.entity.GameEntity
@@ -74,7 +74,7 @@ private fun movePlayer(context: GameContext, target: Position3D): Response {
         ?.currentEntities
         ?: mutableListOf()
     val enemies = currentEntities
-        .filter { it.type is EnemyZombie }
+        .filter { it.type is Zombie }
 
     return if (enemies.isEmpty()) {
         context.player.executeCommand(MoveTo(context, context.player, target))

@@ -3,7 +3,7 @@ package de.lostmekka._3m5gamejam6.world
 import de.lostmekka._3m5gamejam6.GameTileRepository
 import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
-import de.lostmekka._3m5gamejam6.entity.EnemyZombie
+import de.lostmekka._3m5gamejam6.entity.Zombie
 import de.lostmekka._3m5gamejam6.entity.GameEntity
 import de.lostmekka._3m5gamejam6.entity.OpenedPortal
 import de.lostmekka._3m5gamejam6.entity.Player
@@ -31,7 +31,7 @@ class GameBlock(
             if (!isLit && !gameConfig.debug.seeEverything) return mutableListOf(GameTileRepository.shadow)
 
             val entity = findEntity<Player>()
-                ?: findEntity<EnemyZombie>()
+                ?: findEntity<Zombie>()
                 ?: firstEntity()
             val tile = when {
                 hasMadness -> entity?.madnessTile ?: madnessTile

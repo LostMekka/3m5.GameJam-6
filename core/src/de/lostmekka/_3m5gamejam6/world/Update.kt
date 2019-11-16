@@ -3,7 +3,7 @@ package de.lostmekka._3m5gamejam6.world
 import de.lostmekka._3m5gamejam6.config.gameConfig
 import de.lostmekka._3m5gamejam6.entity.ActivatedAltar
 import de.lostmekka._3m5gamejam6.entity.AnyGameEntity
-import de.lostmekka._3m5gamejam6.entity.EnemyZombie
+import de.lostmekka._3m5gamejam6.entity.Zombie
 import de.lostmekka._3m5gamejam6.entity.Torch
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
@@ -26,13 +26,13 @@ fun World.updateTorches() {
     }
 }
 
-fun World.updateEnemyZombies() {
+fun World.updateEnemies() {
     gameArea.fetchBlocks()
-        .flatMap { (_, block) -> block.currentEntities.filter { it.type is EnemyZombie } }
-        .forEach { updateEnemyZombie(it) }
+        .flatMap { (_, block) -> block.currentEntities.filter { it.type is Zombie } }
+        .forEach { updateEnemy(it) }
 }
 
-fun World.updateEnemyZombie(entity: AnyGameEntity) {
+fun World.updateEnemy(entity: AnyGameEntity) {
     val currentPos = entity.position
     val playerFound = findVisiblePositionsFor(currentPos, gameConfig.enemies.zombie.viewDistance)
         .any { player.position == it }

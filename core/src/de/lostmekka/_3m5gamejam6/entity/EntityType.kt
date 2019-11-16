@@ -37,8 +37,8 @@ object Player : BaseEntityType("Player") {
     }
 }
 
-object EnemyZombie : BaseEntityType("Zombiez") {
-    fun create() = newGameEntityOfType(EnemyZombie) {
+object Zombie : BaseEntityType("Zombie") {
+    fun create() = newGameEntityOfType(Zombie) {
         attributes(
             EntityPosition(),
             EntityTileAnimation(
