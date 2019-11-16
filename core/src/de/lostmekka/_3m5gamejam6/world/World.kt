@@ -2,8 +2,8 @@ package de.lostmekka._3m5gamejam6.world
 
 import de.lostmekka._3m5gamejam6.GameContext
 import de.lostmekka._3m5gamejam6.config.gameConfig
-import de.lostmekka._3m5gamejam6.entity.EntityFactory
 import de.lostmekka._3m5gamejam6.entity.GameEntity
+import de.lostmekka._3m5gamejam6.entity.Player
 import de.lostmekka._3m5gamejam6.entity.attribute.health
 import de.lostmekka._3m5gamejam6.entity.attribute.inventory
 import de.lostmekka._3m5gamejam6.entity.attribute.position
@@ -35,7 +35,7 @@ class World(
         .withLayersPerBlock(1)
         .build()
 
-    val player = EntityFactory.newPlayer()
+    val player = Player.create()
 
     val engine: Engine<GameContext> = Engines.newEngine()
 
