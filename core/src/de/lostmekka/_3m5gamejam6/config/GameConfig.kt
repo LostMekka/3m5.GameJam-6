@@ -67,8 +67,13 @@ data class GameConfig(
 
         data class Summoner(
             val hp: Int = 100,
-            val viewDistance: Int = 4
-            // TODO: add other constants
+            val viewDistance: Int = 4,
+            val fleeDistance: Int = 20,
+            val madnessCollectThreshold: Int = 5,
+            val madnessCollectAverageThreshold: Double = 0.7,
+            val madnessSpreadThreshold: Int = 25,
+            val madnessSpreadAverageThreshold: Double = 0.1,
+            val madnessSpreadFarSeedChance: Double = 0.05
         ) : PropertyHolder
     }
 

@@ -47,29 +47,23 @@ fun World.updateEnemies() {
 }
 
 fun World.updateSummoner(entity: AnyGameEntity) {
-    val fleeDistance = 20
-    val madnessCollectThreshold = 5
-    val madnessCollectAverageThreshold = 0.7
-    val madnessSpreadThreshold = 25
-    val madnessSpreadAverageThreshold = 0.1
-    val madnessSpreadFarSeedChance = 0.05
-
+    val cfg = gameConfig.enemies.summoner
     val position = entity.position
     val block = this[position] ?: return
     val madnessStorage = entity.madnessStorage
     val storedPath = entity.storedPath
     val path = storedPath.path
 
-    if (madnessStorage.storedMadness <= madnessCollectThreshold) madnessStorage.collecting = true
-    if (madnessStorage.storedMadness >= madnessSpreadThreshold) madnessStorage.collecting = false
+    if (madnessStorage.storedMadness <= cfg.madnessCollectThreshold) madnessStorage.collecting = true
+    if (madnessStorage.storedMadness >= cfg.madnessSpreadThreshold) madnessStorage.collecting = false
 
     fun GameBlock.hasFreeMadness() =
         currentEntities.none { it.hasAttribute<LightEmitter>() }
                 && hasMadness
-                && averageMadnessMediumRadius >= madnessCollectAverageThreshold
+                && averageMadnessMediumRadius >= cfg.madnessCollectAverageThreshold
 
     fun GameBlock.shouldReceiveMadness() =
-        !hasMadness && averageMadnessMediumRadius <= madnessSpreadAverageThreshold
+        !hasMadness && averageMadnessMediumRadius <= cfg.madnessSpreadAverageThreshold
 
     fun putMadness() {
         (position.neighbours + position)
@@ -94,7 +88,7 @@ fun World.updateSummoner(entity: AnyGameEntity) {
         hasSightConnection(position, player.position, gameConfig.enemies.summoner.viewDistance) -> {
             // flee
             putMadness()
-            val fleePath = findPath(position) { it hammingDistanceTo player.position > fleeDistance }
+            val fleePath = findPath(position) { it hammingDistanceTo player.position > cfg.fleeDistance }
             storedPath.path = fleePath
             if (fleePath != null && fleePath.isNotEmpty()) moveEntity(entity, fleePath.first())
         }
@@ -115,7 +109,7 @@ fun World.updateSummoner(entity: AnyGameEntity) {
             if (block.shouldReceiveMadness()) {
                 putMadness()
             } else {
-                storedPath.path = if (Random.nextBoolean(madnessSpreadFarSeedChance)) {
+                storedPath.path = if (Random.nextBoolean(cfg.madnessSpreadFarSeedChance)) {
                     fetchRandomBlocks(3) { it.block.shouldReceiveMadness() }
                         .minBy { it.position hammingDistanceTo position }
                         ?.let { findPath(position, it.position) }
