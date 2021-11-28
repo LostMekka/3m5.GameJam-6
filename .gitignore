@@ -1,13 +1,13 @@
 ## own stuff
 config.yaml
 config.defaults.yaml
+.idea
+.gradle
+build
 
 ## Java
 
 *.class
-*.war
-*.jar
-*.ear
 hs_err_pid*
 
 ## Robovm
