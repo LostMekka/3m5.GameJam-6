@@ -1,6 +1,6 @@
 # Darkness Follows - 3m5.GameJam #6
 
-A horror dungeon crawler game, built with Kotlin and Zircon.
+A horror dungeon crawler, built with [Kotlin](https://kotlinlang.org/), [libGDX](https://libgdx.com/) and [Zircon](https://hexworks.org/projects/zircon/).
 ![alt text](./documentation/01.png)
 
 You finally found the place. You have seen this underground temple many times in your dreams, but now you are finally here. You can hear the madness whispering to you as you walk through the main gate. Let's hope that this was not a huge mistake... 
@@ -25,3 +25,8 @@ You finally found the place. You have seen this underground temple many times in
 - With a torch equipped, you light up the surrounding area and can place torches or activate altars.
 - With your sword equipped, you can fight by walking into enemies, but you won't light up your surroundings.
 - Travelling through a portal resets your health and torch supply.
+
+### Nice to know
+This game was built during the 3m5.GameJam#6 in 2 days. It is a local event aimed at students that want to learn about game development hands on.
+
+The game spawns 2 windows. At the time that we made this game, Zircon did not have full libGDX support (if memory serves correctly) and we did not take the risk to go the experimental route. We instead launch Zircon in a standalone Swing app and provide a line of communication back to libGDX, which handles sounds and music.
