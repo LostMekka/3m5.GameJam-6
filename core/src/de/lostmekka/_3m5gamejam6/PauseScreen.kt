@@ -53,7 +53,6 @@ class PauseDialog(screen: Screen) : Dialog(screen) {
                     .addParagraph("Activate all altars to unlock the portal")
                     .addParagraph("Press 2 to equip your sword")
                     .addParagraph("Run into enemies with your sword to damage them")
-                    .addParagraph("Click \"OK\" to continue")
             )
         }
 }
