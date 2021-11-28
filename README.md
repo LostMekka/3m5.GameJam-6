@@ -1,45 +1,27 @@
-# Darkness Follows - 3m5.Gamejam #6
+# Darkness Follows - 3m5.GameJam #6
 
-A dungeon-crawler-game with Kotlin and Zircon.
+A horror dungeon crawler game, built with Kotlin and Zircon.
+![alt text](./documentation/01.png)
 
-Wicked forces came to life but nothing  can persist against the light. It is up to you to save the jungle of ... 
+You finally found the place. You have seen this underground temple many times in your dreams, but now you are finally here. You can hear the madness whispering to you as you walk through the main gate. Let's hope that this was not a huge mistake... 
 
+### Keymap
+- **WASD**: Move around your charackter
+- **T**: Press repeatedly without moving to place a torch on the ground
+- **E**: Press repeatedly while standing on an altar to activate it
+- **G**: Grab a torch from the ground (both placed and unlit)
+- **1**: Equip torch
+- **2**: Equip sword
+- **Space**: Wait for one turn
+- **Escape**: Pause menu and help
 
-> How to play
-
-- Use WASD to navigate your charackter
-- Use T five times to place a torch on the ground
-- Use E five times to activate an altar. (has a bigger light-sphere than a torch)
-- Use G to grap a torch from the ground
-- Use keys 1 & 2 to switch bitween your sword and torches
-- Use Escape for pausing the game and showing help
-
-> How to win
-- Enable the altars
-- Fight the madness 
-- Open the portal and travel to the next area
-
-
-**Enjoy the game :video_game:**
-
-
-
-
-
-
-
-# Screenshots
-
-![alt text](https://github.com/LostMekka/3m5.GameJam-6/blob/master/documentation/00.png)
-![alt text](https://github.com/LostMekka/3m5.GameJam-6/blob/master/documentation/01.png)
-
-
-
-# How to deploy
-
-Used IDE is "IntelliJ IDEA Community 2019.2"
-
-1. Clone the repo
-2. Go to project on the left sidepanel
-3. Navigate to desktop\src[main]\...\DesktopLauncher >> right-mouse-click >> "Run 'DesktopLauncher.main()'"
-
+### Gameplay
+- Hover over any tile with the mouse to see a description of what it is.
+- On each floor is a portal that leads to the next floor.
+- Activating all altars activates the portal.
+- Activating an altar costs torches, but slightly boosts your health.
+- Madness spreads in the dark. Light up areas by placing torches. Torches can be snuffed out by the madness if placed too close.
+- Pick up unlit torches so your supply does not run out, or pick up placed torches to relocate them.
+- With a torch equipped, you light up the surrounding area and can place torches or activate altars.
+- With your sword equipped, you can fight by walking into enemies, but you won't light up your surroundings.
+- Travelling through a portal resets your health and torch supply.
