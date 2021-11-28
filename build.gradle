@@ -16,7 +16,7 @@ buildscript {
 
 allprojects {
 
-    version = '1.0.3'
+    version = '1.0.4'
     ext {
         appName = "jam-game"
         gdxVersion = '1.9.10'
